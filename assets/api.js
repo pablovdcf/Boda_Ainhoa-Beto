@@ -11,8 +11,7 @@ function jsonp(params) {
     const q = new URLSearchParams({ ...params, callback: cb, secret: CONFIG.SHARED_SECRET });
     const url = `${CONFIG.SCRIPT_URL}?${q.toString()}`;
     const s = document.createElement("script");
-    s.src = url;
-    s.async = true;
+    s.src = url; s.async = true;
     window[cb] = (data) => { resolve(data); cleanup(); };
     s.onerror = (err) => { reject(err); cleanup(); };
     function cleanup(){ delete window[cb]; s.remove(); }
@@ -20,7 +19,7 @@ function jsonp(params) {
   });
 }
 
-export function apiLookup(token)  { return jsonp({ action: "lookup", token }); }
-export function apiRsvp(data)     { return jsonp({ action: "rsvp", ...data }); }
-export function apiAdminList()    { return jsonp({ action: "admin_list" }); }
-export function apiPing()         { return jsonp({ action: "ping" }); }
+export function apiLookup(token) { return jsonp({ action: "lookup", token }); }
+export function apiRsvp(data)    { return jsonp({ action: "rsvp", ...data }); }
+export function apiAdminList()   { return jsonp({ action: "admin_list" }); }
+export function apiPing()        { return jsonp({ action: "ping" }); }

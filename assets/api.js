@@ -8,8 +8,7 @@ export const CONFIG = {
 async function postJSON(payload) {
     const res = await fetch(CONFIG.SCRIPT_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        // 👇 Manda el secreto en el body (Apps Script sí lo lee)
+        headers: { "Content-Type": "text/plain" },
         body: JSON.stringify({ ...payload, secret: CONFIG.SHARED_SECRET }),
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);

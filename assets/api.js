@@ -1,7 +1,7 @@
 // Configuración API
 // assets/api.js
 export const CONFIG = {
-    SCRIPT_URL: "https://script.google.com/macros/s/XXXXXXXX/exec",
+    SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzhaTjnmF5FaflLFFVUbrw4Xplwl6D1zNP2oHA_zeSvuhd0WTG1Y0MLxsnsO4RMMXmp/exec",
     SHARED_SECRET: "BodaBetoyainhoa",
 };
 

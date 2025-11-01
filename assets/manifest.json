@@ -1,7 +1,7 @@
 {
   "name": "Boda Ainhoa & Beto",
   "short_name": "Boda A&B",
-  "start_url": "/index.html",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#0b3b4f",
   "theme_color": "#0b3b4f",
@@ -10,3 +10,4 @@
     { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
   ]
 }
+

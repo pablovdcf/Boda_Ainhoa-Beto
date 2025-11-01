@@ -9,11 +9,8 @@ export const CONFIG = {
 async function postJSON(payload) {
     const res = await fetch(CONFIG.SCRIPT_URL, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-API-KEY": CONFIG.SHARED_SECRET,
-        },
-        body: JSON.stringify(payload),
+        headers: { "Content-Type": "application/json" }, 
+        body: JSON.stringify({ ...payload, secret: CONFIG.SHARED_SECRET }),
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return res.json();

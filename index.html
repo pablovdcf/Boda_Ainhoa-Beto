@@ -98,6 +98,138 @@
       background:
         url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='40' viewBox='0 0 160 40' fill='none'><g stroke='%23C4A26A' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><path d='M0 28 C35 6, 75 6, 110 20'/><path d='M20 22 c6-6 14-9 22-10'/><path d='M40 26 c4-6 10-10 16-12'/><path d='M60 28 c5-7 12-12 20-14'/><path d='M86 30 c6-6 14-11 23-13'/><path d='M138 24 c6 2 14 1 18-3 -4-6 -12-10 -18-12 -3 5 -4 11 0 15z' fill='%23C4A26A'/></g></svg>") center / 160px 40px repeat-x;
     }
+
+    /* ---- Flip clock elegante ---- */
+    .flip-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .5rem
+    }
+
+    .flip-label {
+      font-size: .75rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #64748b
+    }
+
+    /* Tarjeta base */
+    .flip-card {
+      position: relative;
+      width: 120px;
+      height: 92px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: linear-gradient(180deg, #0b3b4f, #0f4c75);
+      box-shadow: 0 10px 30px rgba(10, 30, 60, .18), inset 0 0 0 1px rgba(255, 255, 255, .08);
+    }
+
+    @media (max-width:480px) {
+      .flip-card {
+        width: 92px;
+        height: 72px
+      }
+    }
+
+    .flip-card__top,
+    .flip-card__bottom {
+      width: 100%;
+      height: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 2.75rem;
+    }
+
+    @media (max-width:480px) {
+
+      .flip-card__top,
+      .flip-card__bottom {
+        font-size: 2.2rem
+      }
+    }
+
+    .flip-card__top {
+      border-bottom: 1px solid rgba(255, 255, 255, .12)
+    }
+
+    .flip-card__bottom {
+      filter: brightness(0.95)
+    }
+
+    .flip-card__flip {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 2.75rem;
+      background: #0b3b4f;
+      border-bottom: 1px solid rgba(255, 255, 255, .12);
+      transform-origin: bottom;
+      transform: rotateX(90deg);
+      backface-visibility: hidden;
+    }
+
+    .flip-card.anim .flip-card__flip {
+      animation: flipDown .7s cubic-bezier(.2, .6, .2, 1)
+    }
+
+    .flip-card.anim .flip-card__top {
+      filter: brightness(1.05)
+    }
+
+    @keyframes flipDown {
+      0% {
+        transform: rotateX(90deg)
+      }
+
+      45% {
+        transform: rotateX(0deg)
+      }
+
+      46% {
+        opacity: 0
+      }
+
+      100% {
+        opacity: 0
+      }
+    }
+
+    /* ---- Confetti dots suaves ---- */
+    .confetti-dot {
+      position: absolute;
+      border-radius: 9999px;
+      opacity: .45;
+      animation: float 10s linear infinite
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(20px)
+      }
+
+      50% {
+        transform: translateY(-20px)
+      }
+
+      100% {
+        transform: translateY(20px)
+      }
+    }
   </style>
 
   <meta charset="utf-8" />
@@ -261,62 +393,144 @@
       </div>
     </div>
   </section>
-  <section class="section">
-    <div class="max-w-4xl mx-auto px-6 text-center">
-      <h2 class="font-serif text-3xl mb-6">Cuenta atrás</h2>
 
-      <!-- Contador “slim” -->
-      <div id="countdown" class="flex flex-wrap items-end justify-center gap-4 text-night">
-        <div class="flex items-baseline gap-2">
-          <span id="d" class="w-px h-8 bg-slate-200"--</span>
-          <span class="uppercase text-xs text-slate-500">Días</span>
+  <section class="section relative overflow-hidden">
+    <!-- confetti sutil de fondo -->
+    <div id="confetti" class="pointer-events-none absolute inset-0 opacity-30"></div>
+
+    <div class="max-w-4xl mx-auto px-6 text-center relative">
+      <h2 class="font-serif text-3xl md:text-4xl mb-6">
+        <span class="bg-clip-text text-transparent bg-gradient-to-r from-gold via-amber-500 to-pink-500">
+          Cuenta atrás
+        </span>
+      </h2>
+
+      <div id="flipCountdown" class="flex flex-wrap justify-center gap-4 md:gap-6">
+        <!-- DÍAS -->
+        <div class="flip-unit">
+          <div class="flip-card">
+            <div class="flip-card__top" id="d-top">--</div>
+            <div class="flip-card__bottom" id="d-bottom">--</div>
+            <div class="flip-card__flip">
+              <span id="d-next">--</span>
+            </div>
+          </div>
+          <span class="flip-label">Días</span>
         </div>
 
-        <span class="text-slate-300 text-3xl">·</span>
-
-        <div class="flex items-baseline gap-2">
-          <span id="h" class="w-px h-8 bg-slate-200"--</span>
-          <span class="uppercase text-xs text-slate-500">Horas</span>
+        <!-- HORAS -->
+        <div class="flip-unit">
+          <div class="flip-card">
+            <div class="flip-card__top" id="h-top">--</div>
+            <div class="flip-card__bottom" id="h-bottom">--</div>
+            <div class="flip-card__flip">
+              <span id="h-next">--</span>
+            </div>
+          </div>
+          <span class="flip-label">Horas</span>
         </div>
 
-        <span class="text-slate-300 text-3xl">·</span>
-
-        <div class="flex items-baseline gap-2">
-          <span id="m" class="w-px h-8 bg-slate-200"--</span>
-          <span class="uppercase text-xs text-slate-500">Min</span>
+        <!-- MINUTOS -->
+        <div class="flip-unit">
+          <div class="flip-card">
+            <div class="flip-card__top" id="m-top">--</div>
+            <div class="flip-card__bottom" id="m-bottom">--</div>
+            <div class="flip-card__flip">
+              <span id="m-next">--</span>
+            </div>
+          </div>
+          <span class="flip-label">Min</span>
         </div>
 
-        <span class="text-slate-300 text-3xl">·</span>
-
-        <div class="flex items-baseline gap-2">
-          <span id="s" class="w-px h-8 bg-slate-200"--</span>
-          <span class="uppercase text-xs text-slate-500">Seg</span>
+        <!-- SEGUNDOS -->
+        <div class="flip-unit">
+          <div class="flip-card">
+            <div class="flip-card__top" id="s-top">--</div>
+            <div class="flip-card__bottom" id="s-bottom">--</div>
+            <div class="flip-card__flip">
+              <span id="s-next">--</span>
+            </div>
+          </div>
+          <span class="flip-label">Seg</span>
         </div>
       </div>
+
+      <!-- CTA pequeña bajo el contador -->
+      <p class="mt-5 text-slate-600">
+        10 de octubre de 2026 — <span class="font-medium">Pazo Torre de Xunqueiras</span>
+      </p>
     </div>
   </section>
 
+
   <script>
-      (function () {
-        const target = new Date('2026-10-10T10:00:00+02:00').getTime();
-        const $ = id => document.getElementById(id);
+    // Fecha objetivo
+    const TARGET = new Date('2026-10-10T10:00:00+02:00').getTime();
 
-        function tick() {
-          const now = Date.now();
-          const diff = Math.max(0, target - now);
+    // Estado actual para detectar cambios y animar solo cuando toca
+    const prev = { d: null, h: null, m: null, s: null };
 
-          const d = Math.floor(diff / 86400000);
-          const h = Math.floor(diff % 86400000 / 3600000);
-          const m = Math.floor(diff % 3600000 / 60000);
-          const s = Math.floor(diff % 60000 / 1000);
+    function setPair(prefix, val) {
+      // val como string (relleno si hace falta)
+      const txt = String(val);
+      const top = document.getElementById(prefix + '-top');
+      const bottom = document.getElementById(prefix + '-bottom');
+      const flip = document.querySelector(`#${prefix}-top`)?.parentElement; // la .flip-card
+      const next = document.getElementById(prefix + '-next');
 
-          if ($('d')) { $('d').textContent = d; $('h').textContent = h; $('m').textContent = m; $('s').textContent = s; }
-        }
-        tick();
-        setInterval(tick, 1000);
-      })();
+      if (!top || !bottom || !flip || !next) return;
+
+      // Si cambia, animamos
+      if (top.textContent !== txt) {
+        next.textContent = txt;
+        flip.classList.remove('anim'); // restart
+        void flip.offsetWidth;         // reflow
+        flip.classList.add('anim');
+
+        // al acabar la animación, fijamos el nuevo número arriba/abajo
+        setTimeout(() => { top.textContent = txt; bottom.textContent = txt; }, 340);
+      }
+    }
+
+    function tick() {
+      const now = Date.now();
+      const diff = Math.max(0, TARGET - now);
+
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor(diff % 86400000 / 3600000);
+      const m = Math.floor(diff % 3600000 / 60000);
+      const s = Math.floor(diff % 60000 / 1000);
+
+      if (prev.d !== d) { setPair('d', d); prev.d = d; }
+      if (prev.h !== h) { setPair('h', h); prev.h = h; }
+      if (prev.m !== m) { setPair('m', m); prev.m = m; }
+      if (prev.s !== s) { setPair('s', s); prev.s = s; }
+    }
+    tick(); setInterval(tick, 1000);
+
+    // Confetti dots suaves (no pesados)
+    (function confetti() {
+      const host = document.getElementById('confetti');
+      if (!host) return;
+      const colors = ['#F5E6D3', '#F8D9E0', '#C4A26A', '#dbeafe', '#e9d5ff'];
+      const W = host.clientWidth, H = host.clientHeight;
+      for (let i = 0; i < 28; i++) {
+        const dot = document.createElement('span');
+        dot.className = 'confetti-dot';
+        const size = 4 + Math.random() * 8;
+        dot.style.width = dot.style.height = size + 'px';
+        dot.style.left = Math.random() * W + 'px';
+        dot.style.top = Math.random() * H + 'px';
+        dot.style.background = colors[Math.floor(Math.random() * colors.length)];
+        dot.style.animationDelay = (-Math.random() * 10) + 's';
+        host.appendChild(dot);
+      }
+      // re-colocar al hacer resize para mantener densidad
+      window.addEventListener('resize', () => { host.innerHTML = ''; confetti(); }, { once: true });
+    })();
   </script>
-  
+
+
   <section class="section bg-white">
     <div class="max-w-4xl mx-auto px-6">
       <h2 class="font-serif text-3xl mb-6">Preguntas frecuentes</h2>

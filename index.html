@@ -99,136 +99,58 @@
         url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='40' viewBox='0 0 160 40' fill='none'><g stroke='%23C4A26A' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><path d='M0 28 C35 6, 75 6, 110 20'/><path d='M20 22 c6-6 14-9 22-10'/><path d='M40 26 c4-6 10-10 16-12'/><path d='M60 28 c5-7 12-12 20-14'/><path d='M86 30 c6-6 14-11 23-13'/><path d='M138 24 c6 2 14 1 18-3 -4-6 -12-10 -18-12 -3 5 -4 11 0 15z' fill='%23C4A26A'/></g></svg>") center / 160px 40px repeat-x;
     }
 
-    /* ---- Flip clock elegante ---- */
-    .flip-unit {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: .5rem
+    /* --- quita el “doble número” --- */
+    .flip-card__bottom {
+      opacity: 0;
+      /* oculto siempre */
     }
 
-    .flip-label {
-      font-size: .75rem;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: #64748b
+    /* durante el flip, deja que “aparezca” un pelín para ayudar al efecto */
+    .flip-card.anim .flip-card__bottom {
+      opacity: .15;
+      transition: opacity .2s .35s;
     }
 
-    /* Tarjeta base */
+    /* ligero bounce cuando cambia */
+    .flip-card.anim {
+      animation: bump .35s ease-out;
+    }
+
+    @keyframes bump {
+      0% {
+        transform: translateY(0) scale(1);
+      }
+
+      40% {
+        transform: translateY(-2px) scale(1.02);
+      }
+
+      100% {
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* glow elegante en las tarjetas */
     .flip-card {
-      position: relative;
-      width: 120px;
-      height: 92px;
-      border-radius: 16px;
-      overflow: hidden;
-      background: linear-gradient(180deg, #0b3b4f, #0f4c75);
-      box-shadow: 0 10px 30px rgba(10, 30, 60, .18), inset 0 0 0 1px rgba(255, 255, 255, .08);
+      box-shadow:
+        0 10px 30px rgba(10, 30, 60, .18),
+        inset 0 0 0 1px rgba(255, 255, 255, .08),
+        0 0 0 0 rgba(196, 162, 106, .0);
+      /* inicial */
     }
 
-    @media (max-width:480px) {
-      .flip-card {
-        width: 92px;
-        height: 72px
-      }
+    .flip-card.anim {
+      box-shadow:
+        0 14px 34px rgba(10, 30, 60, .22),
+        inset 0 0 0 1px rgba(255, 255, 255, .10),
+        0 0 18px 3px rgba(196, 162, 106, .25);
+      /* glow dorado rápido */
     }
 
-    .flip-card__top,
-    .flip-card__bottom {
-      width: 100%;
-      height: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-weight: 700;
-      font-variant-numeric: tabular-nums;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 2.75rem;
-    }
-
-    @media (max-width:480px) {
-
-      .flip-card__top,
-      .flip-card__bottom {
-        font-size: 2.2rem
-      }
-    }
-
-    .flip-card__top {
-      border-bottom: 1px solid rgba(255, 255, 255, .12)
-    }
-
-    .flip-card__bottom {
-      filter: brightness(0.95)
-    }
-
-    .flip-card__flip {
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 0;
-      height: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-weight: 700;
-      font-variant-numeric: tabular-nums;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 2.75rem;
-      background: #0b3b4f;
-      border-bottom: 1px solid rgba(255, 255, 255, .12);
-      transform-origin: bottom;
-      transform: rotateX(90deg);
-      backface-visibility: hidden;
-    }
-
-    .flip-card.anim .flip-card__flip {
-      animation: flipDown .7s cubic-bezier(.2, .6, .2, 1)
-    }
-
-    .flip-card.anim .flip-card__top {
-      filter: brightness(1.05)
-    }
-
-    @keyframes flipDown {
-      0% {
-        transform: rotateX(90deg)
-      }
-
-      45% {
-        transform: rotateX(0deg)
-      }
-
-      46% {
-        opacity: 0
-      }
-
-      100% {
-        opacity: 0
-      }
-    }
-
-    /* ---- Confetti dots suaves ---- */
+    /* confetti permanente un poco más vivo */
     .confetti-dot {
-      position: absolute;
-      border-radius: 9999px;
-      opacity: .45;
-      animation: float 10s linear infinite
-    }
-
-    @keyframes float {
-      0% {
-        transform: translateY(20px)
-      }
-
-      50% {
-        transform: translateY(-20px)
-      }
-
-      100% {
-        transform: translateY(20px)
-      }
+      opacity: .55;
+      filter: saturate(1.15);
     }
   </style>
 
@@ -467,27 +389,25 @@
     // Fecha objetivo
     const TARGET = new Date('2026-10-10T10:00:00+02:00').getTime();
 
-    // Estado actual para detectar cambios y animar solo cuando toca
     const prev = { d: null, h: null, m: null, s: null };
 
     function setPair(prefix, val) {
-      // val como string (relleno si hace falta)
       const txt = String(val);
       const top = document.getElementById(prefix + '-top');
       const bottom = document.getElementById(prefix + '-bottom');
-      const flip = document.querySelector(`#${prefix}-top`)?.parentElement; // la .flip-card
+      const flip = top?.parentElement;
       const next = document.getElementById(prefix + '-next');
-
       if (!top || !bottom || !flip || !next) return;
 
-      // Si cambia, animamos
       if (top.textContent !== txt) {
         next.textContent = txt;
-        flip.classList.remove('anim'); // restart
-        void flip.offsetWidth;         // reflow
+
+        // restart anim
+        flip.classList.remove('anim');
+        void flip.offsetWidth;
         flip.classList.add('anim');
 
-        // al acabar la animación, fijamos el nuevo número arriba/abajo
+        // fija número a mitad del flip
         setTimeout(() => { top.textContent = txt; bottom.textContent = txt; }, 340);
       }
     }
@@ -503,32 +423,101 @@
 
       if (prev.d !== d) { setPair('d', d); prev.d = d; }
       if (prev.h !== h) { setPair('h', h); prev.h = h; }
-      if (prev.m !== m) { setPair('m', m); prev.m = m; }
-      if (prev.s !== s) { setPair('s', s); prev.s = s; }
+      if (prev.m !== m) { setPair('m', m); prev.m = m; burst(70); }        // 🎉 estallido fuerte cada minuto
+      if (prev.s !== s) { setPair('s', s); prev.s = s; if (s % 10 === 0) burst(25); } // mini-burst cada 10s
     }
     tick(); setInterval(tick, 1000);
 
-    // Confetti dots suaves (no pesados)
-    (function confetti() {
-      const host = document.getElementById('confetti');
+    // -------------------------
+    // CONFETTI: fondo + bursts
+    // -------------------------
+    const host = document.getElementById('confetti');
+    const COLORS = ['#F5E6D3', '#F8D9E0', '#C4A26A', '#dbeafe', '#e9d5ff', '#fde68a'];
+
+    // niebla de confetti permanente (suave)
+    (function baseConfetti() {
       if (!host) return;
-      const colors = ['#F5E6D3', '#F8D9E0', '#C4A26A', '#dbeafe', '#e9d5ff'];
       const W = host.clientWidth, H = host.clientHeight;
-      for (let i = 0; i < 28; i++) {
+      for (let i = 0; i < 30; i++) {
         const dot = document.createElement('span');
         dot.className = 'confetti-dot';
         const size = 4 + Math.random() * 8;
         dot.style.width = dot.style.height = size + 'px';
         dot.style.left = Math.random() * W + 'px';
         dot.style.top = Math.random() * H + 'px';
-        dot.style.background = colors[Math.floor(Math.random() * colors.length)];
+        dot.style.background = COLORS[(Math.random() * COLORS.length) | 0];
         dot.style.animationDelay = (-Math.random() * 10) + 's';
         host.appendChild(dot);
       }
-      // re-colocar al hacer resize para mantener densidad
-      window.addEventListener('resize', () => { host.innerHTML = ''; confetti(); }, { once: true });
     })();
+
+    // estallido puntual (triángulos/rectángulos/bolitas)
+    function burst(count = 60) {
+      if (!host) return;
+      const rect = host.getBoundingClientRect();
+      const cx = rect.width / 2, cy = rect.height / 2;
+
+      for (let i = 0; i < count; i++) {
+        const p = document.createElement('span');
+        p.style.position = 'absolute';
+        p.style.left = cx + 'px';
+        p.style.top = cy + 'px';
+        const size = 6 + Math.random() * 8;
+        const shape = Math.random();
+
+        // forma
+        if (shape < .33) {
+          p.style.width = size + 'px'; p.style.height = size + 'px'; p.style.borderRadius = '9999px';
+        } else if (shape < .66) {
+          p.style.width = (size * 1.2) + 'px'; p.style.height = (size * .6) + 'px';
+          p.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
+        } else {
+          // triángulo
+          p.style.width = 0; p.style.height = 0;
+          p.style.borderLeft = (size / 2) + 'px solid transparent';
+          p.style.borderRight = (size / 2) + 'px solid transparent';
+          p.style.borderBottom = size + 'px solid ' + COLORS[(Math.random() * COLORS.length) | 0];
+          host.appendChild(p);
+          fly(p, cx, cy, 800);
+          continue;
+        }
+
+        p.style.background = COLORS[(Math.random() * COLORS.length) | 0];
+        p.style.borderRadius = p.style.borderRadius || (Math.random() > .5 ? '6px' : '9999px');
+        host.appendChild(p);
+        fly(p, cx, cy, 900);
+      }
+    }
+    function fly(el, cx, cy, life = 900) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 60 + Math.random() * 220;
+      const dx = Math.cos(angle) * speed;
+      const dy = Math.sin(angle) * speed - (Math.random() * 80); // algo hacia arriba
+
+      const start = performance.now();
+      const x0 = cx, y0 = cy;
+
+      function step(t) {
+        const k = Math.min(1, (t - start) / life);
+        const x = x0 + dx * k;
+        const y = y0 + dy * k + 0.5 * 300 * k * k; // gravedad suave
+        el.style.transform = `translate(${x}px,${y}px) rotate(${k * 720}deg)`;
+        el.style.opacity = (1 - k).toString();
+        if (k < 1) requestAnimationFrame(step); else el.remove();
+      }
+      requestAnimationFrame(step);
+    }
+
+    // recolocar confetti de fondo en resize
+    window.addEventListener('resize', () => {
+      if (!host) return;
+      host.innerHTML = '';
+      // reconstruye base y evita burst en bucle
+      const ev = new Event('reconfetti');
+      baseConfetti?.();
+    }, { passive: true });
   </script>
+
 
 
   <section class="section bg-white">

@@ -90,6 +90,14 @@
       background:
         radial-gradient(circle at 10px 16px, var(--ring) 2px, transparent 3px) 0 0/40px 32px repeat-x;
     }
+
+    .floral-divider {
+      --floral: #C4A26A;
+      /* color */
+      height: 40px;
+      background:
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='40' viewBox='0 0 160 40' fill='none'><g stroke='%23C4A26A' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><path d='M0 28 C35 6, 75 6, 110 20'/><path d='M20 22 c6-6 14-9 22-10'/><path d='M40 26 c4-6 10-10 16-12'/><path d='M60 28 c5-7 12-12 20-14'/><path d='M86 30 c6-6 14-11 23-13'/><path d='M138 24 c6 2 14 1 18-3 -4-6 -12-10 -18-12 -3 5 -4 11 0 15z' fill='%23C4A26A'/></g></svg>") center / 160px 40px repeat-x;
+    }
   </style>
 
   <meta charset="utf-8" />
@@ -106,7 +114,8 @@
     <div class="max-w-6xl mx-auto px-6 pt-16 pb-20 md:pt-24 md:pb-28 bg-paper">
       <p class="uppercase tracking-[.3em] text-champagne/90 text-sm">¡Nos casamos!</p>
       <h1 class="font-serif text-5xl md:text-6xl font-bold mt-3">Ainhoa & Beto</h1>
-      <p class="mt-4 text-champagne/90 text-lg">12 julio 2026 · Pazo de X · Galicia</p>
+      <p class="mt-4 text-champagne/90 text-lg">10 de Octubre 2026 · Pazo Torre de Xunqueiras
+ · Galicia</p>
 
       <div class="mt-8 flex gap-3">
         <a href="invite.html" class="btn">Confirmar asistencia</a>
@@ -140,6 +149,39 @@
       </div>
     </div>
   </section>
+  <!-- Divisor floral centrado -->
+  <div class="flex justify-center my-10">
+    <svg width="520" height="40" viewBox="0 0 520 40" fill="none" xmlns="http://www.w3.org/2000/svg"
+      style="color: var(--floral, #C4A26A)">
+      <g stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <!-- rama izquierda -->
+        <path d="M12 28 C70 5, 190 5, 258 20" />
+        <path d="M42 22 c6-6 14-9 22-10" />
+        <path d="M64 26 c4-6 10-10 16-12" />
+        <path d="M86 28 c5-7 12-12 20-14" />
+        <path d="M110 30 c6-6 14-11 23-13" />
+        <path d="M136 31 c7-6 16-11 25-13" />
+        <path d="M165 32 c7-6 16-11 26-13" />
+        <!-- hoja izquierda -->
+        <path d="M52 24 c-6 2 -14 1 -18-3 4-6 12-10 18-12 3 5 4 11 0 15z" fill="currentColor" />
+
+        <!-- motivo central -->
+        <path d="M260 8 c6 6 6 18 0 24 -6-6 -6-18 0-24z" fill="currentColor" />
+        <circle cx="260" cy="20" r="2.2" fill="currentColor" />
+
+        <!-- rama derecha (espejo) -->
+        <path d="M508 28 C450 5, 330 5, 262 20" />
+        <path d="M478 22 c-6-6 -14-9 -22-10" />
+        <path d="M456 26 c-4-6 -10-10 -16-12" />
+        <path d="M434 28 c-5-7 -12-12 -20-14" />
+        <path d="M410 30 c-6-6 -14-11 -23-13" />
+        <path d="M384 31 c-7-6 -16-11 -25-13" />
+        <path d="M355 32 c-7-6 -16-11 -26-13" />
+        <!-- hoja derecha -->
+        <path d="M468 24 c6 2 14 1 18-3 -4-6 -12-10 -18-12 -3 5 -4 11 0 15z" fill="currentColor" />
+      </g>
+    </svg>
+  </div>
 
   <!-- LUGAR + MAPA -->
   <section class="section bg-white">
@@ -160,6 +202,8 @@
       </div>
     </div>
   </section>
+
+  <div class="floral-divider my-10"></div>
 
   <!-- INFO EXTRA -->
   <section class="section">

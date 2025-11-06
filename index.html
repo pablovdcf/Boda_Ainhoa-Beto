@@ -102,7 +102,7 @@
 
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Boda · Ainhoa & Beto</title>
+  <title>Boda · Ainhoa & Alberto</title>
   <link rel="manifest" href="assets/manifest.json" />
   <link rel="icon" href="assets/icon-192.png" />
   <meta name="theme-color" content="#0b3b4f" />
@@ -115,7 +115,7 @@
       <p class="uppercase tracking-[.3em] text-champagne/90 text-sm">¡Nos casamos!</p>
       <h1 class="font-serif text-5xl md:text-6xl font-bold mt-3">Ainhoa & Beto</h1>
       <p class="mt-4 text-champagne/90 text-lg">10 de Octubre 2026 · Pazo Torre de Xunqueiras
- · Galicia</p>
+        · Galicia</p>
 
       <div class="mt-8 flex gap-3">
         <a href="invite.html" class="btn">Confirmar asistencia</a>
@@ -144,8 +144,8 @@
       </div>
       <div class="card p-6">
         <h3 class="font-serif text-2xl mb-2">Regalos</h3>
-        <p class="text-slate-700">Tu presencia es el mejor regalo. Si quieres ayudarnos con el viaje de novios: <b>ES12
-            1234 5678 9012 3456 7890</b>.</p>
+        <p class="text-slate-700">Tu presencia es el mejor regalo. Si quieres ayudarnos con el viaje de novios: <b>ESXX
+            XXXX XXXX XXXX XXXX XXXX</b>.</p>
       </div>
     </div>
   </section>
@@ -188,9 +188,12 @@
     <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-8 items-center">
       <div>
         <h2 class="font-serif text-3xl mb-3">Ubicación</h2>
-        <p class="text-slate-700 mb-4">Pazo de X, Provincia de A Coruña. Hay aparcamiento en el recinto.</p>
+        <p class="text-slate-700 mb-4">Pazo Torre de Xunqueiras, Provincia de A Coruña. Hay aparcamiento en el recinto.
+        </p>
         <div class="flex gap-3">
-          <a class="btn" target="_blank" href="https://maps.google.com?q=Pazo%20de%20X%20A%20Coruña">Cómo llegar</a>
+          <a class="btn" target="_blank"
+            href="https://www.google.com/maps/place/Sal%C3%B3n+de+vodas+Torre+de+Xunqueiras/@42.5947127,-8.9526889,17.6z/data=!4m14!1m7!3m6!1s0xd2f3bde581aaaab:0x31e1591dbcd13520!2sPazo+Torre+de+Xunqueiras!8m2!3d42.5950557!4d-8.9493419!16s%2Fg%2F121_jlzj!3m5!1s0xd2f3b000c7ce69f:0x324ff7990689cba2!8m2!3d42.5945372!4d-8.9518109!16s%2Fg%2F11w4nfy_9c">Cómo
+            llegar</a>
           <a class="btn btn-outline" href="invite.html">Confirmar asistencia</a>
         </div>
       </div>
@@ -222,6 +225,63 @@
       </div>
     </div>
   </section>
+  <section class="section">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+      <h2 class="font-serif text-3xl mb-4">Cuenta atrás</h2>
+      <div id="countdown" class="grid grid-cols-4 gap-3 text-white">
+        <div class="card bg-night p-4">
+          <div id="d" class="text-3xl font-bold">--</div>
+          <div>Días</div>
+        </div>
+        <div class="card bg-night p-4">
+          <div id="h" class="text-3xl font-bold">--</div>
+          <div>Horas</div>
+        </div>
+        <div class="card bg-night p-4">
+          <div id="m" class="text-3xl font-bold">--</div>
+          <div>Min</div>
+        </div>
+        <div class="card bg-night p-4">
+          <div id="s" class="text-3xl font-bold">--</div>
+          <div>Seg</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section bg-white">
+    <div class="max-w-4xl mx-auto px-6">
+      <h2 class="font-serif text-3xl mb-6">Preguntas frecuentes</h2>
+      <details class="card p-4 mb-3">
+        <summary class="cursor-pointer font-medium">¿Hay parking?</summary>
+        <div class="mt-2 text-slate-700">Sí, dentro del recinto.</div>
+      </details>
+      <details class="card p-4 mb-3">
+        <summary class="cursor-pointer font-medium">¿Puedo llevar niños?</summary>
+        <div class="mt-2 text-slate-700">¡Claro! Habrá zona infantil.</div>
+      </details>
+      <details class="card p-4">
+        <summary class="cursor-pointer font-medium">¿Regalo?</summary>
+        <div class="mt-2 text-slate-700">Tu presencia. Si quieres, IBAN en la sección de Regalos.</div>
+      </details>
+    </div>
+  </section>
+
+  <script>
+      (function () {
+        const target = new Date('2026-10-10T10:00:00+02:00').getTime();
+        const $ = id => document.getElementById(id);
+        function tick() {
+          const now = Date.now(), diff = Math.max(0, target - now);
+          const d = Math.floor(diff / 86400000);
+          const h = Math.floor(diff % 86400000 / 3600000);
+          const m = Math.floor(diff % 3600000 / 60000);
+          const s = Math.floor(diff % 60000 / 1000);
+          if ($('d')) { $('d').textContent = d; $('h').textContent = h; $('m').textContent = m; $('s').textContent = s; }
+        }
+        tick(); setInterval(tick, 1000);
+      })();
+  </script>
+
 
   <!-- CTA FINAL -->
   <footer class="section bg-hero text-white">

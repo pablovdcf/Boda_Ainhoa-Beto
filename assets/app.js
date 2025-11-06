@@ -102,7 +102,9 @@ form && form.addEventListener('submit', async (ev) => {
       : '¡Gracias! Hemos registrado tu respuesta.');
 
     // Si no quieres permitir reenviar, comenta el bloque de abajo
-    // form.classList.add('opacity-60','pointer-events-none');
+    // Tras éxito:
+    form.classList.add('opacity-70','pointer-events-none');
+    if (submitBtn) submitBtn.textContent = 'Enviado ✓';
 
   } catch (e) {
     console.error(e);

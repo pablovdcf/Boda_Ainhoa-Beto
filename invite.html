@@ -4,31 +4,79 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Confirmación · Ainhoa & Beto</title>
+  <title>Confirmación · Ainhoa & Alberto</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tipografías + Tailwind config (igual que index) -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { serif: ['Playfair Display', 'serif'], sans: ['Inter', 'ui-sans-serif', 'system-ui'] },
+          colors: { night: '#0B3B4F', champagne: '#F5E6D3', blush: '#F8D9E0', ink: '#0f172a', gold: '#C4A26A' },
+          boxShadow: { soft: '0 10px 30px rgba(10,30,60,.10)' },
+          backgroundImage: {
+            hero: 'linear-gradient(135deg, #0B3B4F 0%, #164e63 60%, #2563eb 120%)',
+            paper: 'radial-gradient(1200px 600px at 50% -200px, rgba(255,255,255,.15), transparent 65%)'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* mismas utilidades personalizadas que usas en index */
+    .card {
+      background: rgba(255, 255, 255, .8);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 1rem;
+      box-shadow: 0 10px 30px rgba(10, 30, 60, .10);
+      border: 1px solid rgba(255, 255, 255, .4)
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: .75rem 1.25rem;
+      border-radius: 9999px;
+      font-weight: 500;
+      transition: .2s ease;
+      background: #0B3B4F;
+      color: #fff
+    }
+
+    .btn:hover {
+      background: #0e4d74
+    }
+  </style>
+
 </head>
 
 <body class="min-h-screen bg-slate-50 text-slate-800">
   <div class="max-w-xl mx-auto px-6 py-10">
-    <h1 class="text-3xl font-bold">Confirmar asistencia</h1>
-    <!-- Solo se muestra si NO viene token en la URL -->
-    <section id="tokenGate" class="mt-8 hidden max-w-md">
-      <p class="mb-3 text-slate-600">
-        Introduce tu <b>código de invitación</b> (lo tienes en el mensaje de los novios).
-      </p>
+    <header class="bg-hero text-white">
+      <div class="max-w-3xl mx-auto px-6 pt-14 pb-12 bg-paper text-center">
+        <p class="uppercase tracking-[.3em] text-champagne/90 text-xs">Confirmación</p>
+        <h1 class="font-serif text-4xl md:text-5xl font-bold mt-2">Ainhoa & Beto</h1>
+        <p class="mt-2 text-champagne/90">10 de octubre 2026 · Pazo Torre de Xunqueiras</p>
+      </div>
+    </header>
 
+    <!-- Solo se muestra si NO viene token en la URL -->
+    <section id="tokenGate" class="card p-6 mt-8 hidden">
+      <h2 class="font-serif text-2xl mb-2 text-ink">Tu código de invitación</h2>
+      <p class="mb-3 text-slate-600">Es el código que te hemos enviado. Si tienes enlace directo, no hace falta.</p>
       <form id="tokenForm" class="flex gap-2">
         <input id="tokenInput" type="text" inputmode="text" autocomplete="one-time-code"
           class="flex-1 rounded-lg border px-3 py-2" placeholder="Ej: 4b0ffb6c" maxlength="12" />
-        <button type="submit" class="rounded-lg bg-blue-700 text-white px-4 py-2">
-          Continuar
-        </button>
+        <button type="submit" class="btn">Continuar</button>
       </form>
-
-      <p id="tokenError" class="text-sm text-red-600 mt-2 hidden">
-        Código inválido. Revísalo e inténtalo de nuevo.
-      </p>
+      <p id="tokenError" class="text-sm text-red-600 mt-2 hidden">Código inválido. Revísalo e inténtalo de nuevo.</p>
     </section>
+
 
     <p id="greet" class="mt-2 text-slate-600">Cargando invitación…</p>
 

@@ -2,8 +2,9 @@
 export const CONFIG = {
   SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzhaTjnmF5FaflLFFVUbrw4Xplwl6D1zNP2oHA_zeSvuhd0WTG1Y0MLxsnsO4RMMXmp/exec",
   SHARED_SECRET: "BodaBetoyainhoa",
+  ADMIN_PIN: "011222",             // <- cámbialo
+  ADMIN_KEY: "1234abcdxyz",      // <- clave que validará GAS
 };
-
 // JSONP helper
 function jsonp(params) {
   return new Promise((resolve, reject) => {
@@ -21,5 +22,5 @@ function jsonp(params) {
 
 export function apiLookup(token) { return jsonp({ action: "lookup", token }); }
 export function apiRsvp(data)    { return jsonp({ action: "rsvp", ...data }); }
-export function apiAdminList()   { return jsonp({ action: "admin_list" }); }
+export function apiAdminList() { return jsonp({ action: "admin_list", adminKey: CONFIG.ADMIN_KEY }); }
 export function apiPing()        { return jsonp({ action: "ping" }); }

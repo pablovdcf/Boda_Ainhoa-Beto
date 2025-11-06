@@ -1,71 +1,200 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Boda · Ainhoa & Beto</title>
-    <link rel="manifest" href="assets/manifest.json" />
-    <link rel="icon" href="assets/icon-192.png" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <meta name="theme-color" content="#0b3b4f" />
-  </head>
-  <body class="min-h-screen bg-slate-50 text-slate-800">
-    <header
-      class="relative overflow-hidden bg-gradient-to-b from-sky-900 to-sky-700 text-white"
-    >
-      <div class="max-w-5xl mx-auto px-6 py-24 text-center">
-        <p class="uppercase tracking-widest text-sky-200">¡Nos casamos!</p>
-        <h1 class="mt-2 text-5xl font-bold">Ainhoa & Beto</h1>
-        <p class="mt-3 text-sky-200">12 julio 2026 · Pazo de X · Galicia</p>
-        <div class="mt-8">
-          <a
-            href="invite.html"
-            class="inline-block rounded-2xl bg-white/90 px-6 py-3 font-medium text-sky-900 shadow hover:bg-white"
-            >Confirmar asistencia</a
-          >
+
+<head>
+  <!-- Tipografías -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet">
+
+  <!-- Tailwind CDN (vale para GitHub Pages) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { serif: ['Playfair Display', 'serif'], sans: ['Inter', 'ui-sans-serif', 'system-ui'] },
+          colors: {
+            night: '#0B3B4F',        /* azul noche */
+            champagne: '#F5E6D3',
+            blush: '#F8D9E0',
+            ink: '#0f172a',
+            gold: '#C4A26A'
+          },
+          boxShadow: {
+            soft: '0 10px 30px rgba(10, 30, 60, .10)'
+          },
+          backgroundImage: {
+            hero: 'linear-gradient(135deg, #0B3B4F 0%, #164e63 60%, #2563eb 120%)',
+            paper: 'radial-gradient(1200px 600px at 50% -200px, rgba(255,255,255,.15), transparent 65%)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --ring: rgba(196, 162, 106, .35);
+    }
+
+    .card {
+      background: rgba(255, 255, 255, .8);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      border-radius: 1rem;
+      /* 2xl */
+      box-shadow: 0 10px 30px rgba(10, 30, 60, .10);
+      border: 1px solid rgba(255, 255, 255, .4);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: .75rem 1.25rem;
+      border-radius: 9999px;
+      font-weight: 500;
+      transition: .2s ease;
+      background: #0B3B4F;
+      color: #fff;
+    }
+
+    .btn:hover {
+      background: #0e4d74;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: #0B3B4F;
+      border: 1px solid #0B3B4F;
+    }
+
+    .btn-outline:hover {
+      background: #0B3B4F;
+      color: #fff;
+    }
+
+    .section {
+      padding: 4rem 0;
+    }
+
+    @media (min-width:768px) {
+      .section {
+        padding: 5rem 0;
+      }
+    }
+
+    .divider {
+      height: 32px;
+      background:
+        radial-gradient(circle at 10px 16px, var(--ring) 2px, transparent 3px) 0 0/40px 32px repeat-x;
+    }
+  </style>
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Boda · Ainhoa & Beto</title>
+  <link rel="manifest" href="assets/manifest.json" />
+  <link rel="icon" href="assets/icon-192.png" />
+  <meta name="theme-color" content="#0b3b4f" />
+</head>
+
+<body class="bg-slate-50 text-ink">
+  <!-- HERO -->
+  <header class="bg-hero text-white">
+    <div class="max-w-6xl mx-auto px-6 pt-16 pb-20 md:pt-24 md:pb-28 bg-paper">
+      <p class="uppercase tracking-[.3em] text-champagne/90 text-sm">¡Nos casamos!</p>
+      <h1 class="font-serif text-5xl md:text-6xl font-bold mt-3">Ainhoa & Beto</h1>
+      <p class="mt-4 text-champagne/90 text-lg">12 julio 2026 · Pazo de X · Galicia</p>
+
+      <div class="mt-8 flex gap-3">
+        <a href="invite.html" class="btn">Confirmar asistencia</a>
+        <a href="#detalles" class="btn btn-outline">Detalles del día</a>
+      </div>
+    </div>
+    <div class="divider"></div>
+  </header>
+
+  <!-- DETALLES -->
+  <section id="detalles" class="section">
+    <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-6">
+      <div class="card p-6">
+        <h3 class="font-serif text-2xl mb-2">Itinerario</h3>
+        <ul class="space-y-2 text-slate-700">
+          <li>12:00 — Ceremonia</li>
+          <li>13:00 — Cóctel</li>
+          <li>14:30 — Banquete</li>
+          <li>19:00 — Barra libre</li>
+        </ul>
+      </div>
+      <div class="card p-6">
+        <h3 class="font-serif text-2xl mb-2">Dress Code</h3>
+        <p class="text-slate-700">Elegante relajado. Evita el blanco y tonos muy claros. Zapato cómodo para el baile 😉
+        </p>
+      </div>
+      <div class="card p-6">
+        <h3 class="font-serif text-2xl mb-2">Regalos</h3>
+        <p class="text-slate-700">Tu presencia es el mejor regalo. Si quieres ayudarnos con el viaje de novios: <b>ES12
+            1234 5678 9012 3456 7890</b>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- LUGAR + MAPA -->
+  <section class="section bg-white">
+    <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-8 items-center">
+      <div>
+        <h2 class="font-serif text-3xl mb-3">Ubicación</h2>
+        <p class="text-slate-700 mb-4">Pazo de X, Provincia de A Coruña. Hay aparcamiento en el recinto.</p>
+        <div class="flex gap-3">
+          <a class="btn" target="_blank" href="https://maps.google.com?q=Pazo%20de%20X%20A%20Coruña">Cómo llegar</a>
+          <a class="btn btn-outline" href="invite.html">Confirmar asistencia</a>
         </div>
       </div>
-    </header>
+      <div class="card overflow-hidden">
+        <iframe class="w-full h-[320px]" style="border:0" loading="lazy" allowfullscreen
+          referrerpolicy="no-referrer-when-downgrade"
+          src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDUMMY&zoom=12&q=Pazo%20de%20X%20A%20Coru%C3%B1a">
+        </iframe>
+      </div>
+    </div>
+  </section>
 
-    <main class="max-w-4xl mx-auto px-6 py-12 grid gap-12">
-      <section class="grid gap-3">
-        <h2 class="text-2xl font-semibold">Itinerario</h2>
-        <ul class="list-disc pl-6">
-          <li>12:00 · Ceremonia</li>
-          <li>13:00 · Cóctel</li>
-          <li>14:30 · Banquete</li>
-          <li>19:00 · Barra libre</li>
-        </ul>
-      </section>
+  <!-- INFO EXTRA -->
+  <section class="section">
+    <div class="max-w-5xl mx-auto px-6 grid md:grid-cols-3 gap-6">
+      <div class="card p-6">
+        <h3 class="font-serif text-xl mb-2">Transporte</h3>
+        <p class="text-slate-700">Habrá bus de ida y vuelta desde A Coruña. Podrás apuntarte en el formulario.</p>
+      </div>
+      <div class="card p-6">
+        <h3 class="font-serif text-xl mb-2">Alergias</h3>
+        <p class="text-slate-700">Indícalas en la confirmación para adaptar tu menú.</p>
+      </div>
+      <div class="card p-6">
+        <h3 class="font-serif text-xl mb-2">Niños</h3>
+        <p class="text-slate-700">Zona infantil con monitoras durante el banquete.</p>
+      </div>
+    </div>
+  </section>
 
-      <section class="grid gap-3">
-        <h2 class="text-2xl font-semibold">Ubicación</h2>
-        <p>Pazo de X, Provincia de A Coruña</p>
-        <div class="aspect-video w-full rounded-2xl overflow-hidden shadow">
-          <iframe
-            class="w-full h-full"
-            style="border: 0"
-            loading="lazy"
-            allowfullscreen
-            referrerpolicy="no-referrer-when-downgrade"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2969.999!2d-8.41!3d42.88!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0:0x0!2z!5e0!3m2!1ses!2ses!4v0000000000"
-          ></iframe>
-        </div>
-      </section>
+  <!-- CTA FINAL -->
+  <footer class="section bg-hero text-white">
+    <div class="max-w-4xl mx-auto px-6 text-center bg-paper">
+      <h3 class="font-serif text-3xl md:text-4xl font-bold">¿Te vienes a celebrar?</h3>
+      <p class="mt-3 text-champagne/90">Confirma tu asistencia antes del 15 de mayo.</p>
+      <a href="invite.html" class="btn mt-6">Confirmar asistencia</a>
+    </div>
+  </footer>
+  </main>
 
-      <section class="grid gap-3">
-        <h2 class="text-2xl font-semibold">Regalos</h2>
-        <p>
-          Lo importante es que vengas. Si quieres ayudarnos en la luna de miel:
-          ES12 3456 7890 1122 3344 5566.
-        </p>
-      </section>
-    </main>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("assets/service-worker.js");
+    }
+  </script>
+</body>
 
-    <script>
-      if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("assets/service-worker.js");
-      }
-    </script>
-  </body>
+
 </html>

@@ -181,13 +181,68 @@
       }
 
       /* Itinerario CSS */
-      .pin {
-        cursor: pointer;
-        transition: transform .18s ease, filter .18s ease;
+      /* Timeline vertical */
+      .tl {
+        position: relative;
+        margin-left: 1rem;
       }
-      .pin:hover { transform: translateY(-3px) scale(1.04); filter: drop-shadow(0 6px 14px rgba(10,30,60,.20)); }
-      .pin text { font-family: "Inter", ui-sans-serif, system-ui; font-size: 12px; fill:#0b3b4f; font-weight:600; }
-      .pin circle { stroke:#0b3b4f20; stroke-width:8px; }
+      .tl:before {
+        content:"";
+        position:absolute; left:0; top:0; bottom:0;
+        width:2px; background: linear-gradient(#C4A26A66,#0B3B4F22);
+        border-radius:2px;
+      }
+      .tl-item {
+        position: relative;
+        margin-left: 1.5rem;
+        padding-left: 1rem;
+      }
+      .tl-bullet {
+        position:absolute; left:-1.15rem; top:.35rem;
+        width:18px; height:18px; border-radius:9999px;
+        background:#fff; border:2px solid rgba(196,162,106,.6);
+        display:flex; align-items:center; justify-content:center;
+        box-shadow: 0 4px 10px rgba(10,30,60,.08);
+      }
+      .tl-bullet svg { width:12px; height:12px; }
+      .tl-head {
+        display:flex; align-items:baseline; gap:.5rem;
+      }
+      .tl-time { color:#64748b; font-size:.9rem; }
+      .tl-title { font-weight:600; color:#0B3B4F; }
+
+      /* Panel colapsable sin vibraciones */
+      .tl-panel {
+        overflow:hidden; max-height:0;
+        transition:max-height .35s ease;
+      }
+      .tl-item.open .tl-panel { max-height: 220px; } /* suficiente para texto */
+      .tl-card {
+        margin-top:.6rem;
+        background: rgba(255,255,255,.8);
+        backdrop-filter: blur(10px);
+        border:1px solid rgba(255,255,255,.4);
+        border-radius: 14px;
+        box-shadow: 0 10px 30px rgba(10,30,60,.10);
+        padding: 14px;
+      }
+
+      /* Hover/click feedback sutil */
+      .tl-toggle {
+        display:flex; width:100%; justify-content:space-between; align-items:center;
+        cursor:pointer; padding:.35rem 0;
+      }
+      .tl-toggle .chev {
+        transition: transform .25s ease; opacity:.7;
+      }
+      .tl-item.open .chev { transform: rotate(180deg); opacity:1; }
+
+      /* Colores de acento por paso (opcional) */
+      .tl-item[data-kind="ceremony"] .tl-bullet { border-color:#C4A26A; }
+      .tl-item[data-kind="cocktail"] .tl-bullet { border-color:#f59e0b; }
+      .tl-item[data-kind="dinner"]   .tl-bullet { border-color:#0ea5e9; }
+      .tl-item[data-kind="cake"]     .tl-bullet { border-color:#f472b6; }
+      .tl-item[data-kind="party"]    .tl-bullet { border-color:#22c55e; }
     </style>
 
     <meta charset="utf-8" />
@@ -230,86 +285,51 @@
       <div class="divider opacity-40"></div>
     </header>
 
-    <!-- DETALLES / TIMELINE INTERACTIVO -->
+    <!-- DETALLES / TIMELINE VERTICAL -->
     <section id="detalles" class="section bg-white">
-      <div class="max-w-6xl mx-auto px-6">
-        <h2 class="font-serif text-3xl md:text-4xl mb-6 text-center">
+      <div class="max-w-3xl mx-auto px-6">
+        <h2 class="font-serif text-3xl md:text-4xl mb-8 text-center">
           El plan del día
         </h2>
 
-        <!-- Tarjetas flotantes (tooltip) -->
-        <div id="pinCard" class="hidden fixed z-20 pointer-events-none">
-          <div class="card p-4 w-[260px] shadow-soft">
-            <div class="flex items-center gap-2 mb-1">
-              <span id="pcIcon" class="text-xl"></span>
-              <h3 id="pcTitle" class="font-semibold"></h3>
-            </div>
-            <p id="pcTime" class="text-sm text-slate-500"></p>
-            <p id="pcDesc" class="text-sm text-slate-700 mt-2"></p>
-          </div>
-        </div>
-
-        <!-- Contenedor responsive -->
-        <div
-          class="relative rounded-2xl overflow-hidden bg-slate-50 shadow-soft border border-white/40"
-        >
-          <!-- SVG horizontal (desktop) -->
-          <svg
-            id="routeSvg"
-            viewBox="0 0 1200 380"
-            class="hidden md:block w-full h-[380px]"
-          >
-            <!-- fondo suave -->
-            <defs>
-              <linearGradient id="grad" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0" stop-color="#C4A26A" stop-opacity=".35" />
-                <stop offset="1" stop-color="#2563eb" stop-opacity=".25" />
-              </linearGradient>
-              <filter id="glow">
-                <feGaussianBlur stdDeviation="3" result="b" />
-                <feMerge>
-                  <feMergeNode in="b" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-            </defs>
-
-            <!-- ruta principal -->
+        <!-- Sprite con iconos (puedes cambiarlos más adelante) -->
+        <svg width="0" height="0" style="position:absolute">
+          <symbol id="i-ceremony" viewBox="0 0 24 24">
             <path
-              id="routePath"
-              d="M80,300 C300,120 540,120 760,220 S1080,300 1120,240"
-              fill="none"
-              stroke="url(#grad)"
-              stroke-width="8"
-              stroke-linecap="round"
-              filter="url(#glow)"
+              fill="#0B3B4F"
+              d="M12 2l4 4v4h3v12h-5v-6H10v6H5V10h3V6l4-4zM8 12h8v8h1V11h-3V7.83L12 4.83 10 7.83V11H7v9h1v-8z"
             />
-            <!-- líneas decorativas -->
+          </symbol>
+          <symbol id="i-cocktail" viewBox="0 0 24 24">
             <path
-              d="M80,310 C300,130 540,130 760,230 S1080,310 1120,250"
-              fill="none"
-              stroke="#0b3b4f10"
-              stroke-width="22"
+              fill="#0B3B4F"
+              d="M2 3h20l-9 9v7h3v2H8v-2h3v-7L2 3zm5.5 2l4.5 4.5L16.5 5H7.5z"
             />
-            <!-- puntos (se inyectan por JS) -->
-            <g id="pins"></g>
+          </symbol>
+          <symbol id="i-dinner" viewBox="0 0 24 24">
+            <path
+              fill="#0B3B4F"
+              d="M12 5a7 7 0 0 0-7 7v1h14v-1a7 7 0 0 0-7-7zm-9 9v2h18v-2H3zm8 3v2h2v-2h-2z"
+            />
+          </symbol>
+          <symbol id="i-cake" viewBox="0 0 24 24">
+            <path
+              fill="#0B3B4F"
+              d="M12 2c1.1 0 2 .9 2 2 0 .74-.4 1.38-1 1.73V8h-2V5.73A2 2 0 0 1 10 4c0-1.1.9-2 2-2zM4 10h16v5c-1.5 0-2 .9-3 .9s-1.5-.9-3-.9-2 .9-3 .9-1.5-.9-3-.9-2 .9-3 .9V10zm0 7h16v3H4v-3z"
+            />
+          </symbol>
+          <symbol id="i-party" viewBox="0 0 24 24">
+            <path
+              fill="#0B3B4F"
+              d="M2 22l6-2 8-8-4-4-8 8-2 6zm12.5-14.5l1.5 1.5 3-3-1.5-1.5-3 3zm2.5 4l1.5 1.5 3-3-1.5-1.5-3 3z"
+            />
+          </symbol>
+        </svg>
 
-            <!-- “burbujas” de ambiente -->
-            <g opacity=".15">
-              <circle cx="180" cy="120" r="6" fill="#F8D9E0" />
-              <circle cx="560" cy="90" r="8" fill="#F5E6D3" />
-              <circle cx="980" cy="160" r="5" fill="#dbeafe" />
-            </g>
-          </svg>
-
-          <!-- Versión vertical (móvil) -->
-          <div class="md:hidden p-4">
-            <ol
-              id="mobileList"
-              class="relative border-l-2 border-gold/40 ml-3 space-y-6"
-            ></ol>
-          </div>
-        </div>
+        <!-- Timeline -->
+        <ol id="timeline" class="tl">
+          <!-- Se genera por JS -->
+        </ol>
       </div>
     </section>
 
@@ -540,7 +560,7 @@
 
     <!-- CTA FINAL -->
     <footer class="section bg-hero text-white">
-      <div class="max-w-4xl mx-auto px-6 text-center  text-center">
+      <div class="max-w-4xl mx-auto px-6 text-center text-center">
         <h3 class="font-serif text-3xl md:text-4xl font-bold">
           ¿Te vienes a celebrar?
         </h3>
@@ -610,149 +630,78 @@
 
     /* Script itinerario */
     <script>
-      // === Datos del timeline (edítalos) ===
-      const EVENTS = [
+      // Datos (usa los ids de icono del sprite: i-ceremony, i-cocktail, etc.)
+      const EVENTS_V = [
         {
-          t: 0.05,
           time: "12:00",
           title: "Ceremonia",
           desc: "Iglesia de Palmeira",
-          icon: "⛪️",
+          icon: "i-ceremony",
+          kind: "ceremony",
         },
         {
-          t: 0.35,
           time: "13:00",
           title: "Cóctel",
           desc: "Jardines del pazo",
-          icon: "🥂",
+          icon: "i-cocktail",
+          kind: "cocktail",
         },
         {
-          t: 0.62,
           time: "14:30",
           title: "Banquete",
           desc: "Salón principal",
-          icon: "🍽️",
+          icon: "i-dinner",
+          kind: "dinner",
         },
         {
-          t: 0.82,
           time: "19:00",
           title: "Tarta",
           desc: "Corte de tarta",
-          icon: "🎂",
+          icon: "i-cake",
+          kind: "cake",
         },
         {
-          t: 0.92,
           time: "20:30",
           title: "Fiesta",
           desc: "Pista de baile",
-          icon: "🎉",
+          icon: "i-party",
+          kind: "party",
         },
       ];
 
-      // --- Helpers para tarjeta flotante ---
-      const card = document.getElementById("pinCard");
-      const pcIcon = document.getElementById("pcIcon");
-      const pcTitle = document.getElementById("pcTitle");
-      const pcTime = document.getElementById("pcTime");
-      const pcDesc = document.getElementById("pcDesc");
+      const tl = document.getElementById("timeline");
+      tl.innerHTML = EVENTS_V.map(
+        (e, i) => `
+    <li class="tl-item" data-kind="${e.kind}">
+      <div class="tl-bullet"><svg><use href="#${e.icon}"/></svg></div>
 
-      function showCard(x, y, e) {
-        pcIcon.textContent = e.icon;
-        pcTitle.textContent = e.title;
-        pcTime.textContent = e.time;
-        pcDesc.textContent = e.desc;
-        card.style.left = x + 12 + "px";
-        card.style.top = y - 10 + "px";
-        card.classList.remove("hidden");
-      }
-      function hideCard() {
-        card.classList.add("hidden");
-      }
+      <button class="tl-toggle" aria-expanded="false">
+        <div class="tl-head">
+          <span class="tl-time">${e.time}</span>
+          <span class="tl-title">${e.title}</span>
+        </div>
+        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M6 9l6 6 6-6" stroke="#0B3B4F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
 
-      // --- Versión desktop: pin sobre la ruta SVG ---
-      const svg = document.getElementById("routeSvg");
-      const path = document.getElementById("routePath");
-      const pinsGroup = document.getElementById("pins");
+      <div class="tl-panel">
+        <div class="tl-card">
+          <p class="text-slate-700">${e.desc}</p>
+        </div>
+      </div>
+    </li>
+  `
+      ).join("");
 
-      function placePins() {
-        if (!svg || !path) return;
-        pinsGroup.innerHTML = "";
-        const length = path.getTotalLength();
-
-        EVENTS.forEach((ev, i) => {
-          const p = path.getPointAtLength(length * ev.t);
-          const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-          g.classList.add("pin");
-          g.setAttribute("transform", `translate(${p.x},${p.y})`);
-
-          // pin: círculo + icono
-          const c = document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "circle"
-          );
-          c.setAttribute("r", "16");
-          c.setAttribute("fill", "#ffffff");
-          pinsGroup.appendChild(g);
-          g.appendChild(c);
-
-          const text = document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "text"
-          );
-          text.setAttribute("text-anchor", "middle");
-          text.setAttribute("y", "4");
-          text.textContent = ev.icon;
-          text.setAttribute("font-size", "16");
-          g.appendChild(text);
-
-          // etiqueta pequeña con la hora
-          const label = document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "text"
-          );
-          label.setAttribute("text-anchor", "middle");
-          label.setAttribute("y", "38");
-          label.textContent = ev.time;
-          label.setAttribute("fill", "#334155");
-          label.setAttribute("font-size", "12");
-          label.setAttribute("font-weight", "600");
-          g.appendChild(label);
-
-          // interacciones
-          g.addEventListener("mouseenter", (e) => {
-            const rect = svg.getBoundingClientRect();
-            showCard(rect.left + p.x, rect.top + p.y, ev);
-          });
-          g.addEventListener("mouseleave", hideCard);
-          g.addEventListener("click", (e) => {
-            const rect = svg.getBoundingClientRect();
-            showCard(rect.left + p.x, rect.top + p.y, ev);
-          });
+      // Interacción sin “vibraciones”: click para expandir, sin tooltips flotantes
+      tl.querySelectorAll(".tl-toggle").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const item = btn.closest(".tl-item");
+          const open = item.classList.toggle("open");
+          btn.setAttribute("aria-expanded", open);
         });
-      }
-      placePins();
-      window.addEventListener("resize", placePins);
-
-      // --- Versión móvil: lista vertical bonita ---
-      const mob = document.getElementById("mobileList");
-      if (mob) {
-        mob.innerHTML = EVENTS.map(
-          (ev) => `
-      <li class="ml-3">
-        <div class="absolute -left-[11px] mt-1 w-5 h-5 rounded-full bg-white border-2 border-gold/60 flex items-center justify-center">
-          <span class="text-[12px]">${ev.icon}</span>
-        </div>
-        <div class="card p-4">
-          <div class="flex items-baseline justify-between">
-            <h4 class="font-semibold">${ev.title}</h4>
-            <span class="text-slate-500 text-sm">${ev.time}</span>
-          </div>
-          <p class="text-slate-700 text-sm mt-1">${ev.desc}</p>
-        </div>
-      </li>
-    `
-        ).join("");
-      }
+      });
     </script>
   </body>
 </html>

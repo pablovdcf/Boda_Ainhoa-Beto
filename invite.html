@@ -1,131 +1,185 @@
 <!DOCTYPE html>
 <html lang="es">
-
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Confirmación · Ainhoa & Alberto</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Tipografías + Tailwind config (igual que index) -->
-  <link
-    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@400;500;600&display=swap"
-    rel="stylesheet">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { serif: ['Playfair Display', 'serif'], sans: ['Inter', 'ui-sans-serif', 'system-ui'] },
-          colors: { night: '#0B3B4F', champagne: '#F5E6D3', blush: '#F8D9E0', ink: '#0f172a', gold: '#C4A26A' },
-          boxShadow: { soft: '0 10px 30px rgba(10,30,60,.10)' },
-          backgroundImage: {
-            hero: 'linear-gradient(135deg, #0B3B4F 0%, #164e63 60%, #2563eb 120%)',
-            paper: 'radial-gradient(1200px 600px at 50% -200px, rgba(255,255,255,.15), transparent 65%)'
-          }
-        }
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Confirmación · Ainhoa & Alberto</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tipografías + Tailwind config (igual que index) -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              serif: ["Playfair Display", "serif"],
+              sans: ["Inter", "ui-sans-serif", "system-ui"],
+            },
+            colors: {
+              night: "#0B3B4F",
+              champagne: "#F5E6D3",
+              blush: "#F8D9E0",
+              ink: "#0f172a",
+              gold: "#C4A26A",
+            },
+            boxShadow: { soft: "0 10px 30px rgba(10,30,60,.10)" },
+            backgroundImage: {
+              hero: "linear-gradient(135deg, #0B3B4F 0%, #164e63 60%, #2563eb 120%)",
+              paper:
+                "radial-gradient(1200px 600px at 50% -200px, rgba(255,255,255,.15), transparent 65%)",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      /* mismas utilidades personalizadas que usas en index */
+      .card {
+        background: rgba(255, 255, 255, .8);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-radius: 1rem;
+        box-shadow: 0 10px 30px rgba(10, 30, 60, .10);
+        border: 1px solid rgba(255, 255, 255, .4)
       }
-    }
-  </script>
-  <style>
-    /* mismas utilidades personalizadas que usas en index */
-    .card {
-      background: rgba(255, 255, 255, .8);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-radius: 1rem;
-      box-shadow: 0 10px 30px rgba(10, 30, 60, .10);
-      border: 1px solid rgba(255, 255, 255, .4)
-    }
 
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: .75rem 1.25rem;
-      border-radius: 9999px;
-      font-weight: 500;
-      transition: .2s ease;
-      background: #0B3B4F;
-      color: #fff
-    }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: .75rem 1.25rem;
+        border-radius: 9999px;
+        font-weight: 500;
+        transition: .2s ease;
+        background: #0B3B4F;
+        color: #fff
+      }
 
-    .btn:hover {
-      background: #0e4d74
-    }
-  </style>
+      .btn:hover {
+        background: #0e4d74
+      }
+    </style>
+  </head>
 
-</head>
-
-<body class="min-h-screen bg-slate-50 text-slate-800">
-  <div class="max-w-xl mx-auto px-6 py-10">
-    <header class="bg-hero text-white">
-      <div class="max-w-3xl mx-auto px-6 pt-14 pb-12 bg-paper text-center">
-        <p class="uppercase tracking-[.3em] text-champagne/90 text-xs">Confirmación</p>
-        <h1 class="font-serif text-4xl md:text-5xl font-bold mt-2">Ainhoa & Alberto</h1>
-        <p class="mt-2 text-champagne/90">10 de octubre 2026 · Pazo Torre de Xunqueiras</p>
-      </div>
-    </header>
-
-    <!-- Solo se muestra si NO viene token en la URL -->
-    <section id="tokenGate" class="card p-6 mt-8 hidden">
-      <h2 class="font-serif text-2xl mb-2 text-ink">Tu código de invitación</h2>
-      <p class="mb-3 text-slate-600">Es el código que te hemos enviado. Si tienes enlace directo, no hace falta.</p>
-      <form id="tokenForm" class="flex gap-2">
-        <input id="tokenInput" type="text" inputmode="text" autocomplete="one-time-code"
-          class="flex-1 rounded-lg border px-3 py-2" placeholder="Ej: 4b0ffb6c" maxlength="12" />
-        <button type="submit" class="btn">Continuar</button>
-      </form>
-      <p id="tokenError" class="text-sm text-red-600 mt-2 hidden">Código inválido. Revísalo e inténtalo de nuevo.</p>
-    </section>
-
-
-    <p id="greet" class="mt-2 text-slate-600">Cargando invitación…</p>
-
-    <form id="rsvpForm" class="mt-6 grid gap-4">
-      <div>
-        <label class="block text-sm font-medium">Asistencia</label>
-        <div class="mt-1 flex gap-6">
-          <label class="inline-flex items-center gap-2"><input type="radio" name="asistencia" value="si" required />
-            Sí</label>
-          <label class="inline-flex items-center gap-2"><input type="radio" name="asistencia" value="no" required />
-            No</label>
+  <body class="min-h-screen bg-slate-50 text-slate-800">
+    <div class="max-w-xl mx-auto px-6 py-10">
+      <header class="bg-hero text-white">
+        <div class="max-w-3xl mx-auto px-6 pt-14 pb-12 bg-paper text-center">
+          <p class="uppercase tracking-[.3em] text-champagne/90 text-xs">
+            Confirmación
+          </p>
+          <h1 class="font-serif text-4xl md:text-5xl font-bold mt-2">
+            Ainhoa & Alberto
+          </h1>
+          <p class="mt-2 text-champagne/90">
+            10 de octubre 2026 · Pazo Torre de Xunqueiras
+          </p>
         </div>
-      </div>
+      </header>
 
-      <div>
-        <label class="block text-sm font-medium">Acompañantes</label>
-        <input id="acompanantes" type="number" min="0" value="0" class="mt-1 w-full rounded-xl border p-2" />
-        <p id="maxInfo" class="text-xs text-slate-500 mt-1"></p>
-      </div>
+      <!-- Solo se muestra si NO viene token en la URL -->
+      <section id="tokenGate" class="card p-6 mt-8 hidden">
+        <h2 class="font-serif text-2xl mb-2 text-ink">
+          Tu código de invitación
+        </h2>
+        <p class="mb-3 text-slate-600">
+          Es el código que te hemos enviado. Si tienes enlace directo, no hace
+          falta.
+        </p>
+        <form id="tokenForm" class="flex gap-2">
+          <input
+            id="tokenInput"
+            type="text"
+            inputmode="text"
+            autocomplete="one-time-code"
+            class="flex-1 rounded-lg border px-3 py-2"
+            placeholder="Ej: 4b0ffb6c"
+            maxlength="12"
+          />
+          <button type="submit" class="btn">Continuar</button>
+        </form>
+        <p id="tokenError" class="text-sm text-red-600 mt-2 hidden">
+          Código inválido. Revísalo e inténtalo de nuevo.
+        </p>
+      </section>
 
-      <div>
-        <label class="block text-sm font-medium">Menú</label>
-        <select id="menu" class="mt-1 w-full rounded-xl border p-2">
-          <option value="estandar">Estándar</option>
-          <option value="veg">Vegetariano</option>
-          <option value="infantil">Infantil</option>
-        </select>
-      </div>
+      <p id="greet" class="mt-2 text-slate-600">Cargando invitación…</p>
 
-      <div>
-        <label class="block text-sm font-medium">Alergias</label>
-        <input id="alergias" type="text" placeholder="Marisco, gluten…" class="mt-1 w-full rounded-xl border p-2" />
-      </div>
+      <form id="rsvpForm" class="mt-6 grid gap-4">
+        <div>
+          <label class="block text-sm font-medium">Asistencia</label>
+          <div class="mt-1 flex gap-6">
+            <label class="inline-flex items-center gap-2"
+              ><input type="radio" name="asistencia" value="si" required />
+              Sí</label
+            >
+            <label class="inline-flex items-center gap-2"
+              ><input type="radio" name="asistencia" value="no" required />
+              No</label
+            >
+          </div>
+        </div>
 
-      <label class="inline-flex items-center gap-2"><input id="bus" type="checkbox" /> Me apunto al bus</label>
+        <div>
+          <label class="block text-sm font-medium">Acompañantes</label>
+          <input
+            id="acompanantes"
+            type="number"
+            min="0"
+            value="0"
+            class="mt-1 w-full rounded-xl border p-2"
+          />
+          <div id="acompanantesNombres" class="grid gap-2 mt-2"></div>
 
-      <div>
-        <label class="block text-sm font-medium">Pide una canción ❤️</label>
-        <input id="cancion" type="text" placeholder="Título – Artista" class="mt-1 w-full rounded-xl border p-2" />
-      </div>
+          <p id="maxInfo" class="text-xs text-slate-500 mt-1"></p>
+        </div>
 
-      <button id="submitBtn" class="mt-2 rounded-xl bg-sky-700 text-white px-5 py-3 hover:bg-sky-800">
-        Enviar confirmación
-      </button>
+        <div>
+          <label class="block text-sm font-medium">Menú</label>
+          <select id="menu" class="mt-1 w-full rounded-xl border p-2">
+            <option value="estandar">Estándar</option>
+            <option value="veg">Vegetariano</option>
+            <option value="infantil">Infantil</option>
+          </select>
+        </div>
 
-      <p id="msg" class="text-sm"></p>
-    </form>
-  </div>
-  <script type="module" src="assets/app.js"></script>
-</body>
+        <div>
+          <label class="block text-sm font-medium">Alergias</label>
+          <input
+            id="alergias"
+            type="text"
+            placeholder="Marisco, gluten…"
+            class="mt-1 w-full rounded-xl border p-2"
+          />
+        </div>
 
+        <label class="inline-flex items-center gap-2"
+          ><input id="bus" type="checkbox" /> Me apunto al bus</label
+        >
+
+        <div>
+          <label class="block text-sm font-medium">Pide una canción ❤️</label>
+          <input
+            id="cancion"
+            type="text"
+            placeholder="Título – Artista"
+            class="mt-1 w-full rounded-xl border p-2"
+          />
+        </div>
+
+        <button
+          id="submitBtn"
+          class="mt-2 rounded-xl bg-sky-700 text-white px-5 py-3 hover:bg-sky-800"
+        >
+          Enviar confirmación
+        </button>
+
+        <p id="msg" class="text-sm"></p>
+      </form>
+    </div>
+    <script type="module" src="assets/app.js"></script>
+  </body>
 </html>

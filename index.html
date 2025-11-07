@@ -1,562 +1,513 @@
 <!DOCTYPE html>
 <html lang="es">
+  <head>
+    <!-- Tipografías -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
 
-<head>
-  <!-- Tipografías -->
-  <link
-    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@400;500;600&display=swap"
-    rel="stylesheet">
+    <!-- Tailwind CDN (vale para GitHub Pages) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              serif: ["Playfair Display", "serif"],
+              sans: ["Inter", "ui-sans-serif", "system-ui"],
+            },
+            colors: {
+              night: "#0B3B4F" /* azul noche */,
+              champagne: "#F5E6D3",
+              blush: "#F8D9E0",
+              ink: "#0f172a",
+              gold: "#C4A26A",
+            },
+            boxShadow: {
+              soft: "0 10px 30px rgba(10, 30, 60, .10)",
+            },
+            backgroundImage: {
+              hero: "linear-gradient(135deg, #0B3B4F 0%, #164e63 60%, #2563eb 120%)",
+              paper:
+                "radial-gradient(1200px 600px at 50% -200px, rgba(255,255,255,.15), transparent 65%)",
+            },
+          },
+        },
+      };
+    </script>
 
-  <!-- Tailwind CDN (vale para GitHub Pages) -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { serif: ['Playfair Display', 'serif'], sans: ['Inter', 'ui-sans-serif', 'system-ui'] },
-          colors: {
-            night: '#0B3B4F',        /* azul noche */
-            champagne: '#F5E6D3',
-            blush: '#F8D9E0',
-            ink: '#0f172a',
-            gold: '#C4A26A'
-          },
-          boxShadow: {
-            soft: '0 10px 30px rgba(10, 30, 60, .10)'
-          },
-          backgroundImage: {
-            hero: 'linear-gradient(135deg, #0B3B4F 0%, #164e63 60%, #2563eb 120%)',
-            paper: 'radial-gradient(1200px 600px at 50% -200px, rgba(255,255,255,.15), transparent 65%)'
+    <style>
+          :root {
+            --ring: rgba(196, 162, 106, .35);
           }
-        }
+
+          .card {
+            background: rgba(255, 255, 255, .8);
+            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+            border-radius: 1rem;
+            /* 2xl */
+            box-shadow: 0 10px 30px rgba(10, 30, 60, .10);
+            border: 1px solid rgba(255, 255, 255, .4);
+          }
+
+          .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: .75rem 1.25rem;
+            border-radius: 9999px;
+            font-weight: 500;
+            transition: .2s ease;
+            background: #0B3B4F;
+            color: #fff;
+          }
+
+          .btn:hover {
+            background: #0e4d74;
+          }
+
+          .btn-outline {
+            background: transparent;
+            color: #0B3B4F;
+            border: 1px solid #0B3B4F;
+          }
+
+          .btn-outline:hover {
+            background: #0B3B4F;
+            color: #fff;
+          }
+
+          .section {
+            padding: 4rem 0;
+          }
+
+          @media (min-width:768px) {
+            .section {
+              padding: 5rem 0;
+            }
+          }
+
+          .divider {
+            height: 32px;
+            background:
+              radial-gradient(circle at 10px 16px, var(--ring) 2px, transparent 3px) 0 0/40px 32px repeat-x;
+          }
+
+          .floral-divider {
+            --floral: #C4A26A;
+            /* color */
+            height: 40px;
+            background:
+              url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='40' viewBox='0 0 160 40' fill='none'><g stroke='%23C4A26A' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><path d='M0 28 C35 6, 75 6, 110 20'/><path d='M20 22 c6-6 14-9 22-10'/><path d='M40 26 c4-6 10-10 16-12'/><path d='M60 28 c5-7 12-12 20-14'/><path d='M86 30 c6-6 14-11 23-13'/><path d='M138 24 c6 2 14 1 18-3 -4-6 -12-10 -18-12 -3 5 -4 11 0 15z' fill='%23C4A26A'/></g></svg>") center / 160px 40px repeat-x;
+          }
+
+      /* Contador minimal */
+      .countdown {
+        display: inline-flex;
+        align-items: flex-end;
+        gap: 14px;
+        padding: 14px 18px;
+        background: rgba(255, 255, 255, .55);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(15, 23, 42, .06);
+        box-shadow: 0 10px 30px rgba(10, 30, 60, .08);
+        border-radius: 16px;
       }
-    }
-  </script>
-
-  <style>
-    :root {
-      --ring: rgba(196, 162, 106, .35);
-    }
-
-    .card {
-      background: rgba(255, 255, 255, .8);
-      -webkit-backdrop-filter: blur(16px);
-      backdrop-filter: blur(16px);
-      border-radius: 1rem;
-      /* 2xl */
-      box-shadow: 0 10px 30px rgba(10, 30, 60, .10);
-      border: 1px solid rgba(255, 255, 255, .4);
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: .75rem 1.25rem;
-      border-radius: 9999px;
-      font-weight: 500;
-      transition: .2s ease;
-      background: #0B3B4F;
-      color: #fff;
-    }
-
-    .btn:hover {
-      background: #0e4d74;
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: #0B3B4F;
-      border: 1px solid #0B3B4F;
-    }
-
-    .btn-outline:hover {
-      background: #0B3B4F;
-      color: #fff;
-    }
-
-    .section {
-      padding: 4rem 0;
-    }
-
-    @media (min-width:768px) {
-      .section {
-        padding: 5rem 0;
+      .countdown .unit { min-width: 72px; }
+      .countdown .num {
+        font-family: "Playfair Display", serif;
+        font-weight: 700;
+        font-size: 40px;
+        line-height: 1;
+        letter-spacing: .5px;
+        color: #0B3B4F;
+        transition: opacity .35s ease, transform .35s ease;
       }
-    }
-
-    .divider {
-      height: 32px;
-      background:
-        radial-gradient(circle at 10px 16px, var(--ring) 2px, transparent 3px) 0 0/40px 32px repeat-x;
-    }
-
-    .floral-divider {
-      --floral: #C4A26A;
-      /* color */
-      height: 40px;
-      background:
-        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='40' viewBox='0 0 160 40' fill='none'><g stroke='%23C4A26A' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><path d='M0 28 C35 6, 75 6, 110 20'/><path d='M20 22 c6-6 14-9 22-10'/><path d='M40 26 c4-6 10-10 16-12'/><path d='M60 28 c5-7 12-12 20-14'/><path d='M86 30 c6-6 14-11 23-13'/><path d='M138 24 c6 2 14 1 18-3 -4-6 -12-10 -18-12 -3 5 -4 11 0 15z' fill='%23C4A26A'/></g></svg>") center / 160px 40px repeat-x;
-    }
-
-    /* --- quita el “doble número” --- */
-    .flip-card__bottom {
-      opacity: 0;
-      /* oculto siempre */
-    }
-
-    /* durante el flip, deja que “aparezca” un pelín para ayudar al efecto */
-    .flip-card.anim .flip-card__bottom {
-      opacity: .15;
-      transition: opacity .2s .35s;
-    }
-
-    /* ligero bounce cuando cambia */
-    .flip-card.anim {
-      animation: bump .35s ease-out;
-    }
-
-    @keyframes bump {
-      0% {
-        transform: translateY(0) scale(1);
+      .countdown .label {
+        margin-top: 6px;
+        font-size: 12px;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: #64748b;
+      }
+      .countdown .sep {
+        color: #c8cfd9;
+        font-size: 22px;
+        line-height: 1;
+        transform: translateY(-6px);
+        user-select: none;
       }
 
-      40% {
-        transform: translateY(-2px) scale(1.02);
+      /* Animación sutil al cambiar (fade + 2px) */
+      .num.fade {
+        opacity: .25;
+        transform: translateY(2px);
       }
 
-      100% {
-        transform: translateY(0) scale(1);
+      /* Responsive fino */
+      @media (max-width: 480px) {
+        .countdown { gap: 10px; padding: 10px 12px; border-radius: 14px; }
+        .countdown .unit { min-width: 58px; }
+        .countdown .num { font-size: 30px; }
+        .countdown .sep { font-size: 18px; transform: translateY(-4px); }
       }
-    }
+    </style>
 
-    /* glow elegante en las tarjetas */
-    .flip-card {
-      box-shadow:
-        0 10px 30px rgba(10, 30, 60, .18),
-        inset 0 0 0 1px rgba(255, 255, 255, .08),
-        0 0 0 0 rgba(196, 162, 106, .0);
-      /* inicial */
-    }
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Boda · Ainhoa & Alberto</title>
+    <link rel="manifest" href="assets/manifest.json" />
+    <link rel="icon" href="assets/icon-192.png" />
+    <meta name="theme-color" content="#0b3b4f" />
+  </head>
 
-    .flip-card.anim {
-      box-shadow:
-        0 14px 34px rgba(10, 30, 60, .22),
-        inset 0 0 0 1px rgba(255, 255, 255, .10),
-        0 0 18px 3px rgba(196, 162, 106, .25);
-      /* glow dorado rápido */
-    }
-
-    /* confetti permanente un poco más vivo */
-    .confetti-dot {
-      opacity: .55;
-      filter: saturate(1.15);
-    }
-  </style>
-
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Boda · Ainhoa & Alberto</title>
-  <link rel="manifest" href="assets/manifest.json" />
-  <link rel="icon" href="assets/icon-192.png" />
-  <meta name="theme-color" content="#0b3b4f" />
-</head>
-
-<body class="bg-slate-50 text-ink">
-  <!-- HERO -->
-  <header class="bg-hero text-white">
-    <div class="max-w-6xl mx-auto px-6 pt-16 pb-20 md:pt-24 md:pb-28 bg-paper">
-      <p class="uppercase tracking-[.3em] text-champagne/90 text-sm">¡Nos casamos!</p>
-      <h1 class="font-serif text-5xl md:text-6xl font-bold mt-3">Ainhoa & Alberto</h1>
-      <p class="mt-4 text-champagne/90 text-lg">10 de Octubre 2026 · Pazo Torre de Xunqueiras
-        · Galicia</p>
-
-      <div class="mt-8 flex gap-3">
-        <a href="invite.html" class="btn">Confirmar asistencia</a>
-        <a href="#detalles" class="btn btn-outline">Detalles del día</a>
-      </div>
-    </div>
-    <div class="divider"></div>
-  </header>
-
-  <!-- DETALLES -->
-  <section id="detalles" class="section">
-    <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-6">
-      <div class="card p-6">
-        <h3 class="font-serif text-2xl mb-2">Itinerario</h3>
-        <ul class="space-y-2 text-slate-700">
-          <li>12:00 — Ceremonia</li>
-          <li>13:00 — Cóctel</li>
-          <li>14:30 — Banquete</li>
-          <li>19:00 — Barra libre</li>
-        </ul>
-      </div>
-      <div class="card p-6">
-        <h3 class="font-serif text-2xl mb-2">Dress Code</h3>
-        <p class="text-slate-700">Elegante relajado. Evita el blanco y tonos muy claros. Zapato cómodo para el baile 😉
-        </p>
-      </div>
-      <div class="card p-6">
-        <h3 class="font-serif text-2xl mb-2">Regalos</h3>
-        <p class="text-slate-700">Tu presencia es el mejor regalo. Si quieres ayudarnos con el viaje de novios: <b>ESXX
-            XXXX XXXX XXXX XXXX XXXX</b>.</p>
-      </div>
-    </div>
-  </section>
-  <!-- Divisor floral centrado -->
-  <div class="flex justify-center my-10">
-    <svg width="520" height="40" viewBox="0 0 520 40" fill="none" xmlns="http://www.w3.org/2000/svg"
-      style="color: var(--floral, #C4A26A)">
-      <g stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-        <!-- rama izquierda -->
-        <path d="M12 28 C70 5, 190 5, 258 20" />
-        <path d="M42 22 c6-6 14-9 22-10" />
-        <path d="M64 26 c4-6 10-10 16-12" />
-        <path d="M86 28 c5-7 12-12 20-14" />
-        <path d="M110 30 c6-6 14-11 23-13" />
-        <path d="M136 31 c7-6 16-11 25-13" />
-        <path d="M165 32 c7-6 16-11 26-13" />
-        <!-- hoja izquierda -->
-        <path d="M52 24 c-6 2 -14 1 -18-3 4-6 12-10 18-12 3 5 4 11 0 15z" fill="currentColor" />
-
-        <!-- motivo central -->
-        <path d="M260 8 c6 6 6 18 0 24 -6-6 -6-18 0-24z" fill="currentColor" />
-        <circle cx="260" cy="20" r="2.2" fill="currentColor" />
-
-        <!-- rama derecha (espejo) -->
-        <path d="M508 28 C450 5, 330 5, 262 20" />
-        <path d="M478 22 c-6-6 -14-9 -22-10" />
-        <path d="M456 26 c-4-6 -10-10 -16-12" />
-        <path d="M434 28 c-5-7 -12-12 -20-14" />
-        <path d="M410 30 c-6-6 -14-11 -23-13" />
-        <path d="M384 31 c-7-6 -16-11 -25-13" />
-        <path d="M355 32 c-7-6 -16-11 -26-13" />
-        <!-- hoja derecha -->
-        <path d="M468 24 c6 2 14 1 18-3 -4-6 -12-10 -18-12 -3 5 -4 11 0 15z" fill="currentColor" />
-      </g>
-    </svg>
-  </div>
-
-  <!-- NUESTRA HISTORIA -->
-  <section id="historia" class="section bg-white">
-    <div class="max-w-3xl mx-auto px-6 text-center">
-
-      <!-- Icono/medallón sutil -->
+  <body class="bg-slate-50 text-ink">
+    <!-- HERO -->
+    <header class="bg-hero text-white">
       <div
-        class="mx-auto mb-4 w-12 h-12 rounded-full flex items-center justify-center bg-rose-500 text-white shadow-soft">
-        <!-- corazón simple -->
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path
-            d="M12 21s-7.27-4.39-9.33-8.13C1.02 10.2 2.03 7.5 4.5 6.5 6.3 5.76 8.29 6.34 9.5 7.7 10.71 6.34 12.7 5.76 14.5 6.5c2.47 1 3.48 3.7 1.83 6.37C19.27 16.61 12 21 12 21z" />
-        </svg>
-      </div>
-
-      <h2 class="font-serif text-3xl md:text-4xl">Our Match</h2>
-
-      <p class="text-slate-700 mt-3 max-w-xl mx-auto leading-relaxed">
-        Todo empezó con un <span class="font-medium">match</span>. Una casualidad moderna que se convirtió en destino.
-        Dos perfiles, un gesto hacia la derecha y una historia que hoy celebramos con vosotros.
-      </p>
-
-      <div class="card p-4 mt-6 shadow-soft">
-        <img src="assets/historia.jpg" alt="Ainhoa y Beto · Nuestro match" class="rounded-xl w-full object-cover"
-          loading="lazy" />
-      </div>
-
-      <p class="text-slate-600 mt-4">
-        Seguimos deslizándonos… pero siempre hacia el mismo lado.
-      </p>
-    </div>
-  </section>
-
-
-  <!-- LUGAR + MAPA (solo botón, sin iframe) -->
-  <section class="section bg-white">
-    <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-8 items-center">
-      <div>
-        <h2 class="font-serif text-3xl mb-3">Ubicación</h2>
-        <p class="text-slate-700 mb-4">
-          Pazo Torre de Xunqueiras, Provincia de A Coruña. Hay aparcamiento en el recinto.
+        class="max-w-6xl mx-auto px-6 pt-16 pb-20 md:pt-24 md:pb-28 bg-paper"
+      >
+        <p class="uppercase tracking-[.3em] text-champagne/90 text-sm">
+          ¡Nos casamos!
         </p>
-        <div class="flex gap-3">
-          <a class="btn" target="_blank"
-            href="https://www.google.com/maps/place/Sal%C3%B3n+de+vodas+Torre+de+Xunqueiras/@42.5947127,-8.9526889,17.6z/">
-            Cómo llegar
-          </a>
-          <a class="btn btn-outline" href="invite.html">Confirmar asistencia</a>
+        <h1 class="font-serif text-5xl md:text-6xl font-bold mt-3">
+          Ainhoa & Alberto
+        </h1>
+        <p class="mt-4 text-champagne/90 text-lg">
+          10 de Octubre 2026 · Pazo Torre de Xunqueiras · Galicia
+        </p>
+
+        <div class="mt-8 flex gap-3">
+          <a href="invite.html" class="btn">Confirmar asistencia</a>
+          <a href="#detalles" class="btn btn-outline">Detalles del día</a>
         </div>
       </div>
+      <div class="divider"></div>
+    </header>
 
-      <!-- Imagen/placeholder en vez de iframe -->
-      <div class="card overflow-hidden">
-        <img src="assets/map-placeholder.jpg" alt="Ubicación Pazo Torre de Xunqueiras"
-          class="w-full h-[320px] object-cover" loading="lazy">
+    <!-- DETALLES -->
+    <section id="detalles" class="section">
+      <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-6">
+        <div class="card p-6">
+          <h3 class="font-serif text-2xl mb-2">Itinerario</h3>
+          <ul class="space-y-2 text-slate-700">
+            <li>12:00 — Ceremonia</li>
+            <li>13:00 — Cóctel</li>
+            <li>14:30 — Banquete</li>
+            <li>19:00 — Barra libre</li>
+          </ul>
+        </div>
+        <div class="card p-6">
+          <h3 class="font-serif text-2xl mb-2">Dress Code</h3>
+          <p class="text-slate-700">
+            Elegante relajado. Evita el blanco y tonos muy claros. Zapato cómodo
+            para el baile 😉
+          </p>
+        </div>
+        <div class="card p-6">
+          <h3 class="font-serif text-2xl mb-2">Regalos</h3>
+          <p class="text-slate-700">
+            Tu presencia es el mejor regalo. Si quieres ayudarnos con el viaje
+            de novios: <b>ESXX XXXX XXXX XXXX XXXX XXXX</b>.
+          </p>
+        </div>
       </div>
+    </section>
+    <!-- Divisor floral centrado -->
+    <div class="flex justify-center my-10">
+      <svg
+        width="520"
+        height="40"
+        viewBox="0 0 520 40"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        style="color: var(--floral, #C4A26A)"
+      >
+        <g
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <!-- rama izquierda -->
+          <path d="M12 28 C70 5, 190 5, 258 20" />
+          <path d="M42 22 c6-6 14-9 22-10" />
+          <path d="M64 26 c4-6 10-10 16-12" />
+          <path d="M86 28 c5-7 12-12 20-14" />
+          <path d="M110 30 c6-6 14-11 23-13" />
+          <path d="M136 31 c7-6 16-11 25-13" />
+          <path d="M165 32 c7-6 16-11 26-13" />
+          <!-- hoja izquierda -->
+          <path
+            d="M52 24 c-6 2 -14 1 -18-3 4-6 12-10 18-12 3 5 4 11 0 15z"
+            fill="currentColor"
+          />
+
+          <!-- motivo central -->
+          <path
+            d="M260 8 c6 6 6 18 0 24 -6-6 -6-18 0-24z"
+            fill="currentColor"
+          />
+          <circle cx="260" cy="20" r="2.2" fill="currentColor" />
+
+          <!-- rama derecha (espejo) -->
+          <path d="M508 28 C450 5, 330 5, 262 20" />
+          <path d="M478 22 c-6-6 -14-9 -22-10" />
+          <path d="M456 26 c-4-6 -10-10 -16-12" />
+          <path d="M434 28 c-5-7 -12-12 -20-14" />
+          <path d="M410 30 c-6-6 -14-11 -23-13" />
+          <path d="M384 31 c-7-6 -16-11 -25-13" />
+          <path d="M355 32 c-7-6 -16-11 -26-13" />
+          <!-- hoja derecha -->
+          <path
+            d="M468 24 c6 2 14 1 18-3 -4-6 -12-10 -18-12 -3 5 -4 11 0 15z"
+            fill="currentColor"
+          />
+        </g>
+      </svg>
     </div>
-  </section>
 
-
-  <div class="floral-divider my-10"></div>
-
-  <!-- INFO EXTRA -->
-  <section class="section">
-    <div class="max-w-5xl mx-auto px-6 grid md:grid-cols-3 gap-6">
-      <div class="card p-6">
-        <h3 class="font-serif text-xl mb-2">Transporte</h3>
-        <p class="text-slate-700">Habrá bus de ida y vuelta desde A Coruña. Podrás apuntarte en el formulario.</p>
-      </div>
-      <div class="card p-6">
-        <h3 class="font-serif text-xl mb-2">Alergias</h3>
-        <p class="text-slate-700">Indícalas en la confirmación para adaptar tu menú.</p>
-      </div>
-      <div class="card p-6">
-        <h3 class="font-serif text-xl mb-2">Niños</h3>
-        <p class="text-slate-700">Zona infantil con monitoras durante el banquete.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="section relative overflow-hidden">
-    <!-- confetti sutil de fondo -->
-    <div id="confetti" class="pointer-events-none absolute inset-0 opacity-30"></div>
-
-    <div class="max-w-4xl mx-auto px-6 text-center relative">
-      <h2 class="font-serif text-3xl md:text-4xl mb-6">
-        <span class="bg-clip-text text-transparent bg-gradient-to-r from-gold via-amber-500 to-pink-500">
-          Cuenta atrás
-        </span>
-      </h2>
-
-      <div id="flipCountdown" class="flex flex-wrap justify-center gap-4 md:gap-6">
-        <!-- DÍAS -->
-        <div class="flip-unit">
-          <div class="flip-card">
-            <div class="flip-card__top" id="d-top">--</div>
-            <div class="flip-card__bottom" id="d-bottom">--</div>
-            <div class="flip-card__flip">
-              <span id="d-next">--</span>
-            </div>
-          </div>
-          <span class="flip-label">Días</span>
+    <!-- NUESTRA HISTORIA -->
+    <section id="historia" class="section bg-white">
+      <div class="max-w-3xl mx-auto px-6 text-center">
+        <!-- Icono/medallón sutil -->
+        <div
+          class="mx-auto mb-4 w-12 h-12 rounded-full flex items-center justify-center bg-rose-500 text-white shadow-soft"
+        >
+          <!-- corazón simple -->
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              d="M12 21s-7.27-4.39-9.33-8.13C1.02 10.2 2.03 7.5 4.5 6.5 6.3 5.76 8.29 6.34 9.5 7.7 10.71 6.34 12.7 5.76 14.5 6.5c2.47 1 3.48 3.7 1.83 6.37C19.27 16.61 12 21 12 21z"
+            />
+          </svg>
         </div>
 
-        <!-- HORAS -->
-        <div class="flip-unit">
-          <div class="flip-card">
-            <div class="flip-card__top" id="h-top">--</div>
-            <div class="flip-card__bottom" id="h-bottom">--</div>
-            <div class="flip-card__flip">
-              <span id="h-next">--</span>
-            </div>
-          </div>
-          <span class="flip-label">Horas</span>
+        <h2 class="font-serif text-3xl md:text-4xl">Our Match</h2>
+
+        <p class="text-slate-700 mt-3 max-w-xl mx-auto leading-relaxed">
+          Todo empezó con un <span class="font-medium">match</span>. Una
+          casualidad moderna que se convirtió en destino. Dos perfiles, un gesto
+          hacia la derecha y una historia que hoy celebramos con vosotros.
+        </p>
+
+        <div class="card p-4 mt-6 shadow-soft">
+          <img
+            src="assets/historia.jpg"
+            alt="Ainhoa y Beto · Nuestro match"
+            class="rounded-xl w-full object-cover"
+            loading="lazy"
+          />
         </div>
 
-        <!-- MINUTOS -->
-        <div class="flip-unit">
-          <div class="flip-card">
-            <div class="flip-card__top" id="m-top">--</div>
-            <div class="flip-card__bottom" id="m-bottom">--</div>
-            <div class="flip-card__flip">
-              <span id="m-next">--</span>
-            </div>
+        <p class="text-slate-600 mt-4">
+          Seguimos deslizándonos… pero siempre hacia el mismo lado.
+        </p>
+      </div>
+    </section>
+
+    <!-- LUGAR + MAPA (solo botón, sin iframe) -->
+    <section class="section bg-white">
+      <div
+        class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-8 items-center"
+      >
+        <div>
+          <h2 class="font-serif text-3xl mb-3">Ubicación</h2>
+          <p class="text-slate-700 mb-4">
+            Pazo Torre de Xunqueiras, Provincia de A Coruña. Hay aparcamiento en
+            el recinto.
+          </p>
+          <div class="flex gap-3">
+            <a
+              class="btn"
+              target="_blank"
+              href="https://www.google.com/maps/place/Sal%C3%B3n+de+vodas+Torre+de+Xunqueiras/@42.5947127,-8.9526889,17.6z/"
+            >
+              Cómo llegar
+            </a>
+            <a class="btn btn-outline" href="invite.html"
+              >Confirmar asistencia</a
+            >
           </div>
-          <span class="flip-label">Min</span>
         </div>
 
-        <!-- SEGUNDOS -->
-        <div class="flip-unit">
-          <div class="flip-card">
-            <div class="flip-card__top" id="s-top">--</div>
-            <div class="flip-card__bottom" id="s-bottom">--</div>
-            <div class="flip-card__flip">
-              <span id="s-next">--</span>
-            </div>
-          </div>
-          <span class="flip-label">Seg</span>
+        <!-- Imagen/placeholder en vez de iframe -->
+        <div class="card overflow-hidden">
+          <img
+            src="assets/map-placeholder.jpg"
+            alt="Ubicación Pazo Torre de Xunqueiras"
+            width="800"
+            height="320"
+            class="w-full h-[320px] object-cover"
+            loading="lazy"
+          />
         </div>
       </div>
+    </section>
 
-      <!-- CTA pequeña bajo el contador -->
-      <p class="mt-5 text-slate-600">
-        10 de octubre de 2026 — <span class="font-medium">Pazo Torre de Xunqueiras</span>
-      </p>
-    </div>
-  </section>
+    <div class="floral-divider my-10"></div>
 
+    <!-- INFO EXTRA -->
+    <section class="section">
+      <div class="max-w-5xl mx-auto px-6 grid md:grid-cols-3 gap-6">
+        <div class="card p-6">
+          <h3 class="font-serif text-xl mb-2">Transporte</h3>
+          <p class="text-slate-700">
+            Habrá bus de ida y vuelta desde A Coruña. Podrás apuntarte en el
+            formulario.
+          </p>
+        </div>
+        <div class="card p-6">
+          <h3 class="font-serif text-xl mb-2">Alergias</h3>
+          <p class="text-slate-700">
+            Indícalas en la confirmación para adaptar tu menú.
+          </p>
+        </div>
+        <div class="card p-6">
+          <h3 class="font-serif text-xl mb-2">Niños</h3>
+          <p class="text-slate-700">
+            Zona infantil con monitoras durante el banquete.
+          </p>
+        </div>
+      </div>
+    </section>
 
-  <script>
-    // Fecha objetivo
-    const TARGET = new Date('2026-10-10T10:00:00+02:00').getTime();
+    <section class="section">
+      <div class="max-w-4xl mx-auto px-6 text-center">
+        <h2 class="font-serif text-3xl md:text-4xl mb-6">
+          <span
+            class="bg-clip-text text-transparent bg-gradient-to-r from-gold via-amber-500 to-pink-500"
+          >
+            Cuenta atrás
+          </span>
+        </h2>
 
-    const prev = { d: null, h: null, m: null, s: null };
+        <div id="cd" class="countdown">
+          <div class="unit">
+            <div class="num" id="d">--</div>
+            <div class="label">Días</div>
+          </div>
+          <span class="sep">•</span>
+          <div class="unit">
+            <div class="num" id="h">--</div>
+            <div class="label">Horas</div>
+          </div>
+          <span class="sep">•</span>
+          <div class="unit">
+            <div class="num" id="m">--</div>
+            <div class="label">Min</div>
+          </div>
+          <span class="sep">•</span>
+          <div class="unit">
+            <div class="num" id="s">--</div>
+            <div class="label">Seg</div>
+          </div>
+        </div>
 
-    function setPair(prefix, val) {
-      const txt = String(val);
-      const top = document.getElementById(prefix + '-top');
-      const bottom = document.getElementById(prefix + '-bottom');
-      const flip = top?.parentElement;
-      const next = document.getElementById(prefix + '-next');
-      if (!top || !bottom || !flip || !next) return;
+        <p class="mt-5 text-slate-600">
+          10 de octubre de 2026 —
+          <span class="font-medium">Pazo Torre de Xunqueiras</span>
+        </p>
+      </div>
+    </section>
 
-      if (top.textContent !== txt) {
-        next.textContent = txt;
+    <section class="section bg-white">
+      <div class="max-w-4xl mx-auto px-6">
+        <h2 class="font-serif text-3xl mb-6">Preguntas frecuentes</h2>
+        <details class="card p-4 mb-3">
+          <summary class="cursor-pointer font-medium">¿Hay parking?</summary>
+          <div class="mt-2 text-slate-700">Sí, dentro del recinto.</div>
+        </details>
+        <details class="card p-4 mb-3">
+          <summary class="cursor-pointer font-medium">
+            ¿Puedo llevar niños?
+          </summary>
+          <div class="mt-2 text-slate-700">¡Claro! Habrá zona infantil.</div>
+        </details>
+        <details class="card p-4">
+          <summary class="cursor-pointer font-medium">¿Regalo?</summary>
+          <div class="mt-2 text-slate-700">
+            Tu presencia. Si quieres, IBAN en la sección de Regalos.
+          </div>
+        </details>
+      </div>
+    </section>
 
-        // restart anim
-        flip.classList.remove('anim');
-        void flip.offsetWidth;
-        flip.classList.add('anim');
+    <!-- CTA FINAL -->
+    <footer class="section bg-hero text-white">
+      <div class="max-w-4xl mx-auto px-6 text-center bg-paper">
+        <h3 class="font-serif text-3xl md:text-4xl font-bold">
+          ¿Te vienes a celebrar?
+        </h3>
+        <p class="mt-3 text-champagne/90">
+          Confirma tu asistencia antes del 15 de mayo.
+        </p>
+        <a href="invite.html" class="btn mt-6">Confirmar asistencia</a>
+      </div>
+    </footer>
 
-        // fija número a mitad del flip
-        setTimeout(() => { top.textContent = txt; bottom.textContent = txt; }, 340);
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("assets/service-worker.js");
       }
-    }
+    </script>
+    <script>
+      const TARGET = new Date("2026-10-10T10:00:00+02:00").getTime();
+      const el = {
+        d: document.getElementById("d"),
+        h: document.getElementById("h"),
+        m: document.getElementById("m"),
+        s: document.getElementById("s"),
+      };
+      const prev = { d: null, h: null, m: null, s: null };
 
-    function tick() {
-      const now = Date.now();
-      const diff = Math.max(0, TARGET - now);
-
-      const d = Math.floor(diff / 86400000);
-      const h = Math.floor(diff % 86400000 / 3600000);
-      const m = Math.floor(diff % 3600000 / 60000);
-      const s = Math.floor(diff % 60000 / 1000);
-
-      if (prev.d !== d) { setPair('d', d); prev.d = d; }
-      if (prev.h !== h) { setPair('h', h); prev.h = h; }
-      if (prev.m !== m) { setPair('m', m); prev.m = m; burst(70); }        // 🎉 estallido fuerte cada minuto
-      if (prev.s !== s) { setPair('s', s); prev.s = s; if (s % 10 === 0) burst(25); } // mini-burst cada 10s
-    }
-    tick(); setInterval(tick, 1000);
-
-    // -------------------------
-    // CONFETTI: fondo + bursts
-    // -------------------------
-    const host = document.getElementById('confetti');
-    const COLORS = ['#F5E6D3', '#F8D9E0', '#C4A26A', '#dbeafe', '#e9d5ff', '#fde68a'];
-
-    // niebla de confetti permanente (suave)
-    (function baseConfetti() {
-      if (!host) return;
-      const W = host.clientWidth, H = host.clientHeight;
-      for (let i = 0; i < 30; i++) {
-        const dot = document.createElement('span');
-        dot.className = 'confetti-dot';
-        const size = 4 + Math.random() * 8;
-        dot.style.width = dot.style.height = size + 'px';
-        dot.style.left = Math.random() * W + 'px';
-        dot.style.top = Math.random() * H + 'px';
-        dot.style.background = COLORS[(Math.random() * COLORS.length) | 0];
-        dot.style.animationDelay = (-Math.random() * 10) + 's';
-        host.appendChild(dot);
+      function setNum(id, val) {
+        const n = String(val).padStart(id === "d" ? 1 : 2, "0"); // días sin forzar 2 dígitos si no quieres
+        if (el[id].textContent === n) return;
+        el[id].classList.add("fade");
+        // mitad del fundido: cambio el número
+        setTimeout(() => {
+          el[id].textContent = n;
+        }, 140);
+        // fin de la animación
+        setTimeout(() => {
+          el[id].classList.remove("fade");
+        }, 320);
       }
-    })();
 
-    // estallido puntual (triángulos/rectángulos/bolitas)
-    function burst(count = 60) {
-      if (!host) return;
-      const rect = host.getBoundingClientRect();
-      const cx = rect.width / 2, cy = rect.height / 2;
+      function tick() {
+        const diff = Math.max(0, TARGET - Date.now());
+        const d = Math.floor(diff / 86400000);
+        const h = Math.floor((diff % 86400000) / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
 
-      for (let i = 0; i < count; i++) {
-        const p = document.createElement('span');
-        p.style.position = 'absolute';
-        p.style.left = cx + 'px';
-        p.style.top = cy + 'px';
-        const size = 6 + Math.random() * 8;
-        const shape = Math.random();
-
-        // forma
-        if (shape < .33) {
-          p.style.width = size + 'px'; p.style.height = size + 'px'; p.style.borderRadius = '9999px';
-        } else if (shape < .66) {
-          p.style.width = (size * 1.2) + 'px'; p.style.height = (size * .6) + 'px';
-          p.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
-        } else {
-          // triángulo
-          p.style.width = 0; p.style.height = 0;
-          p.style.borderLeft = (size / 2) + 'px solid transparent';
-          p.style.borderRight = (size / 2) + 'px solid transparent';
-          p.style.borderBottom = size + 'px solid ' + COLORS[(Math.random() * COLORS.length) | 0];
-          host.appendChild(p);
-          fly(p, cx, cy, 800);
-          continue;
+        if (prev.d !== d) {
+          setNum("d", d);
+          prev.d = d;
         }
-
-        p.style.background = COLORS[(Math.random() * COLORS.length) | 0];
-        p.style.borderRadius = p.style.borderRadius || (Math.random() > .5 ? '6px' : '9999px');
-        host.appendChild(p);
-        fly(p, cx, cy, 900);
+        if (prev.h !== h) {
+          setNum("h", h);
+          prev.h = h;
+        }
+        if (prev.m !== m) {
+          setNum("m", m);
+          prev.m = m;
+        }
+        if (prev.s !== s) {
+          setNum("s", s);
+          prev.s = s;
+        }
       }
-    }
-    function fly(el, cx, cy, life = 900) {
-      const angle = Math.random() * Math.PI * 2;
-      const speed = 60 + Math.random() * 220;
-      const dx = Math.cos(angle) * speed;
-      const dy = Math.sin(angle) * speed - (Math.random() * 80); // algo hacia arriba
-
-      const start = performance.now();
-      const x0 = cx, y0 = cy;
-
-      function step(t) {
-        const k = Math.min(1, (t - start) / life);
-        const x = x0 + dx * k;
-        const y = y0 + dy * k + 0.5 * 300 * k * k; // gravedad suave
-        el.style.transform = `translate(${x}px,${y}px) rotate(${k * 720}deg)`;
-        el.style.opacity = (1 - k).toString();
-        if (k < 1) requestAnimationFrame(step); else el.remove();
-      }
-      requestAnimationFrame(step);
-    }
-
-    // recolocar confetti de fondo en resize
-    window.addEventListener('resize', () => {
-      if (!host) return;
-      host.innerHTML = '';
-      // reconstruye base y evita burst en bucle
-      const ev = new Event('reconfetti');
-      baseConfetti?.();
-    }, { passive: true });
-  </script>
-
-
-
-  <section class="section bg-white">
-    <div class="max-w-4xl mx-auto px-6">
-      <h2 class="font-serif text-3xl mb-6">Preguntas frecuentes</h2>
-      <details class="card p-4 mb-3">
-        <summary class="cursor-pointer font-medium">¿Hay parking?</summary>
-        <div class="mt-2 text-slate-700">Sí, dentro del recinto.</div>
-      </details>
-      <details class="card p-4 mb-3">
-        <summary class="cursor-pointer font-medium">¿Puedo llevar niños?</summary>
-        <div class="mt-2 text-slate-700">¡Claro! Habrá zona infantil.</div>
-      </details>
-      <details class="card p-4">
-        <summary class="cursor-pointer font-medium">¿Regalo?</summary>
-        <div class="mt-2 text-slate-700">Tu presencia. Si quieres, IBAN en la sección de Regalos.</div>
-      </details>
-    </div>
-  </section>
-
-
-
-
-  <!-- CTA FINAL -->
-  <footer class="section bg-hero text-white">
-    <div class="max-w-4xl mx-auto px-6 text-center bg-paper">
-      <h3 class="font-serif text-3xl md:text-4xl font-bold">¿Te vienes a celebrar?</h3>
-      <p class="mt-3 text-champagne/90">Confirma tu asistencia antes del 15 de mayo.</p>
-      <a href="invite.html" class="btn mt-6">Confirmar asistencia</a>
-    </div>
-  </footer>
-  </main>
-
-  <script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("assets/service-worker.js");
-    }
-  </script>
-</body>
-
-
+      tick();
+      setInterval(tick, 1000);
+    </script>
+  </body>
 </html>

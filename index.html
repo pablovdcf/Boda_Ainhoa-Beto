@@ -153,7 +153,7 @@
         .countdown .num { font-size: 30px; }
         .countdown .sep { font-size: 18px; transform: translateY(-4px); }
       }
-      
+
       /* Hero styles */
       /* Botones del hero con look “ghost” blanco */
       .btn-hero{
@@ -179,6 +179,15 @@
       @media (max-width: 480px){
         header .text-lg{ font-size: 1rem; }
       }
+
+      /* Itinerario CSS */
+      .pin {
+        cursor: pointer;
+        transition: transform .18s ease, filter .18s ease;
+      }
+      .pin:hover { transform: translateY(-3px) scale(1.04); filter: drop-shadow(0 6px 14px rgba(10,30,60,.20)); }
+      .pin text { font-family: "Inter", ui-sans-serif, system-ui; font-size: 12px; fill:#0b3b4f; font-weight:600; }
+      .pin circle { stroke:#0b3b4f20; stroke-width:8px; }
     </style>
 
     <meta charset="utf-8" />
@@ -221,34 +230,89 @@
       <div class="divider opacity-40"></div>
     </header>
 
-    <!-- DETALLES -->
-    <section id="detalles" class="section">
-      <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-6">
-        <div class="card p-6">
-          <h3 class="font-serif text-2xl mb-2">Itinerario</h3>
-          <ul class="space-y-2 text-slate-700">
-            <li>XX:00 — Ceremonia</li>
-            <li>XX:00 — Cóctel</li>
-            <li>XX:00 — Banquete</li>
-            <li>XX:00 — Barra libre</li>
-          </ul>
+    <!-- DETALLES / TIMELINE INTERACTIVO -->
+    <section id="detalles" class="section bg-white">
+      <div class="max-w-6xl mx-auto px-6">
+        <h2 class="font-serif text-3xl md:text-4xl mb-6 text-center">
+          El plan del día
+        </h2>
+
+        <!-- Tarjetas flotantes (tooltip) -->
+        <div id="pinCard" class="hidden fixed z-20 pointer-events-none">
+          <div class="card p-4 w-[260px] shadow-soft">
+            <div class="flex items-center gap-2 mb-1">
+              <span id="pcIcon" class="text-xl"></span>
+              <h3 id="pcTitle" class="font-semibold"></h3>
+            </div>
+            <p id="pcTime" class="text-sm text-slate-500"></p>
+            <p id="pcDesc" class="text-sm text-slate-700 mt-2"></p>
+          </div>
         </div>
-        <div class="card p-6">
-          <h3 class="font-serif text-2xl mb-2">Dress Code</h3>
-          <p class="text-slate-700">
-            Elegante relajado. Evita el blanco y tonos muy claros. Zapato cómodo
-            para el baile 😉
-          </p>
-        </div>
-        <div class="card p-6">
-          <h3 class="font-serif text-2xl mb-2">Regalos</h3>
-          <p class="text-slate-700">
-            Tu presencia es el mejor regalo. Si quieres ayudarnos con el viaje
-            de novios: <b>ESXX XXXX XXXX XXXX XXXX XXXX</b>.
-          </p>
+
+        <!-- Contenedor responsive -->
+        <div
+          class="relative rounded-2xl overflow-hidden bg-slate-50 shadow-soft border border-white/40"
+        >
+          <!-- SVG horizontal (desktop) -->
+          <svg
+            id="routeSvg"
+            viewBox="0 0 1200 380"
+            class="hidden md:block w-full h-[380px]"
+          >
+            <!-- fondo suave -->
+            <defs>
+              <linearGradient id="grad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stop-color="#C4A26A" stop-opacity=".35" />
+                <stop offset="1" stop-color="#2563eb" stop-opacity=".25" />
+              </linearGradient>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="3" result="b" />
+                <feMerge>
+                  <feMergeNode in="b" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+
+            <!-- ruta principal -->
+            <path
+              id="routePath"
+              d="M80,300 C300,120 540,120 760,220 S1080,300 1120,240"
+              fill="none"
+              stroke="url(#grad)"
+              stroke-width="8"
+              stroke-linecap="round"
+              filter="url(#glow)"
+            />
+            <!-- líneas decorativas -->
+            <path
+              d="M80,310 C300,130 540,130 760,230 S1080,310 1120,250"
+              fill="none"
+              stroke="#0b3b4f10"
+              stroke-width="22"
+            />
+            <!-- puntos (se inyectan por JS) -->
+            <g id="pins"></g>
+
+            <!-- “burbujas” de ambiente -->
+            <g opacity=".15">
+              <circle cx="180" cy="120" r="6" fill="#F8D9E0" />
+              <circle cx="560" cy="90" r="8" fill="#F5E6D3" />
+              <circle cx="980" cy="160" r="5" fill="#dbeafe" />
+            </g>
+          </svg>
+
+          <!-- Versión vertical (móvil) -->
+          <div class="md:hidden p-4">
+            <ol
+              id="mobileList"
+              class="relative border-l-2 border-gold/40 ml-3 space-y-6"
+            ></ol>
+          </div>
         </div>
       </div>
     </section>
+
     <!-- Divisor floral centrado -->
     <div class="flex justify-center my-10">
       <svg
@@ -476,7 +540,7 @@
 
     <!-- CTA FINAL -->
     <footer class="section bg-hero text-white">
-      <div class="max-w-4xl mx-auto px-6 text-center bg-paper">
+      <div class="max-w-4xl mx-auto px-6 text-center  text-center">
         <h3 class="font-serif text-3xl md:text-4xl font-bold">
           ¿Te vienes a celebrar?
         </h3>
@@ -542,6 +606,153 @@
       }
       tick();
       setInterval(tick, 1000);
+    </script>
+
+    /* Script itinerario */
+    <script>
+      // === Datos del timeline (edítalos) ===
+      const EVENTS = [
+        {
+          t: 0.05,
+          time: "12:00",
+          title: "Ceremonia",
+          desc: "Iglesia de Palmeira",
+          icon: "⛪️",
+        },
+        {
+          t: 0.35,
+          time: "13:00",
+          title: "Cóctel",
+          desc: "Jardines del pazo",
+          icon: "🥂",
+        },
+        {
+          t: 0.62,
+          time: "14:30",
+          title: "Banquete",
+          desc: "Salón principal",
+          icon: "🍽️",
+        },
+        {
+          t: 0.82,
+          time: "19:00",
+          title: "Tarta",
+          desc: "Corte de tarta",
+          icon: "🎂",
+        },
+        {
+          t: 0.92,
+          time: "20:30",
+          title: "Fiesta",
+          desc: "Pista de baile",
+          icon: "🎉",
+        },
+      ];
+
+      // --- Helpers para tarjeta flotante ---
+      const card = document.getElementById("pinCard");
+      const pcIcon = document.getElementById("pcIcon");
+      const pcTitle = document.getElementById("pcTitle");
+      const pcTime = document.getElementById("pcTime");
+      const pcDesc = document.getElementById("pcDesc");
+
+      function showCard(x, y, e) {
+        pcIcon.textContent = e.icon;
+        pcTitle.textContent = e.title;
+        pcTime.textContent = e.time;
+        pcDesc.textContent = e.desc;
+        card.style.left = x + 12 + "px";
+        card.style.top = y - 10 + "px";
+        card.classList.remove("hidden");
+      }
+      function hideCard() {
+        card.classList.add("hidden");
+      }
+
+      // --- Versión desktop: pin sobre la ruta SVG ---
+      const svg = document.getElementById("routeSvg");
+      const path = document.getElementById("routePath");
+      const pinsGroup = document.getElementById("pins");
+
+      function placePins() {
+        if (!svg || !path) return;
+        pinsGroup.innerHTML = "";
+        const length = path.getTotalLength();
+
+        EVENTS.forEach((ev, i) => {
+          const p = path.getPointAtLength(length * ev.t);
+          const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+          g.classList.add("pin");
+          g.setAttribute("transform", `translate(${p.x},${p.y})`);
+
+          // pin: círculo + icono
+          const c = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "circle"
+          );
+          c.setAttribute("r", "16");
+          c.setAttribute("fill", "#ffffff");
+          pinsGroup.appendChild(g);
+          g.appendChild(c);
+
+          const text = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "text"
+          );
+          text.setAttribute("text-anchor", "middle");
+          text.setAttribute("y", "4");
+          text.textContent = ev.icon;
+          text.setAttribute("font-size", "16");
+          g.appendChild(text);
+
+          // etiqueta pequeña con la hora
+          const label = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "text"
+          );
+          label.setAttribute("text-anchor", "middle");
+          label.setAttribute("y", "38");
+          label.textContent = ev.time;
+          label.setAttribute("fill", "#334155");
+          label.setAttribute("font-size", "12");
+          label.setAttribute("font-weight", "600");
+          g.appendChild(label);
+
+          // interacciones
+          g.addEventListener("mouseenter", (e) => {
+            const rect = svg.getBoundingClientRect();
+            showCard(rect.left + p.x, rect.top + p.y, ev);
+          });
+          g.addEventListener("mouseleave", hideCard);
+          g.addEventListener("click", (e) => {
+            const rect = svg.getBoundingClientRect();
+            showCard(rect.left + p.x, rect.top + p.y, ev);
+          });
+        });
+      }
+      placePins();
+      window.addEventListener("resize", placePins);
+
+      // --- Versión móvil: lista vertical bonita ---
+      const mob = document.getElementById("mobileList");
+      if (mob) {
+        mob.innerHTML = EVENTS.map(
+          (ev) => `
+      <li class="ml-3">
+        <div class="absolute -left-[11px] mt-1 w-5 h-5 rounded-full bg-white border-2 border-gold/60 flex items-center justify-center">
+          <span class="text-[12px]">${ev.icon}</span>
+        </div>
+        <div class="card p-4">
+          <div class="flex items-baseline justify-between">
+            <h4 class="font-semibold">${ev.title}</h4>
+            <span class="text-slate-500 text-sm">${ev.time}</span>
+          </div>
+          <p class="text-slate-700 text-sm mt-1">${ev.desc}</p>
+        </div>
+      </li>
+    `
+        ).join("");
+      }
     </script>
   </body>
 </html>

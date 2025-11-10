@@ -361,7 +361,7 @@
     </style>
 
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Boda · Ainhoa & Alberto</title>
     <link rel="manifest" href="assets/manifest.json" />
     <link rel="icon" href="assets/icon-192.png" />
@@ -993,6 +993,11 @@
           btn.setAttribute("aria-expanded", open);
         });
       });
+    </script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('assets/service-worker.js').catch(console.error);
+      }
     </script>
   </body>
 </html>

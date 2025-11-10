@@ -224,8 +224,9 @@ async function init() {
 
     window.currentToken = token;
     localStorage.setItem("lastToken", token);
-    // Mostrar sugerencia de email al cargar (no bloquea)
-    if (!invitado?.email || !isValidEmail(invitado.email)) {
+    // Mostrar sugerencia de email al cargar (no bloquea) respetando preferencia "Ahora no"
+    if ((!invitado?.email || !isValidEmail(invitado.email)) &&
+        localStorage.getItem(`skipEmail_${window.currentToken || ''}`) !== '1') {
       openEmailModal();
     }
     // Si no hay email y no lo hemos descartado antes para este token, mostrar modal
@@ -278,8 +279,7 @@ async function init() {
     const notasTitular = document.getElementById('notasTitular');
     if (notasTitular) notasTitular.value = invitado.notas_titular || '';
 
-    window.currentToken = token;
-    localStorage.setItem("lastToken", token);
+    // window.currentToken y lastToken ya se fijan arriba tras el lookup
 
     maxAcomps = Math.max(0, Number(invitado.plazas_max || 1) - 1);
     greet && (greet.textContent = `Hola, ${invitado.nombre}. Tienes hasta ${maxAcomps} acompañante(s).`);
@@ -355,6 +355,9 @@ emailSaveBtn?.addEventListener('click', async () => {
 });
 
 emailSkipBtn?.addEventListener('click', () => {
+  // Marcar preferencia de omitir email para este token
+  const skipKey = `skipEmail_${window.currentToken || ''}`;
+  try { localStorage.setItem(skipKey, '1'); } catch {}
   closeEmailModal();
   continuePendingSubmit();                 // seguir igualmente sin email
 });

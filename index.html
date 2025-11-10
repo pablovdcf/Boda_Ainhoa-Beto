@@ -39,28 +39,28 @@
 
     <style>
       :root {
-        --ring: rgba(196, 162, 106, .35);
+        --ring: rgba(196, 162, 106, 0.35);
       }
 
       .card {
-        background: rgba(255, 255, 255, .8);
+        background: rgba(255, 255, 255, 0.8);
         -webkit-backdrop-filter: blur(16px);
         backdrop-filter: blur(16px);
         border-radius: 1rem;
         /* 2xl */
-        box-shadow: 0 10px 30px rgba(10, 30, 60, .10);
-        border: 1px solid rgba(255, 255, 255, .4);
+        box-shadow: 0 10px 30px rgba(10, 30, 60, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.4);
       }
 
       .btn {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        padding: .75rem 1.25rem;
+        padding: 0.75rem 1.25rem;
         border-radius: 9999px;
         font-weight: 500;
-        transition: .2s ease;
-        background: #0B3B4F;
+        transition: 0.2s ease;
+        background: #0b3b4f;
         color: #fff;
       }
 
@@ -70,12 +70,12 @@
 
       .btn-outline {
         background: transparent;
-        color: #0B3B4F;
-        border: 1px solid #0B3B4F;
+        color: #0b3b4f;
+        border: 1px solid #0b3b4f;
       }
 
       .btn-outline:hover {
-        background: #0B3B4F;
+        background: #0b3b4f;
         color: #fff;
       }
 
@@ -83,7 +83,7 @@
         padding: 4rem 0;
       }
 
-      @media (min-width:768px) {
+      @media (min-width: 768px) {
         .section {
           padding: 5rem 0;
         }
@@ -91,16 +91,20 @@
 
       .divider {
         height: 32px;
-        background:
-          radial-gradient(circle at 10px 16px, var(--ring) 2px, transparent 3px) 0 0/40px 32px repeat-x;
+        background: radial-gradient(
+            circle at 10px 16px,
+            var(--ring) 2px,
+            transparent 3px
+          )
+          0 0/40px 32px repeat-x;
       }
 
       .floral-divider {
-        --floral: #C4A26A;
+        --floral: #c4a26a;
         /* color */
         height: 40px;
-        background:
-          url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='40' viewBox='0 0 160 40' fill='none'><g stroke='%23C4A26A' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><path d='M0 28 C35 6, 75 6, 110 20'/><path d='M20 22 c6-6 14-9 22-10'/><path d='M40 26 c4-6 10-10 16-12'/><path d='M60 28 c5-7 12-12 20-14'/><path d='M86 30 c6-6 14-11 23-13'/><path d='M138 24 c6 2 14 1 18-3 -4-6 -12-10 -18-12 -3 5 -4 11 0 15z' fill='%23C4A26A'/></g></svg>") center / 160px 40px repeat-x;
+        background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='40' viewBox='0 0 160 40' fill='none'><g stroke='%23C4A26A' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><path d='M0 28 C35 6, 75 6, 110 20'/><path d='M20 22 c6-6 14-9 22-10'/><path d='M40 26 c4-6 10-10 16-12'/><path d='M60 28 c5-7 12-12 20-14'/><path d='M86 30 c6-6 14-11 23-13'/><path d='M138 24 c6 2 14 1 18-3 -4-6 -12-10 -18-12 -3 5 -4 11 0 15z' fill='%23C4A26A'/></g></svg>")
+          center / 160px 40px repeat-x;
       }
 
       /* Contador minimal */
@@ -109,26 +113,28 @@
         align-items: flex-end;
         gap: 14px;
         padding: 14px 18px;
-        background: rgba(255, 255, 255, .55);
+        background: rgba(255, 255, 255, 0.55);
         backdrop-filter: blur(10px);
-        border: 1px solid rgba(15, 23, 42, .06);
-        box-shadow: 0 10px 30px rgba(10, 30, 60, .08);
+        border: 1px solid rgba(15, 23, 42, 0.06);
+        box-shadow: 0 10px 30px rgba(10, 30, 60, 0.08);
         border-radius: 16px;
       }
-      .countdown .unit { min-width: 72px; }
+      .countdown .unit {
+        min-width: 72px;
+      }
       .countdown .num {
         font-family: "Playfair Display", serif;
         font-weight: 700;
         font-size: 40px;
         line-height: 1;
-        letter-spacing: .5px;
-        color: #0B3B4F;
-        transition: opacity .35s ease, transform .35s ease;
+        letter-spacing: 0.5px;
+        color: #0b3b4f;
+        transition: opacity 0.35s ease, transform 0.35s ease;
       }
       .countdown .label {
         margin-top: 6px;
         font-size: 12px;
-        letter-spacing: .1em;
+        letter-spacing: 0.1em;
         text-transform: uppercase;
         color: #64748b;
       }
@@ -142,42 +148,69 @@
 
       /* Animación sutil al cambiar (fade + 2px) */
       .num.fade {
-        opacity: .25;
+        opacity: 0.25;
         transform: translateY(2px);
       }
 
       /* Responsive fino */
       @media (max-width: 480px) {
-        .countdown { gap: 10px; padding: 10px 12px; border-radius: 14px; }
-        .countdown .unit { min-width: 58px; }
-        .countdown .num { font-size: 30px; }
-        .countdown .sep { font-size: 18px; transform: translateY(-4px); }
+        .countdown {
+          gap: 10px;
+          padding: 10px 12px;
+          border-radius: 14px;
+        }
+        .countdown .unit {
+          min-width: 58px;
+        }
+        .countdown .num {
+          font-size: 30px;
+        }
+        .countdown .sep {
+          font-size: 18px;
+          transform: translateY(-4px);
+        }
       }
 
       /* Hero styles */
       /* Botones del hero con look “ghost” blanco */
-      .btn-hero{
-        display:inline-flex; align-items:center; justify-content:center;
-        padding:.75rem 1.25rem; border-radius:9999px; font-weight:500;
-        border:1px solid rgba(255,255,255,.35);
-        background: rgba(255,255,255,.08);
-        color:#fff;
+      .btn-hero {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem 1.25rem;
+        border-radius: 9999px;
+        font-weight: 500;
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
         backdrop-filter: blur(6px);
-        transition:.2s ease;
+        transition: 0.2s ease;
       }
-      .btn-hero:hover{ background: rgba(255,255,255,.16); }
+      .btn-hero:hover {
+        background: rgba(255, 255, 255, 0.16);
+      }
 
-      .btn-hero-outline{
-        display:inline-flex; align-items:center; justify-content:center;
-        padding:.75rem 1.25rem; border-radius:9999px; font-weight:500;
-        border:1px solid rgba(255,255,255,.45);
-        color:#fff; background: transparent; transition:.2s ease;
+      .btn-hero-outline {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem 1.25rem;
+        border-radius: 9999px;
+        font-weight: 500;
+        border: 1px solid rgba(255, 255, 255, 0.45);
+        color: #fff;
+        background: transparent;
+        transition: 0.2s ease;
       }
-      .btn-hero-outline:hover{ background: rgba(255,255,255,.10); }
+      .btn-hero-outline:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
 
       /* En móviles: algo más de aire arriba/abajo para que respire */
-      @media (max-width: 480px){
-        header .text-lg{ font-size: 1rem; }
+      @media (max-width: 480px) {
+        header .text-lg {
+          font-size: 1rem;
+        }
       }
 
       /* Itinerario CSS */
@@ -187,10 +220,14 @@
         margin-left: 1rem;
       }
       .tl:before {
-        content:"";
-        position:absolute; left:0; top:0; bottom:0;
-        width:2px; background: linear-gradient(#C4A26A66,#0B3B4F22);
-        border-radius:2px;
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(#c4a26a66, #0b3b4f22);
+        border-radius: 2px;
       }
       .tl-item {
         position: relative;
@@ -198,51 +235,129 @@
         padding-left: 1rem;
       }
       .tl-bullet {
-        position:absolute; left:-1.15rem; top:.35rem;
-        width:18px; height:18px; border-radius:9999px;
-        background:#fff; border:2px solid rgba(196,162,106,.6);
-        display:flex; align-items:center; justify-content:center;
-        box-shadow: 0 4px 10px rgba(10,30,60,.08);
+        position: absolute;
+        left: -1.15rem;
+        top: 0.35rem;
+        width: 18px;
+        height: 18px;
+        border-radius: 9999px;
+        background: #fff;
+        border: 2px solid rgba(196, 162, 106, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 10px rgba(10, 30, 60, 0.08);
       }
-      .tl-bullet svg { width:12px; height:12px; }
+      .tl-bullet svg {
+        width: 12px;
+        height: 12px;
+      }
       .tl-head {
-        display:flex; align-items:baseline; gap:.5rem;
+        display: flex;
+        align-items: baseline;
+        gap: 0.5rem;
       }
-      .tl-time { color:#64748b; font-size:.9rem; }
-      .tl-title { font-weight:600; color:#0B3B4F; }
+      .tl-time {
+        color: #64748b;
+        font-size: 0.9rem;
+      }
+      .tl-title {
+        font-weight: 600;
+        color: #0b3b4f;
+      }
 
       /* Panel colapsable sin vibraciones */
       .tl-panel {
-        overflow:hidden; max-height:0;
-        transition:max-height .35s ease;
+        overflow: hidden;
+        max-height: 0;
+        transition: max-height 0.35s ease;
       }
-      .tl-item.open .tl-panel { max-height: 220px; } /* suficiente para texto */
+      .tl-item.open .tl-panel {
+        max-height: 220px;
+      } /* suficiente para texto */
       .tl-card {
-        margin-top:.6rem;
-        background: rgba(255,255,255,.8);
+        margin-top: 0.6rem;
+        background: rgba(255, 255, 255, 0.8);
         backdrop-filter: blur(10px);
-        border:1px solid rgba(255,255,255,.4);
+        border: 1px solid rgba(255, 255, 255, 0.4);
         border-radius: 14px;
-        box-shadow: 0 10px 30px rgba(10,30,60,.10);
+        box-shadow: 0 10px 30px rgba(10, 30, 60, 0.1);
         padding: 14px;
       }
 
       /* Hover/click feedback sutil */
       .tl-toggle {
-        display:flex; width:100%; justify-content:space-between; align-items:center;
-        cursor:pointer; padding:.35rem 0;
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        padding: 0.35rem 0;
       }
       .tl-toggle .chev {
-        transition: transform .25s ease; opacity:.7;
+        transition: transform 0.25s ease;
+        opacity: 0.7;
       }
-      .tl-item.open .chev { transform: rotate(180deg); opacity:1; }
+      .tl-item.open .chev {
+        transform: rotate(180deg);
+        opacity: 1;
+      }
 
       /* Colores de acento por paso (opcional) */
-      .tl-item[data-kind="ceremony"] .tl-bullet { border-color:#C4A26A; }
-      .tl-item[data-kind="cocktail"] .tl-bullet { border-color:#f59e0b; }
-      .tl-item[data-kind="dinner"]   .tl-bullet { border-color:#0ea5e9; }
-      .tl-item[data-kind="cake"]     .tl-bullet { border-color:#f472b6; }
-      .tl-item[data-kind="party"]    .tl-bullet { border-color:#22c55e; }
+      .tl-item[data-kind="ceremony"] .tl-bullet {
+        border-color: #c4a26a;
+      }
+      .tl-item[data-kind="cocktail"] .tl-bullet {
+        border-color: #f59e0b;
+      }
+      .tl-item[data-kind="dinner"] .tl-bullet {
+        border-color: #0ea5e9;
+      }
+      .tl-item[data-kind="cake"] .tl-bullet {
+        border-color: #f472b6;
+      }
+      .tl-item[data-kind="party"] .tl-bullet {
+        border-color: #22c55e;
+      }
+
+      /* Galeria */
+      .masonry {
+        column-count: 1;
+        column-gap: 1rem;
+      }
+      .masonry a {
+        display: block;
+        break-inside: avoid;
+        margin-bottom: 1rem;
+        border-radius: 14px;
+        overflow: hidden;
+      }
+      .masonry img {
+        width: 100%;
+        display: block;
+        transition: transform 0.35s ease;
+      }
+      .masonry a:hover img {
+        transform: scale(1.02);
+      }
+      @media (min-width: 640px) {
+        .masonry {
+          column-count: 2;
+        }
+      }
+      @media (min-width: 1024px) {
+        .masonry {
+          column-count: 3;
+        }
+      }
+      #lbImg {
+        max-width: 92vw;
+        max-height: 88vh;
+        object-fit: contain; /* encaja sin recortar */
+        display: block; /* evita inline gaps raros */
+        border-radius: 14px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      }
     </style>
 
     <meta charset="utf-8" />
@@ -278,7 +393,6 @@
 
         <div class="mt-8 flex flex-wrap gap-3 justify-center">
           <a href="invite.html" class="btn-hero">Confirmar asistencia</a>
-          <a href="#detalles" class="btn-hero-outline">Detalles del día</a>
         </div>
       </div>
 
@@ -293,7 +407,7 @@
         </h2>
 
         <!-- Sprite con iconos (puedes cambiarlos más adelante) -->
-        <svg width="0" height="0" style="position:absolute">
+        <svg width="0" height="0" style="position: absolute">
           <symbol id="i-ceremony" viewBox="0 0 24 24">
             <path
               fill="#0B3B4F"
@@ -341,7 +455,7 @@
         viewBox="0 0 520 40"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        style="color: var(--floral, #C4A26A)"
+        style="color: var(--floral, #c4a26a)"
       >
         <g
           stroke="currentColor"
@@ -431,6 +545,7 @@
       </div>
     </section>
 
+    <div class="floral-divider my-10"></div>
     <!-- LUGAR + MAPA (solo botón, sin iframe) -->
     <section class="section bg-white">
       <div
@@ -450,9 +565,6 @@
             >
               Cómo llegar
             </a>
-            <a class="btn btn-outline" href="invite.html"
-              >Confirmar asistencia</a
-            >
           </div>
         </div>
 
@@ -469,9 +581,6 @@
         </div>
       </div>
     </section>
-
-    <div class="floral-divider my-10"></div>
-
     <!-- INFO EXTRA -->
     <section class="section">
       <div class="max-w-5xl mx-auto px-6 grid md:grid-cols-3 gap-6">
@@ -496,6 +605,89 @@
         </div>
       </div>
     </section>
+    <div class="floral-divider my-10"></div>
+    <section id="galeria" class="section bg-white">
+      <div class="max-w-6xl mx-auto px-6">
+        <h2 class="font-serif text-3xl md:text-4xl mb-6 text-center">
+          Momentos
+        </h2>
+
+        <div class="masonry">
+          <!-- cada <a> abre lightbox -->
+          <a href="assets/galeria/01.jpg"
+            ><img src="assets/galeria/01.jpg" loading="lazy" alt=""
+          /></a>
+          <a href="assets/galeria/02.jpg"
+            ><img src="assets/galeria/02.jpg" loading="lazy" alt=""
+          /></a>
+          <a href="assets/galeria/03.jpg"
+            ><img src="assets/galeria/03.jpg" loading="lazy" alt=""
+          /></a>
+          <a href="assets/galeria/04.jpg"
+            ><img src="assets/galeria/04.jpg" loading="lazy" alt=""
+          /></a>
+          <a href="assets/galeria/05.jpg"
+            ><img src="assets/galeria/05.jpg" loading="lazy" alt=""
+          /></a>
+          <a href="assets/galeria/06.jpg"
+            ><img src="assets/galeria/06.jpg" loading="lazy" alt=""
+          /></a>
+          <a href="assets/galeria/07.jpg"
+            ><img src="assets/galeria/07.jpg" loading="lazy" alt=""
+          /></a>
+          <a href="assets/galeria/08.jpg"
+            ><img src="assets/galeria/08.jpg" loading="lazy" alt=""
+          /></a>
+          <a href="assets/galeria/09.jpg"
+            ><img src="assets/galeria/09.jpg" loading="lazy" alt=""
+          /></a>
+          <a href="assets/galeria/10.jpg"
+            ><img src="assets/galeria/10.jpg" loading="lazy" alt=""
+          /></a>
+          <a href="assets/galeria/11.jpg"
+            ><img src="assets/galeria/11.jpg" loading="lazy" alt=""
+          /></a>
+          <a href="assets/galeria/12.jpg"
+            ><img src="assets/galeria/12.jpg" loading="lazy" alt=""
+          /></a>
+          <a href="assets/galeria/13.jpg"
+            ><img src="assets/galeria/13.jpg" loading="lazy" alt=""
+          /></a>
+          <a href="assets/galeria/14.jpg"
+            ><img src="assets/galeria/14.jpg" loading="lazy" alt=""
+          /></a>
+        </div>
+      </div>
+
+      <!-- Lightbox modal -->
+      <div
+        id="lb"
+        class="fixed inset-0 bg-black/90 hidden items-center justify-center z-50 p-4"
+      >
+        <button
+          id="lbPrev"
+          class="absolute left-4 top-1/2 -translate-y-1/2 text-white text-3xl"
+        >
+          ‹
+        </button>
+        <img
+          id="lbImg"
+          class="max-h-[88vh] max-w-[92vw] rounded-xl shadow-2xl"
+          alt=""
+        />
+        <button
+          id="lbNext"
+          class="absolute right-4 top-1/2 -translate-y-1/2 text-white text-3xl"
+        >
+          ›
+        </button>
+        <button id="lbClose" class="absolute top-4 right-4 text-white text-2xl">
+          ✕
+        </button>
+      </div>
+    </section>
+
+    <div class="floral-divider my-10"></div>
 
     <section class="section">
       <div class="max-w-4xl mx-auto px-6 text-center">
@@ -577,6 +769,105 @@
       }
     </script>
     <script>
+      // HERO SLIDER
+      (function () {
+        const wrap = document.getElementById("heroSlider");
+        if (!wrap) return;
+        const slides = [...wrap.querySelectorAll(".hs-slide")];
+        const dotsC = document.getElementById("hsDots");
+        let i = 0,
+          t = null,
+          hover = false;
+
+        slides.forEach((_, idx) => {
+          const d = document.createElement("button");
+          d.className = "hs-dot";
+          d.ariaLabel = "Ir a la foto " + (idx + 1);
+          d.addEventListener("click", () => go(idx, true));
+          dotsC.appendChild(d);
+        });
+        function act() {
+          slides.forEach((s, k) => s.classList.toggle("active", k === i));
+          [...dotsC.children].forEach((d, k) =>
+            d.classList.toggle("active", k === i)
+          );
+        }
+        function go(n, manual = false) {
+          i = (n + slides.length) % slides.length;
+          act();
+          if (manual) reset();
+        }
+        function next() {
+          go(i + 1);
+        }
+        function reset() {
+          clearInterval(t);
+          t = setInterval(() => {
+            if (!hover) next();
+          }, 4000);
+        }
+        wrap.addEventListener("pointerenter", () => (hover = true));
+        wrap.addEventListener("pointerleave", () => (hover = false));
+        // swipe simple
+        let sx = 0;
+        wrap.addEventListener("pointerdown", (e) => (sx = e.clientX));
+        wrap.addEventListener("pointerup", (e) => {
+          const dx = e.clientX - sx;
+          if (Math.abs(dx) > 40) go(i + (dx < 0 ? 1 : -1), true);
+        });
+        act();
+        reset();
+      })();
+
+      // LIGHTBOX sencillo
+      (function () {
+        const grid = document.querySelector(".masonry");
+        if (!grid) return;
+        const lb = document.getElementById("lb"),
+          img = document.getElementById("lbImg");
+        const prev = document.getElementById("lbPrev"),
+          next = document.getElementById("lbNext"),
+          close = document.getElementById("lbClose");
+        const items = [...grid.querySelectorAll("a")];
+        let i = 0;
+
+        function open(n) {
+          i = n;
+          img.src = items[i].getAttribute("href");
+          lb.classList.remove("hidden");
+          document.body.style.overflow = "hidden";
+        }
+        function nav(d) {
+          i = (i + d + items.length) % items.length;
+          img.src = items[i].getAttribute("href");
+        }
+        function hide() {
+          lb.classList.add("hidden");
+          document.body.style.overflow = "";
+        }
+
+        items.forEach((a, idx) =>
+          a.addEventListener("click", (e) => {
+            e.preventDefault();
+            open(idx);
+          })
+        );
+        prev.onclick = () => nav(-1);
+        next.onclick = () => nav(1);
+        close.onclick = hide;
+        lb.addEventListener("click", (e) => {
+          if (e.target === lb) hide();
+        });
+        window.addEventListener("keydown", (e) => {
+          if (lb.classList.contains("hidden")) return;
+          if (e.key === "Escape") hide();
+          if (e.key === "ArrowRight") nav(1);
+          if (e.key === "ArrowLeft") nav(-1);
+        });
+      })();
+    </script>
+
+    <script>
       const TARGET = new Date("2026-10-10T10:00:00+02:00").getTime();
       const el = {
         d: document.getElementById("d"),
@@ -628,7 +919,7 @@
       setInterval(tick, 1000);
     </script>
 
-    /* Script itinerario */
+    <!-- Script itinerario -->
     <script>
       // Datos (usa los ids de icono del sprite: i-ceremony, i-cocktail, etc.)
       const EVENTS_V = [

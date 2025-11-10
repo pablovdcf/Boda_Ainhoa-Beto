@@ -211,13 +211,15 @@ async function init() {
 
     invitado = data;
 
+    window.currentToken = token;
+    localStorage.setItem("lastToken", token);
     // Si no hay email y no lo hemos descartado antes para este token, mostrar modal
+    // ¿falta email?
     const skipKey = `skipEmail_${token}`;
     const yaDescartado = localStorage.getItem(skipKey) === '1';
     if ((!invitado.email || !isValidEmail(invitado.email)) && !yaDescartado) {
       openEmailModal();
     }
-
 
     // Rotula "Menú de {Nombre}"
     if (titularMenuLabel) titularMenuLabel.textContent = invitado.nombre || 'Invitado';
@@ -366,14 +368,14 @@ form && form.addEventListener('submit', async (ev) => {
     }).filter(x => (x.nombre || x.apellidos));
 
     // Si no hay email conocido y asistencia es "si", ofrece dejarlo (para poder enviar .ics)
-    if (!invitado?.email || !isValidEmail(invitado.email)) {
+    if ((!invitado?.email || !isValidEmail(invitado.email)) && asistencia === 'si') {
       openEmailModal();
-      // Rehabilita el envío para que pueda continuar
       submitting = false;
-      if (submitBtn) submitBtn.disabled = false;
+      submitBtn && (submitBtn.disabled = false);
       msg && (msg.textContent = 'Puedes dejar un email para enviarte la confirmación (opcional).');
       return;
     }
+
 
     const nAcomp = Math.min(Number(acomp?.value || 0), maxAcomps);
 

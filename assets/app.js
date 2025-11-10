@@ -57,6 +57,17 @@ let existingAcomp = []; // [{nombre, apellidos}]
 let maxAcomps = 0;
 let submitting = false;
 let editMode = false;
+let askedEmailOnce = false;   // ya sugerimos el email en este envío
+let skippedEmail = false;     // han pulsado "Ahora no"
+let pendingSubmit = null;     // callback para reanudar el envío tras el modal
+
+function continuePendingSubmit() {
+  if (typeof pendingSubmit === 'function') {
+    const fn = pendingSubmit;
+    pendingSubmit = null;
+    fn(); // reanuda envío
+  }
+}
 
 // --- gate de token
 if (!tokenParam) {
@@ -213,11 +224,18 @@ async function init() {
 
     window.currentToken = token;
     localStorage.setItem("lastToken", token);
+    // Mostrar sugerencia de email al cargar (no bloquea)
+    if (!invitado?.email || !isValidEmail(invitado.email)) {
+      openEmailModal();
+    }
     // Si no hay email y no lo hemos descartado antes para este token, mostrar modal
-    // ¿falta email?
-    const skipKey = `skipEmail_${token}`;
-    const yaDescartado = localStorage.getItem(skipKey) === '1';
-    if ((!invitado.email || !isValidEmail(invitado.email)) && !yaDescartado) {
+    const asisNow = (document.querySelector('input[name="asistencia"]:checked')?.value || '').toLowerCase();
+    const skipKey = `skipEmail_${window.currentToken || ''}`;
+    if (
+      asisNow === 'si' &&
+      (!invitado?.email || !isValidEmail(invitado.email)) &&
+      localStorage.getItem(skipKey) !== '1'
+    ) {
       openEmailModal();
     }
 
@@ -327,9 +345,9 @@ emailSaveBtn?.addEventListener('click', async () => {
   }
   try {
     await apiSaveEmail(window.currentToken, email);
-    // Actualiza en memoria para que el submit ya tenga email
-    if (invitado) invitado.email = email;
+    if (invitado) invitado.email = email;  // cache local
     closeEmailModal();
+    continuePendingSubmit();               // reanudar envío si venía de submit
   } catch (e) {
     console.error(e);
     emailError?.classList.remove('hidden');
@@ -337,17 +355,40 @@ emailSaveBtn?.addEventListener('click', async () => {
 });
 
 emailSkipBtn?.addEventListener('click', () => {
-  // Recuerda que el usuario no quiere dejar email para este token
-  const skipKey = `skipEmail_${window.currentToken || ''}`;
-  localStorage.setItem(skipKey, '1');
   closeEmailModal();
+  continuePendingSubmit();                 // seguir igualmente sin email
 });
+
+async function doSubmit(asistencia, acompList) {
+  const nAcomp = Math.min(Number(acomp?.value || 0), maxAcomps);
+  const payload = {
+    token: window.currentToken,
+    asistencia,
+    acompanantes: nAcomp,
+    acompanantes_nombres: acompList,
+    menu: document.querySelector('#menu')?.value || '',
+    alergias: document.querySelector('#alergias')?.value.trim() || '',
+    notas_titular: (document.getElementById('notasTitular')?.value || '').trim(),
+    bus: !!document.querySelector('#bus')?.checked,
+    cancion: document.querySelector('#cancion')?.value.trim() || '',
+  };
+
+  const { ok, error } = await apiRsvp(payload);
+  if (!ok) throw new Error(error || 'Error RSVP');
+
+  msg && (msg.textContent = asistencia === 'si'
+    ? '¡Gracias! Hemos registrado tu confirmación. Si dejaste email te llega el evento.'
+    : '¡Gracias! Hemos registrado tu respuesta.');
+
+  form.classList.add('opacity-70', 'pointer-events-none');
+  if (submitBtn) submitBtn.textContent = 'Enviado ✓';
+}
 
 form && form.addEventListener('submit', async (ev) => {
   ev.preventDefault();
   if (submitting) return;
   submitting = true;
-  if (submitBtn) submitBtn.disabled = true;
+  submitBtn && (submitBtn.disabled = true);
   msg && (msg.textContent = 'Enviando…');
 
   try {
@@ -367,47 +408,29 @@ form && form.addEventListener('submit', async (ev) => {
       };
     }).filter(x => (x.nombre || x.apellidos));
 
-    // Si no hay email conocido y asistencia es "si", ofrece dejarlo (para poder enviar .ics)
-    if ((!invitado?.email || !isValidEmail(invitado.email)) && asistencia === 'si') {
-      openEmailModal();
+    // Si asiste y no hay email válido, sugerirlo SOLO una vez y sin bloquear:
+    if (asistencia === 'si' && (!invitado?.email || !isValidEmail(invitado.email)) && !askedEmailOnce) {
+      askedEmailOnce = true;                       // no volver a abrir en este envío
+      pendingSubmit = () => doSubmit(asistencia, acompList);
+      openEmailModal();                            // usuario elige: guardar o ahora no
       submitting = false;
       submitBtn && (submitBtn.disabled = false);
       msg && (msg.textContent = 'Puedes dejar un email para enviarte la confirmación (opcional).');
-      return;
+      return;                                      // quedamos a la espera del modal
     }
 
-
-    const nAcomp = Math.min(Number(acomp?.value || 0), maxAcomps);
-
-    const payload = {
-      token: window.currentToken,
-      asistencia,
-      acompanantes: nAcomp,
-      acompanantes_nombres: acompList, // 👈 array de objetos
-      menu: document.querySelector('#menu')?.value || '',
-      alergias: document.querySelector('#alergias')?.value.trim() || '',
-      notas_titular: (document.getElementById('notasTitular')?.value || '').trim(),
-      bus: !!document.querySelector('#bus')?.checked,
-      cancion: document.querySelector('#cancion')?.value.trim() || '',
-    };
-
-    const { ok, error } = await apiRsvp(payload);
-    if (!ok) throw new Error(error || 'Error RSVP');
-
-    msg && (msg.textContent = asistencia === 'si'
-      ? '¡Gracias! Te hemos enviado un email con el evento para el calendario.'
-      : '¡Gracias! Hemos registrado tu respuesta.');
-
-    form.classList.add('opacity-70', 'pointer-events-none');
-    if (submitBtn) submitBtn.textContent = 'Enviado ✓';
+    // Continuar con el envío (No asistencia o ya cerraron el modal)
+    await doSubmit(asistencia, acompList);
 
   } catch (e) {
     console.error(e);
     msg && (msg.textContent = 'No hemos podido enviar tu confirmación. Reintenta o avisa a los novios.');
     submitting = false;
-    if (submitBtn) submitBtn.disabled = false;
+    submitBtn && (submitBtn.disabled = false);
+    return;
   }
 });
+
 
 init();
 toggleByAsistencia();

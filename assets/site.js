@@ -150,6 +150,7 @@ function renderGallery(cfg) {
   if (typeof window.setupLightbox === 'function') {
     window.setupLightbox();
   }
+  adjustGalleryRatios();
 }
 
 function renderFaqs(cfg) {
@@ -184,6 +185,26 @@ function initReveals() {
   els.forEach(el => {
     if (el.classList.contains('visible')) return;
     revealObserver.observe(el);
+  });
+}
+
+function adjustGalleryRatios() {
+  const cards = document.querySelectorAll('#galleryGrid a');
+  cards.forEach(card => {
+    const img = card.querySelector('img');
+    if (!img) return;
+    const applyRatio = () => {
+      if (!img.naturalWidth || !img.naturalHeight) return;
+      card.classList.remove('gallery-landscape', 'gallery-square');
+      const ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio > 1.2) {
+        card.classList.add('gallery-landscape');
+      } else if (ratio > 0.9 && ratio < 1.1) {
+        card.classList.add('gallery-square');
+      }
+    };
+    if (img.complete) applyRatio();
+    else img.addEventListener('load', applyRatio, { once: true });
   });
 }
 

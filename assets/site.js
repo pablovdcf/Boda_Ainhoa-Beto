@@ -246,3 +246,9 @@ function showNoticeFromQuery() {
   startCountdown(cfg);
 })();
 
+window.addEventListener('pageshow', (event) => {
+  if (event.persisted) {
+    initReveals();
+  }
+});
+

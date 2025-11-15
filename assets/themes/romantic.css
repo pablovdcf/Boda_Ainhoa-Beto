@@ -1,0 +1,41 @@
+:root {
+  --color-primary: #a24c6f;
+  --color-primary-dark: #8a3458;
+  --color-accent: #f2c6d2;
+  --btn-hero-bg: rgba(255, 255, 255, 0.18);
+  --btn-hero-border: rgba(255, 255, 255, 0.6);
+  --btn-hero-hover: rgba(255, 255, 255, 0.32);
+  --card-bg: rgba(255, 248, 252, 0.92);
+  --card-border: rgba(242, 198, 210, 0.7);
+  --ring: rgba(242, 198, 210, 0.6);
+  --notice-success: #0f9d58;
+  --notice-info: #7c2943;
+  --notice-warn: #d97706;
+  --hero-gradient: linear-gradient(135deg, #7b1846 0%, #b95b82 45%, #f7c5d8 100%);
+  --paper-gradient: radial-gradient(1000px 500px at 50% -200px, rgba(255,255,255,0.35), transparent 70%);
+  --timeline-label: #c26a8b;
+  --timeline-desc: #83485f;
+  --gallery-border: rgba(255,255,255,0.9);
+  --floral-color: #f2c6d2;
+  --divider-dot: rgba(242, 198, 210, 0.45);
+  --divider-line: rgba(255, 238, 246, 0.7);
+  --location-bg: linear-gradient(135deg, #fff, #fff7fb);
+  --location-heading: #a24c6f;
+  --location-text: #5b3645;
+  --location-btn-bg: var(--color-primary);
+  --location-btn-border: transparent;
+  --location-btn-color: #fff;
+  --location-btn-hover: var(--color-primary-dark);
+}
+
+body {
+  background-color: #fff9fb;
+}
+
+.bg-hero {
+  background-image: var(--hero-gradient) !important;
+}
+
+.bg-paper {
+  background-image: var(--paper-gradient) !important;
+}

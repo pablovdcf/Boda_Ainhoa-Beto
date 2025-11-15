@@ -1,0 +1,78 @@
+:root {
+  --color-primary: #b4c6ef;
+  --color-primary-dark: #93a5d9;
+  --color-accent: #f0abfc;
+  --btn-hero-bg: rgba(255, 255, 255, 0.12);
+  --btn-hero-border: rgba(255, 255, 255, 0.4);
+  --btn-hero-hover: rgba(255, 255, 255, 0.28);
+  --card-bg: rgba(15, 23, 42, 0.85);
+  --card-border: rgba(148, 163, 184, 0.4);
+  --ring: rgba(147, 197, 253, 0.6);
+  --notice-success: #10b981;
+  --notice-info: #1e1b4b;
+  --notice-warn: #f97316;
+  --hero-gradient: linear-gradient(135deg, #020617 0%, #0f172a 50%, #312e81 100%);
+  --paper-gradient: radial-gradient(800px 400px at 50% -200px, rgba(255,255,255,0.08), transparent 70%);
+  --timeline-label: #cbd5f5;
+  --timeline-desc: #dbeafe;
+  --gallery-border: rgba(15,23,42,0.9);
+  --floral-color: #b4c6ef;
+  --location-bg: radial-gradient(circle at top, rgba(49,46,129,0.35), transparent 60%), #0b1120;
+  --location-heading: #ffffff;
+  --location-text: #e2e8f0;
+  --location-btn-bg: transparent;
+  --location-btn-border: rgba(255,255,255,0.6);
+  --location-btn-color: #fff;
+  --location-btn-hover: rgba(255,255,255,0.1);
+  --divider-dot: rgba(180, 198, 239, 0.4);
+  --divider-line: rgba(59, 70, 110, 0.9);
+  color-scheme: dark;
+}
+
+body {
+  background-color: #020617;
+  color: #e2e8f0;
+}
+
+.bg-hero {
+  background-image: var(--hero-gradient) !important;
+}
+
+.bg-paper {
+  background-image: var(--paper-gradient) !important;
+}
+
+.card h3,
+.card p,
+.card label {
+  color: inherit;
+}
+
+
+body[data-theme="nocturne"] .countdown {
+  background: rgba(15, 23, 42, 0.85);
+  border-color: rgba(148, 163, 184, 0.4);
+}
+
+body[data-theme="nocturne"] .section {
+  background-color: #0b1120;
+  color: #e2e8f0;
+}
+
+body[data-theme="nocturne"] .section.bg-white {
+  background-color: #0b1120 !important;
+}
+
+body[data-theme="nocturne"] .tl-right h4,
+body[data-theme="nocturne"] .tl-right p {
+  color: #e2e8f0;
+}
+
+body[data-theme="nocturne"] .masonry a {
+  border-color: var(--gallery-border, rgba(15,23,42,0.9));
+  box-shadow: 0 25px 50px rgba(0,0,0,0.45);
+}
+
+body[data-theme="nocturne"] footer.section {
+  background-image: linear-gradient(135deg, #030712 0%, #111827 45%, #312e81 100%);
+}

@@ -60,6 +60,7 @@ let editMode = false;
 let askedEmailOnce = false;   // ya sugerimos el email en este envío
 let skippedEmail = false;     // han pulsado "Ahora no"
 let pendingSubmit = null;     // callback para reanudar el envío tras el modal
+let redirectTimer = null;
 
 function continuePendingSubmit() {
   if (typeof pendingSubmit === 'function') {
@@ -67,6 +68,17 @@ function continuePendingSubmit() {
     pendingSubmit = null;
     fn(); // reanuda envío
   }
+}
+
+function scheduleRedirect(message, kind = 'info', delay = 3500) {
+  if (!message) return;
+  if (redirectTimer) clearTimeout(redirectTimer);
+  const dest = new URL('index.html', location.href);
+  dest.searchParams.set('notice', message);
+  dest.searchParams.set('noticeKind', kind);
+  redirectTimer = setTimeout(() => {
+    location.href = dest.toString();
+  }, delay);
 }
 
 // --- gate de token
@@ -321,8 +333,15 @@ async function init() {
       setFormDisabled(false);
     });
     btnKeep && btnKeep.addEventListener('click', () => {
-      // Simplemente cerramos el aviso y mantenemos deshabilitado (informativo)
       alreadyBox && alreadyBox.classList.add('hidden');
+      const st = (invitado?.status || '').toLowerCase();
+      const notice = st === 'si'
+        ? 'Tu confirmación sigue como ASISTES.'
+        : st === 'no'
+          ? 'Tu confirmación sigue como NO ASISTES.'
+          : 'Tus datos siguen igual.';
+      if (msg) msg.textContent = 'Perfecto, mantenemos tu respuesta. Te llevamos a la portada...';
+      scheduleRedirect(notice, st === 'si' ? 'success' : 'info', 3200);
     });
 
     // OCULTAR LOADER Y MOSTRAR FORM
@@ -379,12 +398,20 @@ async function doSubmit(asistencia, acompList) {
   const { ok, error } = await apiRsvp(payload);
   if (!ok) throw new Error(error || 'Error RSVP');
 
-  msg && (msg.textContent = asistencia === 'si'
+  const successMsg = asistencia === 'si'
     ? '¡Gracias! Hemos registrado tu confirmación. Si dejaste email te llega el evento.'
-    : '¡Gracias! Hemos registrado tu respuesta.');
+    : '¡Gracias! Hemos registrado tu respuesta.';
+  const notice = asistencia === 'si'
+    ? '¡Listo! Tu asistencia está confirmada.'
+    : 'Hemos registrado que no podrás asistir.';
+  const noticeKind = asistencia === 'si' ? 'success' : 'info';
+
+  msg && (msg.textContent = `${successMsg} En unos segundos te llevamos a la portada.`);
 
   form.classList.add('opacity-70', 'pointer-events-none');
   if (submitBtn) submitBtn.textContent = 'Enviado ✓';
+
+  scheduleRedirect(notice, noticeKind, 3600);
 }
 
 form && form.addEventListener('submit', async (ev) => {

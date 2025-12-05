@@ -1,0 +1,45 @@
+:root {
+  --color-primary: #0b3b4f;
+  --color-primary-dark: #0e4d74;
+  --color-accent: #c4a26a;
+  --btn-hero-bg: rgba(255, 255, 255, 0.08);
+  --btn-hero-border: rgba(255, 255, 255, 0.35);
+  --btn-hero-hover: rgba(255, 255, 255, 0.16);
+  --card-bg: rgba(255, 255, 255, 0.8);
+  --card-border: rgba(255, 255, 255, 0.4);
+  --ring: rgba(196, 162, 106, 0.35);
+  --notice-success: #059669;
+  --notice-info: #0f172a;
+  --notice-warn: #d97706;
+  --floral-color: #c89f5d;
+  --hero-floral-color: #ffffff;
+  --hero-dot-1: rgba(255, 255, 255, 0.586);
+  --hero-dot-2: rgb(255, 255, 255);
+  --hero-gradient:
+    radial-gradient(circle at 16% 18%, rgba(248, 215, 231, 0.2), transparent 34%),
+    radial-gradient(circle at 82% 16%, rgba(212, 234, 255, 0.18), transparent 36%),
+    linear-gradient(135deg, #47b2ff 0%, #195d8a 55%, #063f5e 100%);
+  --paper-gradient: radial-gradient(1200px 600px at 50% -200px, rgba(255,255,255,.15), transparent 65%);
+}
+
+.bg-hero {
+  background-image: var(--hero-gradient) !important;
+}
+
+.bg-paper {
+  background-image: var(--paper-gradient) !important;
+}
+
+/* Ajuste mobile: patrón más ligero para no recargar en pantallas pequeñas */
+@media (max-width: 640px) {
+  .hero-florals:before {
+    background-size: 360px 240px, 360px 240px;
+    background-position: -200px -10px, calc(100% + 180px) -10px;
+    opacity: 0.68;
+  }
+  .hero-florals:after {
+    background-size: 180% 130%, 200px 110px;
+    background-position: center 4%, center 100%;
+    opacity: 0.34;
+  }
+}

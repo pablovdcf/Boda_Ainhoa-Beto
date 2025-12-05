@@ -1,6 +1,6 @@
 {
   "title": "Boda · Ainhoa & Alberto",
-  "theme": "classic",
+  "theme": "ainhoa",
   "couple": {
     "names": "Ainhoa & Alberto"
   },
@@ -13,7 +13,7 @@
   "venue": {
     "name": "Pazo Torre de Xunqueiras",
     "location_text": "Galicia",
-    "map_url": "https://www.google.com/maps/place/Sal%C3%B3n+de+vodas+Torre+de+Xunqueiras/@42.5947127,-8.9526889,17.6z/"
+    "map_url": "https://maps.app.goo.gl/fSiTjNTvCNdtNjdA6"
   },
   "timeline": [
     {
@@ -76,7 +76,7 @@
   "info": [
     { "title": "Transporte", "text": "Ofrecemos la opción de desplazarse en autobús al lugar del banquete. Si decides ir en autobús háznoslo saber mediante el formulario" },
     { "title": "Alergias", "text": "En caso de tener alguna alergia o intolerancia, indícalas en la confirmación para adaptar tu menú." },
-    { "title": "Niños", "text": "Si decides acudir con niños, ¡no te preocupes! ofrecemos una zona infantil con monitoras durante el banquete y fiesta." }
+    { "title": "Dress code", "text": "Elegancia cómoda: traje o vestido cóctel. Colores sugeridos: verdes, azules o neutros suaves que combinen con el bosque. Chaqueta ligera para la noche." }
   ],
   "gallery": [
     { "src": "assets/galeria/01.jpg", "alt": "" },
@@ -92,11 +92,15 @@
     { "src": "assets/galeria/11.jpg", "alt": "" },
     { "src": "assets/galeria/12.jpg", "alt": "" },
     { "src": "assets/galeria/13.jpg", "alt": "" },
-    { "src": "assets/galeria/14.jpg", "alt": "" }
+    { "src": "assets/galeria/13.jpg", "alt": "" },
+    { "src": "assets/galeria/14.jpg", "alt": "" },
+    { "src": "assets/galeria/15.jpg", "alt": "" },
+    { "src": "assets/galeria/16.jpg", "alt": "" },
+    { "src": "assets/galeria/17.jpg", "alt": "" },
+    { "src": "assets/galeria/18.jpg", "alt": "" }
   ],
   "faqs": [
     { "q": "¿Hay parking?", "a": "Sí, el lugar cuenta con zona de aparcamiento." },
-    { "q": "¿Puedo llevar niños?", "a": "¡Claro! Además habrá zona infantil y monitoras durante el banquete." },
     { "q": "¿Qué pasa si tengo alergias?", "a": "Indícalas en la confirmación y adaptaremos el menú." },
     { "q": "¿Regalo?", "a": "Tu presencia. Si quieres hacer algún regalo encontrarás el IBAN en la sección de <b><i>Regalos</i></b>." }
   ],
@@ -105,8 +109,8 @@
     "subtitle": "Pazo Torre de Xunqueiras, A Coruña, Galicia.",
     "description": "El lugar cuenta con aparcamiento en caso de que quieras desplazarte con tu propio coche.",
     "photos": [
-      { "src": "assets/Pazo.jpg", "alt": "Vista aérea del Pazo" },
       { "src": "assets/Salon_boda_alrededores.jpg", "alt": "Zona lounge en el jardín" },
+      { "src": "assets/Pazo.jpg", "alt": "Vista aérea del Pazo" },
       { "src": "assets/Salon_boda_alrededores_2.jpg", "alt": "Espacio exterior del salón" }
     ]
   },

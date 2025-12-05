@@ -30,16 +30,16 @@
   background-image: var(--paper-gradient) !important;
 }
 
-/* Ajuste mobile: patrón más ligero para no recargar en pantallas pequeñas */
+/* Ajuste mobile: patrones ligeros para no tapar el texto */
 @media (max-width: 640px) {
   .hero-florals:before {
-    background-size: 360px 240px, 360px 240px;
-    background-position: -200px -10px, calc(100% + 180px) -10px;
-    opacity: 0.68;
+    background-size: 150% 120% !important;
+    background-position: center -12% !important;
+    opacity: 0.42 !important;
   }
   .hero-florals:after {
-    background-size: 180% 130%, 200px 110px;
-    background-position: center 4%, center 100%;
-    opacity: 0.34;
+    background-size: 150% 110% !important;
+    background-position: center bottom !important;
+    opacity: 0.3 !important;
   }
 }

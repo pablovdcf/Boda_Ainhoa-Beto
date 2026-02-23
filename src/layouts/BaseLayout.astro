@@ -1,0 +1,47 @@
+---
+import "../styles/globals.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Boda · Ainhoa & Alberto",
+  description = "Webapp de invitación, RSVP y panel admin"
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#194f99" />
+    <link rel="icon" href="/icons/icon-192.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=Parisienne&display=swap"
+      rel="stylesheet"
+    />
+    <link id="themeStylesheet" rel="stylesheet" href="/assets/themes/classic.css" />
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Saltar al contenido</a>
+    <slot />
+    <script is:inline>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("/service-worker.js").catch(() => {});
+        });
+      }
+    </script>
+  </body>
+</html>

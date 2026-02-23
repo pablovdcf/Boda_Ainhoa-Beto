@@ -1,107 +1,92 @@
-# Invitación de Boda · Ainhoa & Alberto
+# Boda Ainhoa & Alberto · Fase 1 (Astro Scaffold)
 
-Webapp estática para invitación, confirmación (RSVP) y panel de administración, con integración vía Google Apps Script (JSONP) y PWA opcional.
+Migración inicial a Astro + Tailwind local con prioridad en compatibilidad de rutas y despliegue estático en Vercel.
 
-## Características
-- Landing con timeline, galería y contador (Tailwind CDN).
-- RSVP por invitado con token único (acompañantes, menú, alergias, bus, canción).
-- Modal opcional para recoger email y enviar confirmación/evento.
-- Aviso automático tras confirmar (o mantener respuesta) y redirección a la portada con mensaje personalizado.
-- Panel admin con filtros y export CSV.
-- PWA opcional (manifest + Service Worker simple).
+## Alcance de esta fase
+- Scaffold de Astro en modo `static`.
+- Mantener endpoints legacy GAS/JSONP sin cambios de contrato.
+- Mantener rutas nuevas y legacy:
+  - `/`
+  - `/invite`
+  - `/admin`
+  - `/invite.html` (alias de `/invite`)
+  - `/admin.html` (alias de `/admin`)
+- Migración de `assets/` a `public/assets/` sin romper paths (`/assets/...`).
+- PWA mínima con SW versionado evitando servir HTML viejo indefinidamente.
 
-## Estructura
-- `index.html`: página pública.
-- `invite.html`: confirmación por token (`?token=...`).
-- `admin.html`: panel de administración.
-- `assets/app.js`: lógica RSVP + modal email.
-- `assets/api.js`: llamadas JSONP a Google Apps Script.
-- `assets/admin.js`: render admin y export CSV.
-- `assets/site.js`: aplica `assets/config.json`, render dinámico (hero, timeline, info, galería, FAQs) y gestiona avisos.
-- `assets/service-worker.js`: caché básico de recursos.
-- `assets/manifest.json`: PWA (iconos en `assets/`).
-- `assets/themes/<nombre>.css`: tokens de color/gradientes para cada plantilla (ej. `classic`, `minimal`, `rustic`, `nocturne`, `romantic`).
-- `assets/galeria/`: imágenes galería.
-- `apps-script/`: backend Apps Script en módulos (pega cada `.gs` en tu proyecto GAS).
+## Comandos
+1. Instalar dependencias:
+   ```bash
+   npm install
+   ```
+2. Desarrollo local:
+   ```bash
+   npm run dev
+   ```
+3. Build estático:
+   ```bash
+   npm run build
+   ```
+4. Probar build:
+   ```bash
+   npm run preview
+   ```
+5. (Opcional) lint/format:
+   ```bash
+   npm run lint
+   npm run format
+   ```
 
-## Configuración (assets/api.js)
-Edita constantes:
-- `SCRIPT_URL`: URL del Google Apps Script desplegado (web app).
-- `SHARED_SECRET`: shared secret entre cliente y GAS (se valida solo en servidor).
-- `ADMIN_KEY`: clave server-side para `admin_list`.
-- `ADMIN_PIN`: PIN visual para ocultar el panel a curiosos (no seguridad real).
+## Estructura base (Fase 1)
+- `src/layouts/BaseLayout.astro`
+- `src/pages/index.astro`
+- `src/pages/invite.astro`
+- `src/pages/admin.astro`
+- `src/pages/invite.html.astro`
+- `src/pages/admin.html.astro`
+- `src/components/ui/Button.astro`
+- `src/components/ui/Card.astro`
+- `src/components/ui/Badge.astro`
+- `src/components/pages/InvitePage.astro`
+- `src/components/pages/AdminPage.astro`
+- `src/lib/api.ts`
+- `src/lib/storage.ts`
+- `src/lib/validators.ts`
+- `src/lib/format.ts`
+- `src/styles/globals.css`
+- `public/assets/*` (assets legacy migrados)
+- `public/manifest.json`
+- `public/service-worker.js`
+- `public/icons/*`
 
-Acciones esperadas en GAS:
-- `lookup(token) -> {ok, data, acomp, error}`
-- `rsvp(...) -> {ok, error}`
-- `admin_list(adminKey) -> {ok, data, error}`
-- `save_email(token, email) -> {ok, error}`
-- `ping() -> {ok:true}`
+## API legacy encapsulada (sin cambios)
+`src/lib/api.ts` mantiene JSONP y payloads legacy:
+- `lookup(token)`
+- `rsvp({ token, asistencia, acompanantes, acompanantes_nombres, menu, alergias, notas_titular, bus, cancion })`
+- `admin_list(adminKey)`
+- `ping`
 
-Valida SIEMPRE en servidor:
-- Que el `token` exista y su cuota de `acompanantes`/plazas.
-- Que `adminKey` sea válida en `admin_list`.
-- Firmas/timestamps si quieres mayor robustez (opcional).
+Notas:
+- Sigue JSONP (no `fetch`) para no depender de CORS.
+- Se añadió timeout y error consistente en cliente sin cambiar campos ni acciones.
 
-## Parámetros de contenido (`assets/config.json`)
-Controla la plantilla sin tocar HTML. Ejemplo completo en `assets/config.json` y boilerplate en `assets/config.example.json`.
+## Decisiones Fase 1 (SW/PWA) [5-10 líneas]
+1. El Service Worker principal se sirve en `/service-worker.js`.
+2. Se usa cache versionado (`CACHE_VERSION`) y limpieza de caches viejas en `activate`.
+3. Para navegación (`request.mode === "navigate"`), estrategia `network-first`.
+4. No se cachea HTML de navegación de forma persistente para evitar páginas antiguas tras deploy.
+5. Se cachean estáticos (CSS/JS/imagenes/manifest) con `stale-while-revalidate`.
+6. Se incluye `offline.html` como fallback cuando no hay red.
+7. Se usa `skipWaiting()` + `clients.claim()` para activar versiones nuevas con rapidez.
+8. Se mantiene `/assets/service-worker.js` como puente a `/service-worker.js` para compatibilidad.
 
-- `theme`: nombre del CSS en `assets/themes/` (ahora `classic`).
-- `title`, `couple.names`, `date`, `date_text`: título del sitio y textos del hero/contador.
-- `venue`: `{ name, location_text, map_url }` para textos y botón de mapa.
-- `hero_cta`: `{ label, href }` controla el botón principal del hero.
-- `timeline`: array de pasos `{ label?, time, title, desc, icon, kind }` (icon IDs coinciden con el sprite de `index.html`).
-- `info`: tarjetas informativas (transporte, alergias, niños...).
-- `gallery`: lista de fotos `{ src, alt }` que alimenta la galería + lightbox.
-- `faqs`: preguntas frecuentes `{ q, a }`.
-- `cta`: bloque final (título, descripción y botón `{ label, href }`).
+## Checklist manual · Fase 1
+- [ ] `npm run build` finaliza sin errores.
+- [ ] `npm run preview` levanta correctamente.
+- [ ] `/`, `/invite`, `/invite.html`, `/admin`, `/admin.html` cargan sin 404.
+- [ ] En DevTools, `manifest.json` responde en raíz (`/manifest.json`).
+- [ ] En DevTools, Service Worker activo en `/service-worker.js`.
+- [ ] Los assets legacy siguen resolviendo en `/assets/...` (imágenes, JS, CSS).
+- [ ] `/assets/service-worker.js` responde (compat legacy).
+- [ ] RSVP/Admin cargan scripts legacy (`/assets/app.js` y `/assets/admin.js`).
 
-Edita `config.json`, recarga y listo. Si quieres otra boda, duplica el repo o guarda variantes de `config.json`.
-
-## Desarrollo local
-Es estático. Puedes abrir `index.html` en el navegador o servir un http simple para evitar problemas de rutas/JSONP.
-
-Opciones:
-- Python: `python -m http.server 8080`
-- Node (serve): `npx serve .`
-- VS Code Live Server
-
-Luego visita:
-- `http://localhost:8080/index.html`
-- `http://localhost:8080/invite.html?token=TU_TOKEN`
-- `http://localhost:8080/admin.html`
-
-Si necesitas desplegar o modificar el backend, revisa `apps-script/README.md` (estructura modular, remitentes configurables, etc.).
-
-## Deploy (opcional)
-Si decides publicar, funciona en cualquier hosting estático (e.g. GitHub Pages). Este repo ahora está pensado para uso local, sin commits/push automáticos.
-
-## PWA (opcional)
-Se registra el Service Worker en `index.html` e `invite.html`. Para cache básico local está ok. Si despliegas, recuerda subir versión de caché en `assets/service-worker.js` (e.g. `boda-cache-v7`) para invalidar y recargar.
-
-## Tokens y flujo RSVP
-- Comparte enlaces del tipo `invite.html?token=XXXX`.
-- Si el invitado entra sin token, `invite.html` muestra un campo para introducirlo.
-- El formulario se adapta al número de plazas disponibles:
-  - Datos del titular (menú, alergias, notas).
-  - Acompañantes (nombre, apellidos, menú, alergias, notas).
-  - Bus (checkbox) y canción sugerida.
-- Al enviar, se hace `apiRsvp`, se muestra un aviso (“asistes”/“no asistes”) y a los 3‑4 s se redirige a la portada con el mensaje correspondiente (también pasa si pulsas “Seguir igual”).
-
-## Seguridad y privacidad
-- Proyecto estático: no se pueden ocultar secretos en el cliente.
-- Valida todo en GAS (token, cuotas, adminKey, etc.).
-- Considera rotar `ADMIN_PIN` y `ADMIN_KEY` si publicas.
-
-## Personalización
-- Colores/tipografías: via `assets/themes/<nombre>.css` (cambia `config.theme`). Las reglas usan CSS variables (`--color-primary`, `--btn-hero-bg`, etc.). Hay temas de ejemplo: `classic`, `minimal`, `rustic`, `nocturne`.
-- Temas incluidos de ejemplo: `classic` (azules + dorado) y `minimal` (morado + rosa). Crea más duplicando uno de esos CSS y ajustando las variables.
-- Contenido editable desde `assets/config.json` (hero, timeline, info, galería, FAQs, mapa, fecha...).
-- Si necesitas más temas, crea otro CSS en `assets/themes/` y referencia su nombre en `config.json`.
-
-## Checklist
-- [ ] `SCRIPT_URL`, `SHARED_SECRET`, `ADMIN_KEY` configurados
-- [ ] Iconos `assets/icon-192.png` y `assets/icon-512.png`
-- [ ] Service Worker registrado (si quieres PWA)
-- [ ] GAS desplegado (Web App) y permisos correctos
-- [ ] Prueba con varios tokens (sí/no, con/sin acompañantes)

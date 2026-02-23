@@ -4,6 +4,22 @@ export default {
     "./src/**/*.{astro,html,js,jsx,ts,tsx,md,mdx}",
     "./public/assets/**/*.js"
   ],
+  container: {
+    center: true,
+    padding: {
+      DEFAULT: "1rem",
+      sm: "1.25rem",
+      lg: "1.5rem",
+      xl: "2rem"
+    },
+    screens: {
+      sm: "640px",
+      md: "768px",
+      lg: "1080px",
+      xl: "1200px",
+      "2xl": "1320px"
+    }
+  },
   theme: {
     extend: {
       colors: {
@@ -27,22 +43,33 @@ export default {
       },
       fontFamily: {
         display: ['"Cormorant Garamond"', "serif"],
-        body: ['"Manrope"', "sans-serif"],
+        body: ['"Manrope"', "system-ui", "sans-serif"],
         script: ['"Parisienne"', "cursive"]
       },
       borderRadius: {
+        xl: "0.875rem",
+        "2xl": "1.25rem",
         xl2: "1.25rem",
-        xl3: "1.75rem"
+        xl3: "1.75rem",
+        "4xl": "2.25rem"
       },
       spacing: {
+        14: "3.5rem",
+        16: "4rem",
         18: "4.5rem",
         22: "5.5rem",
-        26: "6.5rem"
+        26: "6.5rem",
+        30: "7.5rem"
       },
       boxShadow: {
         soft: "0 12px 28px rgba(15, 23, 42, 0.12)",
+        softLg: "0 18px 38px rgba(15, 23, 42, 0.14)",
         card: "0 22px 48px rgba(15, 23, 42, 0.14)",
         glow: "0 18px 55px rgba(47, 136, 244, 0.25)"
+      },
+      fontSize: {
+        hero: ["clamp(2.25rem, 6vw, 4.5rem)", { lineHeight: "1.05" }],
+        lead: ["clamp(1.05rem, 2vw, 1.3rem)", { lineHeight: "1.65" }]
       },
       backgroundImage: {
         hero:

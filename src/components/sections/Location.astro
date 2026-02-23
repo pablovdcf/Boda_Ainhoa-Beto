@@ -1,0 +1,133 @@
+---
+import Button from "../ui/Button.astro";
+import Card from "../ui/Card.astro";
+
+interface RecommendationItem {
+  id: string;
+  body: string;
+  data: {
+    title: string;
+    category: string;
+  };
+}
+
+interface Props {
+  title: string;
+  description: string;
+  venueName: string;
+  venueAddress: string;
+  venueCity: string;
+  mapUrl: string;
+  photos: Array<{
+    src: string;
+    alt: string;
+    width: number;
+    height: number;
+  }>;
+  recommendations: RecommendationItem[];
+}
+
+const {
+  title,
+  description,
+  venueName,
+  venueAddress,
+  venueCity,
+  mapUrl,
+  photos,
+  recommendations
+} = Astro.props;
+---
+
+<section id="location" class="mt-14">
+  <div class="surface-section overflow-hidden p-6 sm:p-8">
+    <div class="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
+      <div>
+        <h2 class="section-title">{title}</h2>
+        <p class="muted mt-3 max-w-2xl">{description}</p>
+
+        <dl class="mt-5 space-y-2 text-sm">
+          <div>
+            <dt class="text-xs uppercase tracking-[0.2em] text-slate-500">Lugar</dt>
+            <dd class="mt-1 text-lg font-semibold text-ink">{venueName}</dd>
+          </div>
+          <div>
+            <dt class="text-xs uppercase tracking-[0.2em] text-slate-500">Dirección</dt>
+            <dd class="mt-1 text-base text-slate-700">{venueAddress}</dd>
+            <dd class="text-base text-slate-700">{venueCity}</dd>
+          </div>
+        </dl>
+
+        <div class="mt-6 flex flex-wrap gap-3">
+          <Button href={mapUrl} target="_blank" rel="noopener noreferrer">
+            Abrir en Google Maps
+          </Button>
+          <Button
+            variant="secondary"
+            type="button"
+            className="copy-address-btn"
+            ariaLabel="Copiar dirección al portapapeles"
+            data-address={`${venueAddress}, ${venueCity}`}
+          >
+            Copiar dirección
+          </Button>
+        </div>
+        <p class="mt-2 text-sm text-slate-600" aria-live="polite" data-copy-status></p>
+      </div>
+
+      <div class="grid gap-3 sm:grid-cols-2">
+        {
+          photos.map((photo, index) => (
+            <figure
+              class={`overflow-hidden rounded-2xl border border-white/80 shadow-soft ${
+                index === 0 ? "sm:col-span-2" : ""
+              }`}
+            >
+              <img
+                src={photo.src}
+                alt={photo.alt}
+                width={photo.width}
+                height={photo.height}
+                class="h-full w-full object-cover"
+                loading={index === 0 ? "eager" : "lazy"}
+                decoding="async"
+              />
+            </figure>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="mt-8 grid gap-3 md:grid-cols-2">
+      {
+        recommendations.map((item) => (
+          <Card className="h-full bg-white/80">
+            <div slot="content">
+              <p class="text-xs uppercase tracking-[0.2em] text-brand-600">{item.data.category}</p>
+              <h3 class="mt-1 text-xl font-semibold">{item.data.title}</h3>
+              <p class="muted mt-2">{item.body.trim()}</p>
+            </div>
+          </Card>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  document.querySelectorAll(".copy-address-btn").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const section = button.closest("#location");
+      if (!section) return;
+      const address = button.getAttribute("data-address") || "";
+      const status = section.querySelector("[data-copy-status]");
+      if (!address) return;
+      try {
+        await navigator.clipboard.writeText(address);
+        if (status) status.textContent = "Dirección copiada.";
+      } catch {
+        if (status) status.textContent = "No se pudo copiar automáticamente.";
+      }
+    });
+  });
+</script>

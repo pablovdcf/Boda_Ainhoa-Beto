@@ -1,44 +1,73 @@
 ---
+import { getCollection, getEntry } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Button from "../components/ui/Button.astro";
-import Card from "../components/ui/Card.astro";
-import Badge from "../components/ui/Badge.astro";
+import Hero from "../components/sections/Hero.astro";
+import Countdown from "../components/sections/Countdown.astro";
+import Agenda from "../components/sections/Agenda.astro";
+import Location from "../components/sections/Location.astro";
+import Gallery from "../components/sections/Gallery.astro";
+import FAQ from "../components/sections/FAQ.astro";
+import Footer from "../components/sections/Footer.astro";
+
+const landingEntry = await getEntry("site", "landing");
+if (!landingEntry) {
+  throw new Error("Falta src/content/site/landing.json");
+}
+
+const agendaItems = (await getCollection("agenda")).sort(
+  (a, b) => a.data.order - b.data.order
+);
+const faqItems = (await getCollection("faq")).sort(
+  (a, b) => a.data.order - b.data.order
+);
+const recommendationItems = (await getCollection("recomendaciones")).sort(
+  (a, b) => a.data.order - b.data.order
+);
+
+const locationRecommendations = recommendationItems.filter(
+  (item) => item.data.category === "logistica" || item.data.category === "menu"
+);
+
+const data = landingEntry.data;
 ---
 
-<BaseLayout title="Boda · Ainhoa & Alberto" description="Landing en migración a Astro">
-  <main id="main-content" class="section-wrap py-16">
-    <section class="surface-card bg-hero p-8 text-white sm:p-10">
-      <Badge tone="neutral" className="bg-white/20 text-white border-white/30">
-        Fase 1 · Scaffold Astro
-      </Badge>
-      <h1 class="mt-4 text-5xl font-semibold leading-tight">Ainhoa & Alberto</h1>
-      <p class="mt-3 max-w-xl text-sand">
-        Base migrada a Astro + Tailwind local. En esta fase mantenemos compatibilidad de
-        rutas y API legacy sin tocar la lógica funcional de GAS/JSONP.
-      </p>
-      <div class="mt-8 flex flex-wrap gap-3">
-        <Button href="/invite">Ir a RSVP</Button>
-        <Button href="/admin" variant="secondary">Ir a Admin</Button>
-      </div>
-    </section>
+<BaseLayout title="Boda · Ainhoa & Alberto" description={data.heroDescription}>
+  <main id="main-content" class="section-wrap py-10 sm:py-14">
+    <Hero
+      eyebrow={data.heroEyebrow}
+      title={data.heroTitle}
+      description={data.heroDescription}
+      coupleNames={data.coupleNames}
+      dateLabel={data.weddingDateLabel}
+      venueName={data.venue.name}
+      ctaLabel={data.heroCtaLabel}
+      secondaryLabel={data.heroSecondaryLabel}
+      ctaHref="/invite"
+    />
 
-    <section class="mt-10 grid gap-4 md:grid-cols-3">
-      <Card className="p-5">
-        <h2 class="text-xl font-semibold">Rutas activas</h2>
-        <p class="muted mt-2 text-sm">`/`, `/invite`, `/invite.html`, `/admin`, `/admin.html`.</p>
-      </Card>
-      <Card className="p-5">
-        <h2 class="text-xl font-semibold">Assets legacy</h2>
-        <p class="muted mt-2 text-sm">
-          Manteniéndose en `public/assets/*` para evitar roturas de paths existentes.
-        </p>
-      </Card>
-      <Card className="p-5">
-        <h2 class="text-xl font-semibold">PWA</h2>
-        <p class="muted mt-2 text-sm">
-          Nuevo SW con cache versionado y navegación `network-first` para evitar HTML viejo.
-        </p>
-      </Card>
-    </section>
+    <Countdown
+      targetIso={data.weddingDateIso}
+      label={`${data.weddingDateLabel} — ${data.venue.name}`}
+    />
+
+    <Agenda title={data.agendaTitle} items={agendaItems} />
+
+    <Location
+      title={data.location.title}
+      description={data.location.description}
+      venueName={data.venue.name}
+      venueAddress={data.venue.address}
+      venueCity={data.venue.city}
+      mapUrl={data.venue.mapUrl}
+      photos={data.location.photos}
+      recommendations={locationRecommendations}
+    />
+
+    <Gallery title={data.galleryTitle} images={data.gallery} />
+
+    <FAQ title={data.faqTitle} items={faqItems} />
+
+    <Footer note={data.footerNote} />
   </main>
 </BaseLayout>
+

@@ -1,0 +1,69 @@
+---
+interface Props {
+  targetIso: string;
+  label: string;
+}
+
+const { targetIso, label } = Astro.props;
+---
+
+<section
+  class="surface-card mt-10 p-6 text-center sm:p-8"
+  data-countdown-root
+  data-countdown-target={targetIso}
+>
+  <p class="text-xs font-semibold uppercase tracking-[0.28em] text-brand-700">
+    Cuenta atrás
+  </p>
+  <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+    <div class="rounded-2xl bg-brand-50 px-3 py-4">
+      <p class="text-3xl font-semibold text-brand-800" data-unit="days">--</p>
+      <p class="mt-1 text-xs uppercase tracking-wide text-slate-500">Días</p>
+    </div>
+    <div class="rounded-2xl bg-brand-50 px-3 py-4">
+      <p class="text-3xl font-semibold text-brand-800" data-unit="hours">--</p>
+      <p class="mt-1 text-xs uppercase tracking-wide text-slate-500">Horas</p>
+    </div>
+    <div class="rounded-2xl bg-brand-50 px-3 py-4">
+      <p class="text-3xl font-semibold text-brand-800" data-unit="minutes">--</p>
+      <p class="mt-1 text-xs uppercase tracking-wide text-slate-500">Min</p>
+    </div>
+    <div class="rounded-2xl bg-brand-50 px-3 py-4">
+      <p class="text-3xl font-semibold text-brand-800" data-unit="seconds">--</p>
+      <p class="mt-1 text-xs uppercase tracking-wide text-slate-500">Seg</p>
+    </div>
+  </div>
+  <p class="mt-4 text-sm text-slate-600">{label}</p>
+</section>
+
+<script is:inline>
+  const countdownRoots = document.querySelectorAll("[data-countdown-root]");
+  countdownRoots.forEach((root) => {
+    const targetRaw = root.getAttribute("data-countdown-target");
+    if (!targetRaw) return;
+    const target = new Date(targetRaw).getTime();
+    if (Number.isNaN(target)) return;
+
+    const elDays = root.querySelector('[data-unit="days"]');
+    const elHours = root.querySelector('[data-unit="hours"]');
+    const elMinutes = root.querySelector('[data-unit="minutes"]');
+    const elSeconds = root.querySelector('[data-unit="seconds"]');
+    if (!elDays || !elHours || !elMinutes || !elSeconds) return;
+
+    const write = () => {
+      const diff = Math.max(0, target - Date.now());
+      const days = Math.floor(diff / 86400000);
+      const hours = Math.floor((diff % 86400000) / 3600000);
+      const minutes = Math.floor((diff % 3600000) / 60000);
+      const seconds = Math.floor((diff % 60000) / 1000);
+      elDays.textContent = String(days);
+      elHours.textContent = String(hours).padStart(2, "0");
+      elMinutes.textContent = String(minutes).padStart(2, "0");
+      elSeconds.textContent = String(seconds).padStart(2, "0");
+    };
+
+    write();
+    setInterval(write, 1000);
+  });
+</script>
+

@@ -1,0 +1,60 @@
+---
+import Button from "../ui/Button.astro";
+import Badge from "../ui/Badge.astro";
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  description: string;
+  coupleNames: string;
+  dateLabel: string;
+  venueName: string;
+  ctaLabel: string;
+  ctaHref?: string;
+  secondaryLabel: string;
+}
+
+const {
+  eyebrow,
+  title,
+  description,
+  coupleNames,
+  dateLabel,
+  venueName,
+  ctaLabel,
+  ctaHref = "/invite",
+  secondaryLabel
+} = Astro.props;
+---
+
+<section class="surface-card relative overflow-hidden bg-hero px-6 py-12 text-white sm:px-10 sm:py-14">
+  <div class="pointer-events-none absolute inset-0 subtle-grid opacity-20"></div>
+  <div class="relative grid gap-8 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
+    <div>
+      <Badge tone="muted" className="border-white/35 bg-white/15 text-white">
+        {eyebrow}
+      </Badge>
+      <h1 class="mt-5 max-w-2xl text-hero font-semibold text-white">{title}</h1>
+      <p class="mt-4 max-w-2xl text-lead text-sand">{description}</p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <Button href={ctaHref} size="lg">{ctaLabel}</Button>
+        <Button href="#location" variant="ghost" size="lg">{secondaryLabel}</Button>
+      </div>
+    </div>
+
+    <aside class="rounded-3xl border border-white/30 bg-white/12 p-6 backdrop-blur-sm">
+      <p class="font-script text-3xl leading-none text-blush">{coupleNames}</p>
+      <dl class="mt-4 space-y-3 text-sm text-white/95">
+        <div>
+          <dt class="text-xs uppercase tracking-[0.2em] text-white/70">Fecha</dt>
+          <dd class="mt-1 text-base font-semibold">{dateLabel}</dd>
+        </div>
+        <div>
+          <dt class="text-xs uppercase tracking-[0.2em] text-white/70">Lugar</dt>
+          <dd class="mt-1 text-base font-semibold">{venueName}</dd>
+        </div>
+      </dl>
+    </aside>
+  </div>
+</section>
+

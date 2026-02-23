@@ -1,12 +1,28 @@
 ---
 interface Props {
   className?: string;
+  padded?: boolean;
 }
 
-const { className = "" } = Astro.props;
+const { className = "", padded = true } = Astro.props;
+const hasHeader = Astro.slots.has("header");
+const hasContent = Astro.slots.has("content");
 ---
 
 <article class={`surface-card ${className}`.trim()}>
-  <slot />
+  {hasHeader && (
+    <header class={`border-b border-slate-100 ${padded ? "px-5 py-4" : ""}`}>
+      <slot name="header" />
+    </header>
+  )}
+  {hasContent ? (
+    <div class={padded ? "px-5 py-5" : ""}>
+      <slot name="content" />
+    </div>
+  ) : (
+    <div class={padded ? "px-5 py-5" : ""}>
+      <slot />
+    </div>
+  )}
 </article>
 

@@ -3,30 +3,71 @@ import { defineCollection, z } from "astro:content";
 const agenda = defineCollection({
   type: "content",
   schema: z.object({
-    order: z.number().optional(),
-    title: z.string().optional(),
-    time: z.string().optional()
+    order: z.number(),
+    time: z.string(),
+    title: z.string(),
+    location: z.string().optional()
   })
 });
 
 const faq = defineCollection({
   type: "content",
   schema: z.object({
-    question: z.string().optional()
+    question: z.string(),
+    order: z.number()
   })
 });
 
 const recomendaciones = defineCollection({
   type: "content",
   schema: z.object({
-    title: z.string().optional()
+    title: z.string(),
+    order: z.number(),
+    category: z.string()
   })
 });
 
 const site = defineCollection({
   type: "data",
   schema: z.object({
-    title: z.string().optional()
+    coupleNames: z.string(),
+    heroEyebrow: z.string(),
+    heroTitle: z.string(),
+    heroDescription: z.string(),
+    heroCtaLabel: z.string(),
+    heroSecondaryLabel: z.string(),
+    weddingDateIso: z.string(),
+    weddingDateLabel: z.string(),
+    venue: z.object({
+      name: z.string(),
+      address: z.string(),
+      city: z.string(),
+      mapUrl: z.string().url()
+    }),
+    location: z.object({
+      title: z.string(),
+      description: z.string(),
+      photos: z.array(
+        z.object({
+          src: z.string(),
+          alt: z.string(),
+          width: z.number(),
+          height: z.number()
+        })
+      )
+    }),
+    gallery: z.array(
+      z.object({
+        src: z.string(),
+        alt: z.string(),
+        width: z.number(),
+        height: z.number()
+      })
+    ),
+    footerNote: z.string(),
+    faqTitle: z.string(),
+    agendaTitle: z.string(),
+    galleryTitle: z.string()
   })
 });
 

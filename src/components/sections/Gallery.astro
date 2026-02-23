@@ -1,0 +1,138 @@
+---
+interface GalleryImage {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+}
+
+interface Props {
+  title: string;
+  images: GalleryImage[];
+}
+
+const { title, images } = Astro.props;
+---
+
+<section id="gallery" class="mt-14">
+  <h2 class="section-title">{title}</h2>
+  <div class="mt-6 columns-2 gap-3 sm:columns-3 lg:columns-4">
+    {
+      images.map((image, index) => (
+        <button
+          type="button"
+          class="gallery-item mb-3 block w-full overflow-hidden rounded-2xl border border-white/70 bg-white shadow-soft transition hover:-translate-y-0.5 hover:shadow-card"
+          data-lightbox-index={index}
+          data-lightbox-src={image.src}
+          data-lightbox-alt={image.alt}
+          aria-label={`Abrir imagen ${index + 1} de la galería`}
+        >
+          <img
+            src={image.src}
+            alt={image.alt}
+            width={image.width}
+            height={image.height}
+            class="h-auto w-full object-cover"
+            loading="lazy"
+            decoding="async"
+          />
+        </button>
+      ))
+    }
+  </div>
+
+  <div
+    class="lightbox fixed inset-0 z-[70] hidden items-center justify-center bg-slate-950/92 p-4"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Visor de galería"
+    data-lightbox-modal
+  >
+    <button
+      type="button"
+      class="absolute right-4 top-4 rounded-full border border-white/30 bg-white/10 px-3 py-1 text-white"
+      data-lightbox-close
+      aria-label="Cerrar galería"
+    >
+      Cerrar
+    </button>
+    <button
+      type="button"
+      class="absolute left-4 top-1/2 hidden -translate-y-1/2 rounded-full border border-white/30 bg-white/10 px-3 py-2 text-white sm:block"
+      data-lightbox-prev
+      aria-label="Imagen anterior"
+    >
+      ‹
+    </button>
+    <img
+      src=""
+      alt=""
+      class="max-h-[88vh] w-auto max-w-[94vw] rounded-2xl object-contain"
+      data-lightbox-image
+    />
+    <button
+      type="button"
+      class="absolute right-4 top-1/2 hidden -translate-y-1/2 rounded-full border border-white/30 bg-white/10 px-3 py-2 text-white sm:block"
+      data-lightbox-next
+      aria-label="Imagen siguiente"
+    >
+      ›
+    </button>
+  </div>
+</section>
+
+<script is:inline>
+  const items = Array.from(document.querySelectorAll(".gallery-item"));
+  const modal = document.querySelector("[data-lightbox-modal]");
+  const modalImage = document.querySelector("[data-lightbox-image]");
+  const closeButton = document.querySelector("[data-lightbox-close]");
+  const nextButton = document.querySelector("[data-lightbox-next]");
+  const prevButton = document.querySelector("[data-lightbox-prev]");
+
+  if (items.length && modal && modalImage && closeButton && nextButton && prevButton) {
+    let activeIndex = 0;
+
+    const openAt = (index) => {
+      activeIndex = index;
+      const item = items[activeIndex];
+      const src = item.getAttribute("data-lightbox-src") || "";
+      const alt = item.getAttribute("data-lightbox-alt") || "";
+      modalImage.setAttribute("src", src);
+      modalImage.setAttribute("alt", alt);
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+      document.body.style.overflow = "hidden";
+    };
+
+    const close = () => {
+      modal.classList.remove("flex");
+      modal.classList.add("hidden");
+      document.body.style.overflow = "";
+    };
+
+    const move = (step) => {
+      activeIndex = (activeIndex + step + items.length) % items.length;
+      openAt(activeIndex);
+    };
+
+    items.forEach((item, index) => {
+      item.addEventListener("click", () => openAt(index));
+    });
+
+    closeButton.addEventListener("click", close);
+    nextButton.addEventListener("click", () => move(1));
+    prevButton.addEventListener("click", () => move(-1));
+
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) close();
+    });
+
+    window.addEventListener("keydown", (event) => {
+      if (modal.classList.contains("hidden")) return;
+      if (event.key === "Escape") close();
+      if (event.key === "ArrowRight") move(1);
+      if (event.key === "ArrowLeft") move(-1);
+    });
+  }
+</script>
+

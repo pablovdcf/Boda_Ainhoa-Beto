@@ -10,6 +10,23 @@ npm run build
 npm run preview
 ```
 
+## Variables de entorno (`PUBLIC_*`)
+Estas variables se leen en build/runtime cliente. Al ser `PUBLIC_*`, quedan incluidas en el bundle.
+
+| Variable | Requerida | Default local | Uso |
+|---|---|---|---|
+| `PUBLIC_SCRIPT_URL` | Sí (recomendada) | URL actual de GAS | Endpoint base JSONP de GAS. En producción debe terminar en `/exec`. |
+| `PUBLIC_SHARED_SECRET` | Sí | `BodaBetoyainhoa` | Se envía como `secret` en JSONP. |
+| `PUBLIC_ADMIN_KEY` | Sí | `1234abcdxyz` | Se usa en `action=admin_list`. |
+| `PUBLIC_ADMIN_PIN` | Sí | `011222` | Gate UI del panel admin (no seguridad real). |
+| `PUBLIC_JSONP_TIMEOUT_MS` | No | `12000` | Timeout JSONP en milisegundos. |
+
+## Vercel (Production + Preview)
+1. En Vercel Project > Settings > Environment Variables, define todas las `PUBLIC_*` para **Production** y **Preview**.
+2. Usa `PUBLIC_SCRIPT_URL` apuntando a GAS `/exec` para invitados.
+3. `/dev` en GAS es útil para pruebas internas, pero no para tráfico público.
+4. Nota importante: `PUBLIC_*` no oculta secretos; solo evita hardcodes en repositorio.
+
 ## Rutas activas
 - `/`
 - `/invite`
@@ -19,8 +36,8 @@ npm run preview
 
 ## Compatibilidad legacy mantenida
 - Assets legacy en `public/assets/*` (paths preservados: `/assets/...`).
-- Admin legacy sigue cargando en `/admin` (`/assets/admin.js`).
 - RSVP migrado a wizard en Astro (`src/scripts/invite-wizard.ts`) con contrato GAS intacto.
+- Admin migrado a dashboard Astro (`src/scripts/admin-dashboard.ts`) con contrato GAS intacto.
 - API GAS sigue en JSONP (sin romper contrato):
   - `lookup(token)`
   - `rsvp(payload legacy)`
@@ -91,7 +108,7 @@ Edita `src/content/site/landing.json`:
 1. SW principal en `/service-worker.js`.
 2. Cache versionado y limpieza de caches viejas en `activate`.
 3. Navegación con `network-first` para evitar HTML obsoleto tras deploy.
-4. Assets estáticos con `stale-while-revalidate`.
+4. Assets estáticos con `cache-first`.
 5. Fallback offline en `/offline.html`.
 6. `skipWaiting()` + `clients.claim()`.
 7. Compatibilidad legacy con `/assets/service-worker.js` (puente a SW raíz).
@@ -172,3 +189,18 @@ Edita `src/content/site/landing.json`:
 - [ ] Sin red, una navegación carga `offline.html`.
 - [ ] Assets (`/_astro/*`, `/assets/*`, `/icons/*`) quedan cacheados y responden offline cuando aplica.
 - [ ] En DevTools Application > Cache Storage solo queda la cache de versión actual tras activar nuevo SW.
+
+## Fase 6 · Env vars + health check DEV
+- `src/lib/api.ts` ya no hardcodea `SCRIPT_URL`, `SHARED_SECRET`, `ADMIN_KEY`, `JSONP_TIMEOUT_MS`.
+- `PUBLIC_SCRIPT_URL` se normaliza para terminar en `/exec` en producción.
+- `ADMIN_PIN` salió de `api.ts` y ahora vive en `src/lib/admin-config.ts` (`PUBLIC_ADMIN_PIN`).
+- Health check de GAS solo en desarrollo:
+  - `/invite`: log en consola `[DEV][invite] GAS OK` o warning.
+  - `/admin`: log en consola `[DEV][admin] GAS OK` o warning.
+- En producción no se ejecuta el ping DEV.
+
+## Checklist manual · Fase 6
+- [ ] `npm run build` y `npm run preview` funcionan.
+- [ ] `/invite`, `/invite.html`, `/admin`, `/admin.html` siguen operativas.
+- [ ] En `npm run dev`, aparece en consola el health check de GAS (OK o warning).
+- [ ] Contratos JSONP (`lookup`, `rsvp`, `admin_list`, `ping`) sin cambios de acciones/campos.

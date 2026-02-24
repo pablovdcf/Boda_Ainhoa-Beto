@@ -1,5 +1,6 @@
 import {
   apiLookup,
+  apiPing,
   apiRsvp,
   JsonpError,
   type AcompananteData,
@@ -261,6 +262,20 @@ export function initInviteWizard(): void {
     toastTimer = window.setTimeout(() => {
       toast.classList.remove("show");
     }, 4200);
+  }
+
+  async function runDevHealthCheck(): Promise<void> {
+    if (!import.meta.env.DEV) return;
+    try {
+      const result = await apiPing();
+      if (result.ok) {
+        console.info("[DEV][invite] GAS OK");
+      } else {
+        console.warn("[DEV][invite] GAS ping respondió con error:", result.error || "unknown_error");
+      }
+    } catch (error) {
+      console.warn("[DEV][invite] GAS ping falló:", error);
+    }
   }
 
   function setLookupLoading(isLoading: boolean): void {
@@ -985,6 +1000,7 @@ export function initInviteWizard(): void {
   renderStepper();
   renderChoiceStates();
   renderBusBlock();
+  void runDevHealthCheck();
 
   const query = new URLSearchParams(window.location.search);
   const queryToken = normalizeToken(query.get("token") || query.get("t") || "");

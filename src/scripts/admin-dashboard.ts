@@ -1,4 +1,5 @@
-import { API_CONFIG, apiAdminList, type AdminListRow } from "../lib/api";
+import { ADMIN_CONFIG } from "../lib/admin-config";
+import { apiAdminList, apiPing, type AdminListRow } from "../lib/api";
 import { toCsv } from "../lib/format";
 import { safeRead, safeWrite } from "../lib/storage";
 
@@ -279,6 +280,20 @@ export function initAdminDashboard(): void {
     noticeTimer = setTimeout(() => {
       adminNotice.classList.remove("show");
     }, 4000);
+  }
+
+  async function runDevHealthCheck(): Promise<void> {
+    if (!import.meta.env.DEV) return;
+    try {
+      const result = await apiPing();
+      if (result.ok) {
+        console.info("[DEV][admin] GAS OK");
+      } else {
+        console.warn("[DEV][admin] GAS ping respondió con error:", result.error || "unknown_error");
+      }
+    } catch (error) {
+      console.warn("[DEV][admin] GAS ping falló:", error);
+    }
   }
 
   function setLoading(loading: boolean): void {
@@ -720,7 +735,7 @@ export function initAdminDashboard(): void {
   pinForm.addEventListener("submit", (event) => {
     event.preventDefault();
     const pin = pinInput.value.trim();
-    if (pin === API_CONFIG.ADMIN_PIN) {
+    if (pin === ADMIN_CONFIG.ADMIN_PIN) {
       try {
         window.localStorage.setItem("admin_pin", pin);
       } catch {
@@ -739,7 +754,9 @@ export function initAdminDashboard(): void {
   } catch {
     savedPin = "";
   }
-  if (savedPin === API_CONFIG.ADMIN_PIN) {
+  void runDevHealthCheck();
+
+  if (savedPin === ADMIN_CONFIG.ADMIN_PIN) {
     unlockAdmin();
   } else {
     pinGate?.classList.remove("hidden");

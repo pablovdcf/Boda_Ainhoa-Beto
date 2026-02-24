@@ -1,10 +1,40 @@
+const DEFAULT_SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbzhaTjnmF5FaflLFFVUbrw4Xplwl6D1zNP2oHA_zeSvuhd0WTG1Y0MLxsnsO4RMMXmp/exec";
+const DEFAULT_SHARED_SECRET = "BodaBetoyainhoa";
+const DEFAULT_ADMIN_KEY = "1234abcdxyz";
+const DEFAULT_TIMEOUT_MS = 12000;
+
+function ensureExecPathInProd(rawUrl: string): string {
+  const value = String(rawUrl || "").trim() || DEFAULT_SCRIPT_URL;
+  if (!import.meta.env.PROD) return value;
+
+  try {
+    const url = new URL(value);
+    if (url.pathname.endsWith("/exec")) return url.toString();
+    if (url.pathname.endsWith("/dev")) {
+      url.pathname = url.pathname.replace(/\/dev$/, "/exec");
+      return url.toString();
+    }
+    url.pathname = `${url.pathname.replace(/\/$/, "")}/exec`;
+    return url.toString();
+  } catch {
+    if (value.endsWith("/exec")) return value;
+    if (value.endsWith("/dev")) return value.replace(/\/dev$/, "/exec");
+    return `${value.replace(/\/$/, "")}/exec`;
+  }
+}
+
+function parseTimeout(rawTimeout: string | undefined): number {
+  const parsed = Number(rawTimeout);
+  if (!Number.isFinite(parsed) || parsed <= 0) return DEFAULT_TIMEOUT_MS;
+  return Math.floor(parsed);
+}
+
 export const API_CONFIG = {
-  SCRIPT_URL:
-    "https://script.google.com/macros/s/AKfycbzhaTjnmF5FaflLFFVUbrw4Xplwl6D1zNP2oHA_zeSvuhd0WTG1Y0MLxsnsO4RMMXmp/exec",
-  SHARED_SECRET: "BodaBetoyainhoa",
-  ADMIN_PIN: "011222",
-  ADMIN_KEY: "1234abcdxyz",
-  JSONP_TIMEOUT_MS: 12000
+  SCRIPT_URL: ensureExecPathInProd(import.meta.env.PUBLIC_SCRIPT_URL || DEFAULT_SCRIPT_URL),
+  SHARED_SECRET: import.meta.env.PUBLIC_SHARED_SECRET || DEFAULT_SHARED_SECRET,
+  ADMIN_KEY: import.meta.env.PUBLIC_ADMIN_KEY || DEFAULT_ADMIN_KEY,
+  JSONP_TIMEOUT_MS: parseTimeout(import.meta.env.PUBLIC_JSONP_TIMEOUT_MS)
 } as const;
 
 type JsonpValue = string | number | boolean | undefined | null;
@@ -170,4 +200,3 @@ export function apiPing() {
     action: "ping"
   });
 }
-

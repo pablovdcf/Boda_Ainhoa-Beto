@@ -4,16 +4,21 @@ import "../styles/globals.css";
 interface Props {
   title?: string;
   description?: string;
+  theme?: "pro" | "classic";
 }
 
 const {
   title = "Boda · Ainhoa & Alberto",
-  description = "Webapp de invitación, RSVP y panel admin"
+  description = "Webapp de invitación, RSVP y panel admin",
+  theme = "pro"
 } = Astro.props;
+
+const normalizedTheme = theme === "classic" ? "classic" : "pro";
+const themeHref = `/assets/themes/${normalizedTheme}.css`;
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang="es" data-theme={normalizedTheme}>
   <head>
     <meta charset="utf-8" />
     <meta
@@ -33,13 +38,21 @@ const {
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@400;500;600&family=Great+Vibes&display=swap"
       rel="stylesheet"
     />
-    <link id="themeStylesheet" rel="stylesheet" href="/assets/themes/classic.css" />
+    <link id="themeStylesheet" rel="stylesheet" href={themeHref} data-theme={normalizedTheme} />
     <slot name="head" />
   </head>
   <body class="bg-slate-50 text-ink">
     <a href="#main-content" class="skip-link">Saltar al contenido</a>
     <slot />
     <script is:inline>
+      const themeStylesheet = document.getElementById("themeStylesheet");
+      if (themeStylesheet) {
+        themeStylesheet.addEventListener("error", () => {
+          themeStylesheet.setAttribute("href", "/assets/themes/classic.css");
+          themeStylesheet.setAttribute("data-theme", "classic");
+        });
+      }
+
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
           const hadController = Boolean(navigator.serviceWorker.controller);

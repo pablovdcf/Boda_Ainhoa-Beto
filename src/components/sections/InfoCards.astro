@@ -14,13 +14,21 @@ interface Props {
 const { recommendations } = Astro.props;
 ---
 
-<section class="section reveal">
-  <div id="infoGrid" class="landing-container landing-container-md grid md:grid-cols-3 gap-6">
+<section class="section">
+  <div class="landing-container landing-container-lg">
+    <header class="max-w-2xl reveal">
+      <p class="text-xs uppercase tracking-[0.24em] text-slate-500">Información útil</p>
+      <h2 class="font-serif text-3xl md:text-4xl mt-3 text-night">Antes del gran día</h2>
+    </header>
+  </div>
+  <div id="infoGrid" class="landing-container landing-container-lg grid md:grid-cols-3 gap-5 mt-8">
     {
-      recommendations.map((item) => (
-        <div class="card p-6">
-          <h3 class="font-serif text-xl mb-2">{item.data.title}</h3>
-          <p class="text-slate-700">{item.body.trim()}</p>
+      recommendations.map((item, index) => (
+        <div
+          class={`card p-6 pro-info-card reveal ${index === 1 ? "reveal-delay-1" : index > 1 ? "reveal-delay-2" : ""}`.trim()}
+        >
+          <h3 class="font-serif text-xl text-night">{item.data.title}</h3>
+          <p class="text-slate-700 mt-3 leading-relaxed">{item.body.trim()}</p>
         </div>
       ))
     }

@@ -1,19 +1,17 @@
 ---
-import FloralDivider from "../sections/FloralDivider.astro";
 import Wizard from "../invite/Wizard.astro";
 ---
 
 <main id="main-content" class="max-w-5xl mx-auto px-6 py-10">
-  <header class="relative bg-hero text-white hero-florals rounded-2xl overflow-hidden">
-    <div class="absolute inset-0 bg-black/20 md:bg-black/15"></div>
-    <div class="relative max-w-3xl mx-auto px-6 pt-14 pb-12 bg-paper text-center">
-      <p class="uppercase tracking-[.3em] text-champagne/90 text-xs">Confirmación</p>
+  <header class="pro-page-hero">
+    <div class="relative max-w-3xl mx-auto px-6 py-12 text-center">
+      <p class="uppercase tracking-[.3em] text-white/75 text-xs">Confirmación</p>
       <h1 id="heroNames" class="font-serif text-4xl md:text-5xl font-bold mt-2">Ainhoa & Alberto</h1>
-      <p id="heroSub" class="mt-2 text-champagne/90">10 de octubre 2026 · Pazo Torre de Xunqueiras</p>
+      <p id="heroSub" class="mt-2 text-white/85">10 de octubre 2026 · Pazo Torre de Xunqueiras</p>
     </div>
   </header>
 
-  <FloralDivider />
+  <div class="pro-section-gap"></div>
 
   <Wizard />
 </main>

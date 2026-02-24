@@ -18,67 +18,20 @@ interface Props {
 const { title, items } = Astro.props;
 ---
 
-<section id="detalles" class="section reveal">
-  <div class="landing-container landing-container-sm timeline-shell">
-    <h2 class="font-serif text-3xl md:text-4xl mb-8 text-center">{title}</h2>
+<section id="detalles" class="section">
+  <div class="landing-container landing-container-lg">
+    <header class="text-center max-w-2xl mx-auto reveal">
+      <p class="text-xs uppercase tracking-[0.24em] text-slate-500">Agenda</p>
+      <h2 class="font-serif text-3xl md:text-4xl mt-3 text-night">{title}</h2>
+    </header>
 
-    <svg width="0" height="0" style="position: absolute">
-      <symbol id="i-welcome" viewBox="0 0 24 24">
-        <path
-          fill="#0B3B4F"
-          d="M2 13.5l4.5-4.5L11 13.5l-4.5 4.5L2 13.5zm6.5 0L13 9l4.5 4.5L13 18l-4.5-4.5z"
-        ></path>
-        <path fill="#0B3B4F" d="M4 8l2-2 4 4-2 2zM14 6l2-2 4 4-2 2z"></path>
-      </symbol>
-      <symbol id="i-chapel" viewBox="0 0 24 24">
-        <path fill="#0B3B4F" d="M11 2h2v3h2v2h-2v2h6v13h-5v-6H10v6H5V9h6V7h-2V5h2V2z"></path>
-      </symbol>
-      <symbol id="i-toast" viewBox="0 0 24 24">
-        <path
-          fill="#0B3B4F"
-          d="M7 3l3 5-1 7H5l-1-7 3-5zm10 0l3 5-1 7h-4l-1-7 3-5zm-9 13h2v4H8v-4zm8 0h2v4h-2v-4z"
-        ></path>
-      </symbol>
-      <symbol id="i-dinner" viewBox="0 0 24 24">
-        <path fill="#0B3B4F" d="M4 12a8 8 0 0 1 16 0v2H4v-2zm-1 4h18v2H3v-2zm8 3h2v3h-2v-3z"></path>
-      </symbol>
-      <symbol id="i-dance" viewBox="0 0 24 24">
-        <path
-          fill="#0B3B4F"
-          d="M12 3a2 2 0 110 4 2 2 0 010-4zm-3 5h6l2 5-2 1.5V21h-2v-5l-2-1.5L6 12l1-2 2 .5V8z"
-        ></path>
-      </symbol>
-      <symbol id="i-speech" viewBox="0 0 24 24">
-        <path
-          fill="#0B3B4F"
-          d="M5 4h14v10H7l-4 4V6a2 2 0 012-2zm3 4v2h8V8H8zm0 3v2h5v-2H8z"
-        ></path>
-      </symbol>
-      <symbol id="i-fireworks" viewBox="0 0 24 24">
-        <path
-          fill="#0B3B4F"
-          d="M12 2l1.5 4.5L18 3l-3.5 4 4.5 1L15 11l5 1-5 1 4 3-4.5-.5L18 19l-4.5-3.5L12 22l-1.5-4.5L6 21l3.5-4-4.5-1L9 13l-5-1 5-1-4-3 4.5.5L6 5l4.5 3.5z"
-        ></path>
-      </symbol>
-    </svg>
-
-    <ol id="timeline" class="tl">
+    <ol id="timeline" class="pro-agenda-grid mt-10">
       {
-        items.map((item) => (
-          <li class="tl-item reveal">
-            <div class="tl-left">
-              <span class="tl-label">{item.data.label || ""}</span>
-              <span class="tl-time">{item.data.time}</span>
-            </div>
-            <div class="tl-icon">
-              <div class="tl-bullet">
-                <svg><use href={`#${item.data.icon || "i-welcome"}`}></use></svg>
-              </div>
-            </div>
-            <div class="tl-right">
-              <h4>{item.data.title}</h4>
-              <p>{item.body.trim()}</p>
-            </div>
+        items.map((item, index) => (
+          <li class={`pro-agenda-item reveal ${index % 3 === 1 ? "reveal-delay-1" : index % 3 === 2 ? "reveal-delay-2" : ""}`.trim()}>
+            <p class="pro-agenda-time">{item.data.time}</p>
+            <h3 class="font-serif text-xl text-night mt-2">{item.data.title}</h3>
+            <p class="mt-3 text-slate-600 leading-relaxed">{item.body.trim()}</p>
           </li>
         ))
       }

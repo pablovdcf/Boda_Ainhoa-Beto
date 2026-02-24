@@ -19,13 +19,15 @@ interface Props {
 const { title, subtitle, description, mapUrl, mapLabel, address, photos } = Astro.props;
 ---
 
-<section id="locationSection" class="section location-section reveal">
-  <div class="landing-container landing-container-lg grid md:grid-cols-2 gap-10 items-center">
-    <div>
-      <p class="font-serif text-3xl md:text-4xl mb-3" id="locationTitle">{title}</p>
-      <h2 id="locationSubtitle" class="font-serif text-2x1 md:text-2x1 mb-3">{subtitle}</h2>
-      <p id="locationDesc" class="mb-4">{description}</p>
-      <div class="flex flex-wrap gap-3">
+<section id="locationSection" class="section location-section">
+  <div class="landing-container landing-container-lg">
+    <article class="pro-location-shell card p-5 md:p-7">
+      <div class="reveal">
+        <p class="text-xs uppercase tracking-[0.24em] text-slate-500">Ubicación</p>
+        <h2 class="font-serif text-3xl md:text-4xl mt-3 text-night" id="locationTitle">{title}</h2>
+        <p id="locationSubtitle" class="text-slate-700 mt-3">{subtitle}</p>
+        <p id="locationDesc" class="text-slate-600 mt-3">{description}</p>
+        <div class="flex flex-wrap gap-3 mt-5">
         <Button id="mapLink" href={mapUrl} target="_blank" rel="noopener noreferrer">
           {mapLabel}
         </Button>
@@ -37,25 +39,27 @@ const { title, subtitle, description, mapUrl, mapLabel, address, photos } = Astr
         >
           Copiar dirección
         </Button>
+        </div>
+        <p id="copyAddressMsg" class="text-sm text-slate-500 mt-3" aria-live="polite"></p>
       </div>
-      <p id="copyAddressMsg" class="text-sm text-slate-500 mt-3" aria-live="polite"></p>
-    </div>
-    <div id="locationPhotos" class="location-photos">
-      {
-        photos.map((photo, index) => (
-          <div class={`photo ${index === 0 ? "main" : "secondary"}`}>
-            <img
-              src={photo.src}
-              alt={photo.alt}
-              width={photo.width}
-              height={photo.height}
-              loading={index === 0 ? "eager" : "lazy"}
-              decoding="async"
-            />
-          </div>
-        ))
-      }
-    </div>
+
+      <div id="locationPhotos" class="location-photos pro-location-photos reveal reveal-delay-1">
+        {
+          photos.map((photo, index) => (
+            <div class={`photo ${index === 0 ? "main" : "secondary"}`}>
+              <img
+                src={photo.src}
+                alt={photo.alt}
+                width={photo.width}
+                height={photo.height}
+                loading={index === 0 ? "eager" : "lazy"}
+                decoding="async"
+              />
+            </div>
+          ))
+        }
+      </div>
+    </article>
   </div>
 </section>
 

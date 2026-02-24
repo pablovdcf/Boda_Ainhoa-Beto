@@ -1,0 +1,33 @@
+:root {
+  --color-primary: #112f40;
+  --color-primary-dark: #0d2432;
+  --color-accent: #b6905b;
+  --btn-hero-bg: rgba(255, 255, 255, 0.92);
+  --btn-hero-border: rgba(255, 255, 255, 0.92);
+  --btn-hero-hover: rgba(255, 255, 255, 1);
+  --btn-hero-color: #112f40;
+  --btn-hero-outline-color: #ffffff;
+  --card-bg: rgba(255, 255, 255, 0.9);
+  --card-border: rgba(15, 23, 42, 0.08);
+  --ring: rgba(182, 144, 91, 0.5);
+  --notice-success: #0f766e;
+  --notice-info: #0f172a;
+  --notice-warn: #b45309;
+  --floral-color: #b6905b;
+  --hero-gradient: linear-gradient(122deg, #102f40 0%, #174b63 58%, #2a647f 100%);
+  --paper-gradient: radial-gradient(1200px 520px at 50% -230px, rgba(255, 255, 255, 0.2), transparent 68%);
+  --location-bg: linear-gradient(140deg, rgba(255, 255, 255, 0.96), rgba(247, 250, 252, 0.9));
+  --location-heading: #112f40;
+  --location-text: #475569;
+  --location-btn-bg: #112f40;
+  --location-btn-hover: #0d2432;
+  --location-btn-color: #ffffff;
+}
+
+.bg-hero {
+  background-image: var(--hero-gradient) !important;
+}
+
+.bg-paper {
+  background-image: var(--paper-gradient) !important;
+}

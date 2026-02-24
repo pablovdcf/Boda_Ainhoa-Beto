@@ -4,7 +4,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Hero from "../components/sections/Hero.astro";
 import Agenda from "../components/sections/Agenda.astro";
 import Story from "../components/sections/Story.astro";
-import FloralDivider from "../components/sections/FloralDivider.astro";
 import Location from "../components/sections/Location.astro";
 import InfoCards from "../components/sections/InfoCards.astro";
 import Gallery from "../components/sections/Gallery.astro";
@@ -26,6 +25,9 @@ const recommendationItems = (await getCollection("recomendaciones")).sort(
 );
 const infoItems = recommendationItems.slice(0, 3);
 const data = landingEntry.data;
+const heroImageSrc =
+  data.location.photos[0]?.src || data.story.image.src || data.gallery[0]?.src || "/assets/hero.jpg";
+const heroImageAlt = data.location.photos[0]?.alt || data.story.image.alt || data.heroTitle;
 ---
 
 <BaseLayout title="Boda · Ainhoa & Alberto" description={data.heroDescription}>
@@ -38,20 +40,17 @@ const data = landingEntry.data;
       subtitle={data.heroDescription}
       ctaLabel={data.heroCtaLabel}
       ctaHref="/invite"
+      heroImageSrc={heroImageSrc}
+      heroImageAlt={heroImageAlt}
+      secondaryCtaLabel="Ver ubicación"
+      secondaryCtaHref="#locationSection"
     />
 
     <div class="landing-band landing-band-plain">
       <Agenda title={data.agendaTitle} items={agendaItems} />
     </div>
-    <div class="landing-divider-slot">
-      <FloralDivider />
-    </div>
-
     <div class="landing-band landing-band-paper">
       <Story story={data.story} />
-    </div>
-    <div class="landing-divider-slot">
-      <FloralDivider />
     </div>
 
     <div class="landing-band landing-band-mist">
@@ -66,20 +65,11 @@ const data = landingEntry.data;
       />
     </div>
 
-    <div class="landing-divider-slot">
-      <div class="floral-divider"></div>
-    </div>
     <div class="landing-band landing-band-plain">
       <InfoCards recommendations={infoItems} />
     </div>
-    <div class="landing-divider-slot">
-      <div class="floral-divider"></div>
-    </div>
     <div class="landing-band landing-band-paper">
       <Gallery title={data.galleryTitle} images={data.gallery} />
-    </div>
-    <div class="landing-divider-slot">
-      <div class="floral-divider"></div>
     </div>
     <div class="landing-band landing-band-plain">
       <Countdown
@@ -90,9 +80,6 @@ const data = landingEntry.data;
     <div class="landing-band landing-band-mist">
       <FAQ title={data.faqTitle} items={faqItems} />
     </div>
-    <div class="landing-divider-slot">
-      <div class="floral-divider"></div>
-    </div>
     <Footer
       title="¿Vienes a celebrarlo?"
       text="Confirma tu asistencia antes del XX de X."
@@ -100,6 +87,8 @@ const data = landingEntry.data;
       ctaHref="/invite"
     />
   </main>
+
+  <a class="sticky-cta" href="/invite">Confirmar asistencia</a>
 
   <script is:inline>
     (function () {

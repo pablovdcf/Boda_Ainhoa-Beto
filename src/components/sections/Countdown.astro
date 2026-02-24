@@ -7,15 +7,12 @@ interface Props {
 const { targetIso, label } = Astro.props;
 ---
 
-<section class="section reveal" data-countdown-target={targetIso}>
+<section class="section" data-countdown-target={targetIso}>
   <div class="landing-container landing-container-md text-center">
-    <h2 class="font-serif text-3xl md:text-4xl mb-6">
-      <span class="bg-clip-text text-transparent bg-gradient-to-r from-gold via-amber-500 to-pink-500">
-        Cuenta atrás
-      </span>
-    </h2>
+    <p class="text-xs uppercase tracking-[0.24em] text-slate-500 reveal">Cuenta atrás</p>
+    <h2 class="font-serif text-3xl md:text-4xl mt-3 mb-6 text-night reveal">Nos vemos pronto</h2>
 
-    <div id="cd" class="countdown">
+    <div id="cd" class="countdown reveal reveal-delay-1 pro-countdown">
       <div class="unit">
         <div class="num" id="d">--</div>
         <div class="label">Días</div>
@@ -37,7 +34,7 @@ const { targetIso, label } = Astro.props;
       </div>
     </div>
 
-    <p id="countdownMeta" class="mt-5 text-slate-600">{label}</p>
+    <p id="countdownMeta" class="mt-5 text-slate-600 reveal reveal-delay-2">{label}</p>
   </div>
 </section>
 

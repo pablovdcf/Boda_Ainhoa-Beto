@@ -15,15 +15,18 @@ interface Props {
 const { title, items } = Astro.props;
 ---
 
-<section class="section reveal">
+<section class="section">
   <div class="landing-container landing-container-md">
-    <h2 class="font-serif text-3xl mb-6">{title}</h2>
-    <div id="faqList">
+    <header class="reveal">
+      <p class="text-xs uppercase tracking-[0.24em] text-slate-500">FAQ</p>
+      <h2 class="font-serif text-3xl mt-3 mb-6 text-night">{title}</h2>
+    </header>
+    <div id="faqList" class="reveal reveal-delay-1">
       {
         items.map((item, idx) => (
-          <details class={`card p-4 ${idx < items.length - 1 ? "mb-3" : ""}`}>
-            <summary class="cursor-pointer font-medium">{item.data.question}</summary>
-            <div class="mt-2 text-slate-700">{item.body.trim()}</div>
+          <details class={`card p-5 faq-item ${idx < items.length - 1 ? "mb-3" : ""}`}>
+            <summary class="cursor-pointer font-medium text-night">{item.data.question}</summary>
+            <div class="mt-3 text-slate-700 leading-relaxed">{item.body.trim()}</div>
           </details>
         ))
       }

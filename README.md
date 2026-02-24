@@ -83,6 +83,7 @@ Estas variables se leen en build/runtime cliente. Al ser `PUBLIC_*`, quedan incl
 - `src/components/sections/*`
 - `src/lib/api.ts`, `src/lib/storage.ts`, `src/lib/validators.ts`, `src/lib/format.ts`
 - `src/content/*`
+- `public/assets/themes/pro.css` (tema por defecto)
 
 ## Cómo editar contenido (Fase 2B)
 ### Agenda
@@ -131,12 +132,13 @@ Edita `src/content/site/landing.json`:
 - Flujo:
   1. Token gate (manual o `?token=` / `?t=`).
   2. Lookup JSONP (`action=lookup`) con skeleton y manejo de error.
-  3. Pasos de asistencia, acompañantes, menú/alergias, bus/canción y resumen editable.
+  3. Pasos de asistencia, acompañantes, menú/alergias, canción/mensaje y resumen editable.
   4. Submit JSONP (`action=rsvp`) con payload legacy y toasts.
 - Estado local:
   - `lastToken`
   - `draft_rsvp_<token>`
 - Contrato payload preservado: `token`, `asistencia`, `acompanantes`, `acompanantes_nombres`, `menu`, `alergias`, `notas_titular`, `bus`, `cancion`.
+  - En front actual: `bus` ya no se pide en UI y se envía siempre como `false` por compatibilidad backend.
 
 ## Checklist manual · Fase 3
 - [ ] `/invite` sin token muestra token gate.
@@ -155,8 +157,8 @@ Edita `src/content/site/landing.json`:
 - UI gate por PIN en cliente intacto (`admin_pin` en localStorage).
 - Nuevo dashboard:
   - búsqueda por nombre/token/notas/canción
-  - filtros por estado/grupo/bus/menú + chips de filtros activos
-  - KPIs: total, sí, no, pendientes, asistentes estimados, bus sí, acompañantes
+  - filtros por estado/grupo/menú + chips de filtros activos
+  - KPIs: total, sí, no, pendientes, asistentes estimados, acompañantes
   - breakdown de menús y alergias compactas
   - tabla con ordenación por `nombre`, `status`, `totalPersonas`, `menu`
   - cache local `admin_cache_v1` (TTL 5 min) + recarga manual
@@ -165,11 +167,23 @@ Edita `src/content/site/landing.json`:
 ## Checklist manual · Fase 4
 - [ ] Carga inicial de admin y botón retry funcionan.
 - [ ] Búsqueda por nombre/token/notas/canción devuelve resultados correctos.
-- [ ] Filtros por estado/grupo/bus/menú y chips de filtros activos funcionan.
+- [ ] Filtros por estado/grupo/menú y chips de filtros activos funcionan.
 - [ ] KPIs y breakdowns reflejan el conjunto filtrado.
 - [ ] Ordenación por columnas (nombre/estado/total/menu) funciona.
 - [ ] Export CSV abre bien en Excel (BOM + `;` por defecto).
 - [ ] `/admin` y `/admin.html` cargan sin 404 y comparten comportamiento.
+
+## Fase 8 · Landing Pro + bus fuera de UI
+- Landing en tema `pro` por defecto (editorial limpio): `BaseLayout` carga `/assets/themes/pro.css`.
+- Fallback automático a `classic` si falla la carga del tema configurado.
+- Secciones de `/` rediseñadas con ritmo más sobrio: hero limpio, agenda en cards, story editorial, location utilitaria, grid de galería consistente, FAQ discreta y CTA final simplificada.
+- Compatibilidad de contenido intacta: la landing sigue leyendo `src/content/*`.
+- RSVP `/invite` y alias `/invite.html`:
+  - Se eliminó la pregunta de bus y su resumen asociado.
+  - Se mantiene contrato GAS: el payload sigue incluyendo `bus`, fijado a `false`.
+- Admin `/admin` y alias `/admin.html`:
+  - Eliminados filtro/KPI/columna/export de bus.
+  - Si backend devuelve `bus`, el dashboard lo ignora sin romper.
 
 ## Fase 5 · PWA / Service Worker robusto
 - Archivo activo: `public/service-worker.js` (root: `/service-worker.js`).

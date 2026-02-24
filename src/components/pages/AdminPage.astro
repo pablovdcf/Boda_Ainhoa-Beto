@@ -1,8 +1,7 @@
 <main id="main-content" class="max-w-6xl mx-auto px-6 py-10">
-  <header class="relative bg-hero text-white hero-florals rounded-2xl overflow-hidden mb-6">
-    <div class="absolute inset-0 bg-black/20 md:bg-black/15"></div>
-    <div class="relative max-w-3xl mx-auto px-6 py-10 text-center bg-paper">
-      <p class="uppercase tracking-[.3em] text-champagne/90 text-xs">Panel</p>
+  <header class="pro-page-hero mb-6">
+    <div class="relative max-w-3xl mx-auto px-6 py-10 text-center">
+      <p class="uppercase tracking-[.3em] text-white/75 text-xs">Panel</p>
       <h1 class="font-serif text-4xl md:text-5xl font-bold mt-2">Admin</h1>
     </div>
   </header>
@@ -55,13 +54,6 @@
               placeholder="familia, amigos..."
             />
 
-            <label class="text-sm font-medium text-slate-700" for="f_bus">Bus</label>
-            <select id="f_bus" class="rounded-xl border border-slate-300 px-3 py-2">
-              <option value="">Todos</option>
-              <option value="si">Sí</option>
-              <option value="no">No</option>
-            </select>
-
             <label class="text-sm font-medium text-slate-700" for="f_menu">Menú</label>
             <select id="f_menu" class="rounded-xl border border-slate-300 px-3 py-2">
               <option value="">Todos</option>
@@ -111,7 +103,7 @@
       </aside>
 
       <div class="grid gap-4 min-w-0">
-        <section class="grid grid-cols-2 xl:grid-cols-6 gap-3">
+        <section class="grid grid-cols-2 xl:grid-cols-5 gap-3">
           <article class="card p-4">
             <p class="text-xs uppercase tracking-wide text-slate-500">Total invitados</p>
             <p id="k_total" class="text-2xl font-semibold text-night mt-2">—</p>
@@ -131,10 +123,6 @@
           <article class="card p-4">
             <p class="text-xs uppercase tracking-wide text-slate-500">Asistentes estimados</p>
             <p id="k_asistentes" class="text-2xl font-semibold text-night mt-2">—</p>
-          </article>
-          <article class="card p-4">
-            <p class="text-xs uppercase tracking-wide text-slate-500">Bus sí</p>
-            <p id="k_bus" class="text-2xl font-semibold text-night mt-2">—</p>
           </article>
         </section>
 
@@ -183,7 +171,6 @@
                   <th class="p-3 text-left">
                     <button class="admin-sort" data-sort="menu" type="button">Menú</button>
                   </th>
-                  <th class="p-3 text-left">Bus</th>
                   <th class="p-3 text-left">Notas / Canción</th>
                   <th class="p-3 text-left">Actualizado</th>
                   <th class="p-3 text-left">Token</th>

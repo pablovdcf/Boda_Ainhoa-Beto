@@ -12,7 +12,7 @@ import { safeRead, safeRemove, safeWrite } from "../lib/storage";
 import { clampNumber, isValidToken, normalizeToken } from "../lib/validators";
 
 type Asistencia = "" | "si" | "no";
-type StepKey = "asistencia" | "acompanantes" | "menu" | "bus" | "resumen";
+type StepKey = "asistencia" | "acompanantes" | "menu" | "cancion" | "resumen";
 
 interface FormState {
   asistencia: Asistencia;
@@ -49,7 +49,7 @@ const STEP_LABELS: Record<StepKey, string> = {
   asistencia: "Asistencia",
   acompanantes: "Acompañantes",
   menu: "Menú",
-  bus: "Bus y canción",
+  cancion: "Canción",
   resumen: "Resumen"
 };
 
@@ -89,15 +89,6 @@ function toStringValue(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
 }
 
-function toBoolValue(value: unknown): boolean {
-  if (typeof value === "boolean") return value;
-  if (typeof value === "string") {
-    const normalized = value.toLowerCase().trim();
-    return normalized === "true" || normalized === "1" || normalized === "si" || normalized === "sí";
-  }
-  return false;
-}
-
 function normalizeAsistencia(value: unknown): Asistencia {
   const normalized = toStringValue(value).toLowerCase();
   if (normalized === "si" || normalized === "sí") return "si";
@@ -112,7 +103,8 @@ function draftKey(token: string): string {
 function normalizeStep(value: unknown): StepKey {
   if (value === "acompanantes") return "acompanantes";
   if (value === "menu") return "menu";
-  if (value === "bus") return "bus";
+  if (value === "bus") return "cancion";
+  if (value === "cancion") return "cancion";
   if (value === "resumen") return "resumen";
   return "asistencia";
 }
@@ -208,21 +200,17 @@ export function initInviteWizard(): void {
   const btnMenuBack = document.getElementById("btnMenuBack");
   const btnMenuNext = document.getElementById("btnMenuNext");
 
-  const busBlock = document.getElementById("busBlock");
-  const btnBusSi = document.getElementById("btnBusSi");
-  const btnBusNo = document.getElementById("btnBusNo");
   const cancionInput = document.getElementById("cancionInput") as HTMLInputElement | null;
   const notasInput = document.getElementById("notasInput") as HTMLTextAreaElement | null;
-  const errorBus = document.getElementById("errorBus");
-  const btnBusBack = document.getElementById("btnBusBack");
-  const btnBusNext = document.getElementById("btnBusNext");
+  const errorCancion = document.getElementById("errorCancion");
+  const btnCancionBack = document.getElementById("btnCancionBack");
+  const btnCancionNext = document.getElementById("btnCancionNext");
 
   const summaryGuest = document.getElementById("summaryGuest");
   const summaryAsistencia = document.getElementById("summaryAsistencia");
   const summaryAcompanantes = document.getElementById("summaryAcompanantes");
   const summaryMenu = document.getElementById("summaryMenu");
   const summaryAlergias = document.getElementById("summaryAlergias");
-  const summaryBus = document.getElementById("summaryBus");
   const summaryCancion = document.getElementById("summaryCancion");
   const summaryNotas = document.getElementById("summaryNotas");
   const summaryAcompanantesSection = document.getElementById("summaryAcompanantesSection");
@@ -299,9 +287,9 @@ export function initInviteWizard(): void {
 
   function getVisibleSteps(): StepKey[] {
     if (state.form.asistencia === "no") {
-      return ["asistencia", "bus", "resumen"];
+      return ["asistencia", "cancion", "resumen"];
     }
-    return ["asistencia", "acompanantes", "menu", "bus", "resumen"];
+    return ["asistencia", "acompanantes", "menu", "cancion", "resumen"];
   }
 
   function currentStepIndex(): number {
@@ -342,7 +330,7 @@ export function initInviteWizard(): void {
     setError(errorAsistencia, "");
     setError(errorAcompanantes, "");
     setError(errorMenu, "");
-    setError(errorBus, "");
+    setError(errorCancion, "");
     setError(submitError, "");
   }
 
@@ -358,14 +346,7 @@ export function initInviteWizard(): void {
     renderChoiceStates();
     renderAcompanantesMeta();
     renderAcompanantesInputs();
-    renderBusBlock();
     renderStepper();
-    saveDraft();
-  }
-
-  function setBus(value: boolean): void {
-    state.form.bus = value;
-    renderChoiceStates();
     saveDraft();
   }
 
@@ -379,21 +360,6 @@ export function initInviteWizard(): void {
       element.classList.toggle("is-active", active);
       element.setAttribute("aria-pressed", active ? "true" : "false");
     });
-
-    const busButtons = [
-      { element: btnBusSi, active: state.form.bus },
-      { element: btnBusNo, active: !state.form.bus }
-    ];
-    busButtons.forEach(({ element, active }) => {
-      if (!element) return;
-      element.classList.toggle("is-active", active);
-      element.setAttribute("aria-pressed", active ? "true" : "false");
-    });
-  }
-
-  function renderBusBlock(): void {
-    const showBusChoices = state.form.asistencia !== "no";
-    busBlock?.classList.toggle("hidden", !showBusChoices);
   }
 
   function renderAcompanantesMeta(): void {
@@ -489,14 +455,6 @@ export function initInviteWizard(): void {
         : "Alergias: no indicadas";
     }
 
-    if (summaryBus) {
-      if (state.form.asistencia === "no") {
-        summaryBus.textContent = "Bus: no aplica";
-      } else {
-        summaryBus.textContent = state.form.bus ? "Bus: sí" : "Bus: no";
-      }
-    }
-
     if (summaryCancion) {
       summaryCancion.textContent = state.form.cancion
         ? `Canción: ${state.form.cancion}`
@@ -535,7 +493,6 @@ export function initInviteWizard(): void {
 
     renderStepper();
     renderChoiceStates();
-    renderBusBlock();
 
     if (state.currentStep === "resumen") renderSummary();
 
@@ -614,10 +571,10 @@ export function initInviteWizard(): void {
     return true;
   }
 
-  function validateBusCancion(): boolean {
+  function validateCancion(): boolean {
     state.form.cancion = cancionInput ? cancionInput.value.trim() : "";
     state.form.notas_titular = notasInput ? notasInput.value.trim() : "";
-    setError(errorBus, "");
+    setError(errorCancion, "");
     return true;
   }
 
@@ -625,7 +582,7 @@ export function initInviteWizard(): void {
     if (state.currentStep === "asistencia") return validateAsistencia();
     if (state.currentStep === "acompanantes") return validateAcompanantes();
     if (state.currentStep === "menu") return validateMenu();
-    if (state.currentStep === "bus") return validateBusCancion();
+    if (state.currentStep === "cancion") return validateCancion();
     return true;
   }
 
@@ -641,7 +598,7 @@ export function initInviteWizard(): void {
         acompanantes_nombres: [...state.form.acompanantes_nombres],
         menu: state.form.menu,
         alergias: state.form.alergias,
-        bus: state.form.bus,
+        bus: false,
         cancion: state.form.cancion,
         notas_titular: state.form.notas_titular
       },
@@ -671,7 +628,7 @@ export function initInviteWizard(): void {
       );
       state.form.menu = toStringValue(rawForm.menu);
       state.form.alergias = toStringValue(rawForm.alergias);
-      state.form.bus = toBoolValue(rawForm.bus);
+      state.form.bus = false;
       state.form.cancion = toStringValue(rawForm.cancion);
       state.form.notas_titular = toStringValue(rawForm.notas_titular);
     }
@@ -687,7 +644,6 @@ export function initInviteWizard(): void {
     renderChoiceStates();
     renderAcompanantesMeta();
     renderAcompanantesInputs();
-    renderBusBlock();
   }
 
   function setGuestInfo(): void {
@@ -780,9 +736,8 @@ export function initInviteWizard(): void {
       lookupForm.menu = toStringValue(result.data.menu);
       lookupForm.alergias = toStringValue(result.data.alergias);
       lookupForm.notas_titular = toStringValue(result.data.notas_titular);
-
+      lookupForm.bus = false;
       const extraData = result.data as LookupData & Record<string, unknown>;
-      lookupForm.bus = toBoolValue(extraData.bus);
       lookupForm.cancion = toStringValue(extraData.cancion);
 
       const acompNames = extractAcompanantesFromLookup(result.acomp);
@@ -856,7 +811,7 @@ export function initInviteWizard(): void {
         menu: state.form.asistencia === "si" ? state.form.menu : "",
         alergias: state.form.asistencia === "si" ? state.form.alergias : "",
         notas_titular: state.form.notas_titular,
-        bus: state.form.asistencia === "si" ? state.form.bus : false,
+        bus: false,
         cancion: state.form.cancion
       };
 
@@ -955,14 +910,6 @@ export function initInviteWizard(): void {
     goNextStep();
   });
 
-  btnBusSi?.addEventListener("click", () => {
-    setBus(true);
-  });
-
-  btnBusNo?.addEventListener("click", () => {
-    setBus(false);
-  });
-
   cancionInput?.addEventListener("input", () => {
     state.form.cancion = cancionInput.value;
     saveDraft();
@@ -973,12 +920,12 @@ export function initInviteWizard(): void {
     saveDraft();
   });
 
-  btnBusBack?.addEventListener("click", () => {
+  btnCancionBack?.addEventListener("click", () => {
     goPrevStep();
   });
 
-  btnBusNext?.addEventListener("click", () => {
-    if (!validateBusCancion()) return;
+  btnCancionNext?.addEventListener("click", () => {
+    if (!validateCancion()) return;
     goNextStep();
   });
 
@@ -999,7 +946,6 @@ export function initInviteWizard(): void {
 
   renderStepper();
   renderChoiceStates();
-  renderBusBlock();
   void runDevHealthCheck();
 
   const query = new URLSearchParams(window.location.search);

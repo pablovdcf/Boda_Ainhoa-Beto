@@ -11,7 +11,6 @@ interface Filters {
   query: string;
   estado: "" | Status;
   grupo: string;
-  bus: "" | "si" | "no";
   menu: string;
 }
 
@@ -34,7 +33,6 @@ interface NormalizedRow {
   totalPersonas: number;
   menu: string;
   alergias: string;
-  bus: boolean;
   cancion: string;
   notas: string;
   updatedAt: string;
@@ -72,7 +70,6 @@ const DEFAULT_FILTERS: Filters = {
   query: "",
   estado: "",
   grupo: "",
-  bus: "",
   menu: ""
 };
 
@@ -85,12 +82,6 @@ function toStatus(value: unknown): Status {
   if (normalized === "si" || normalized === "sí") return "si";
   if (normalized === "no") return "no";
   return "pendiente";
-}
-
-function toBus(value: unknown): boolean {
-  if (typeof value === "boolean") return value;
-  const normalized = asString(value).toLowerCase();
-  return normalized === "true" || normalized === "1" || normalized === "si" || normalized === "sí";
 }
 
 function toNumber(value: unknown): number {
@@ -118,7 +109,6 @@ function normalizeRow(raw: AdminListRow & Record<string, unknown>): NormalizedRo
   const grupo = asString(raw.grupo);
   const menu = asString(raw.menu).toLowerCase();
   const alergias = asString(raw.alergias);
-  const bus = toBus(raw.bus);
   const cancion = asString(raw.cancion);
   const notas = asString(raw.notas_titular || raw.notas || raw.notes);
   const updatedAt = asString(raw.updated_at || raw.updatedAt || raw.ts || raw.timestamp);
@@ -132,7 +122,6 @@ function normalizeRow(raw: AdminListRow & Record<string, unknown>): NormalizedRo
     totalPersonas,
     menu,
     alergias,
-    bus,
     cancion,
     notas,
     updatedAt,
@@ -207,7 +196,6 @@ export function initAdminDashboard(): void {
   const fSearch = document.getElementById("f_search") as HTMLInputElement | null;
   const fEstado = document.getElementById("f_estado") as HTMLSelectElement | null;
   const fGrupo = document.getElementById("f_grupo") as HTMLInputElement | null;
-  const fBus = document.getElementById("f_bus") as HTMLSelectElement | null;
   const fMenu = document.getElementById("f_menu") as HTMLSelectElement | null;
   const csvDelimiter = document.getElementById("csvDelimiter") as HTMLSelectElement | null;
 
@@ -234,7 +222,6 @@ export function initAdminDashboard(): void {
   const kNo = document.getElementById("k_no");
   const kPend = document.getElementById("k_pend");
   const kAsistentes = document.getElementById("k_asistentes");
-  const kBus = document.getElementById("k_bus");
   const kAcomp = document.getElementById("k_acomp");
   const kAlergias = document.getElementById("k_alergias");
 
@@ -247,7 +234,6 @@ export function initAdminDashboard(): void {
     !fSearch ||
     !fEstado ||
     !fGrupo ||
-    !fBus ||
     !fMenu ||
     !csvDelimiter ||
     !tbody
@@ -339,7 +325,6 @@ export function initAdminDashboard(): void {
     const asistentes = rows
       .filter((row) => row.status === "si")
       .reduce((sum, row) => sum + row.totalPersonas, 0);
-    const totalBus = rows.filter((row) => row.status === "si" && row.bus).length;
     const alergiasRows = rows.filter((row) => row.status === "si" && row.alergias.length > 0).length;
 
     if (kTotal) kTotal.textContent = String(total);
@@ -347,7 +332,6 @@ export function initAdminDashboard(): void {
     if (kNo) kNo.textContent = String(totalNo);
     if (kPend) kPend.textContent = String(totalPend);
     if (kAsistentes) kAsistentes.textContent = String(asistentes);
-    if (kBus) kBus.textContent = String(totalBus);
     if (kAcomp) kAcomp.textContent = String(acompanantesTotales);
     if (kAlergias) kAlergias.textContent = `${alergiasRows} invitado(s) con alergias`;
   }
@@ -406,7 +390,6 @@ export function initAdminDashboard(): void {
       chips.push({ key: "estado", label: `Estado: ${statusLabel(state.filters.estado)}` });
     }
     if (state.filters.grupo) chips.push({ key: "grupo", label: `Grupo: ${state.filters.grupo}` });
-    if (state.filters.bus) chips.push({ key: "bus", label: `Bus: ${state.filters.bus === "si" ? "Sí" : "No"}` });
     if (state.filters.menu) chips.push({ key: "menu", label: `Menú: ${menuLabel(state.filters.menu)}` });
 
     activeFilters.innerHTML = "";
@@ -444,7 +427,7 @@ export function initAdminDashboard(): void {
     if (rows.length === 0) {
       const tr = document.createElement("tr");
       const td = document.createElement("td");
-      td.colSpan = 10;
+      td.colSpan = 9;
       td.className = "p-5 text-center text-slate-500";
       td.textContent = "No hay resultados para los filtros aplicados.";
       tr.appendChild(td);
@@ -470,7 +453,6 @@ export function initAdminDashboard(): void {
       createTextCell(tr, String(rowData.acompanantes), "p-3 align-top text-right text-slate-700");
       createTextCell(tr, String(rowData.totalPersonas), "p-3 align-top text-right text-slate-700");
       createTextCell(tr, menuLabel(rowData.menu), "p-3 align-top text-slate-700");
-      createTextCell(tr, rowData.bus ? "Sí" : "No", "p-3 align-top text-slate-700");
 
       const notesTd = document.createElement("td");
       notesTd.className = "p-3 align-top text-slate-700";
@@ -506,7 +488,6 @@ export function initAdminDashboard(): void {
     if (query) rows = rows.filter((row) => row.searchable.includes(query));
     if (state.filters.estado) rows = rows.filter((row) => row.status === state.filters.estado);
     if (grupo) rows = rows.filter((row) => row.grupo.toLowerCase().includes(grupo));
-    if (state.filters.bus) rows = rows.filter((row) => (state.filters.bus === "si" ? row.bus : !row.bus));
     if (menuFilter) rows = rows.filter((row) => row.menu === menuFilter);
 
     rows.sort((a, b) => compareRows(a, b, state.sort));
@@ -602,7 +583,6 @@ export function initAdminDashboard(): void {
     fSearch.value = "";
     fEstado.value = "";
     fGrupo.value = "";
-    fBus.value = "";
     fMenu.value = "";
     renderAll();
   }
@@ -628,7 +608,6 @@ export function initAdminDashboard(): void {
       "total_personas",
       "menu",
       "alergias",
-      "bus",
       "cancion",
       "notas",
       "actualizado"
@@ -643,7 +622,6 @@ export function initAdminDashboard(): void {
       total_personas: row.totalPersonas,
       menu: menuLabel(row.menu),
       alergias: row.alergias,
-      bus: row.bus ? "si" : "no",
       cancion: row.cancion,
       notas: row.notas,
       actualizado: row.updatedAt
@@ -678,10 +656,6 @@ export function initAdminDashboard(): void {
     state.filters.grupo = fGrupo.value;
     renderAll();
   });
-  fBus.addEventListener("change", () => {
-    state.filters.bus = fBus.value as Filters["bus"];
-    renderAll();
-  });
   fMenu.addEventListener("change", () => {
     state.filters.menu = fMenu.value;
     renderAll();
@@ -714,9 +688,6 @@ export function initAdminDashboard(): void {
     } else if (key === "grupo") {
       fGrupo.value = "";
       state.filters.grupo = "";
-    } else if (key === "bus") {
-      fBus.value = "";
-      state.filters.bus = "";
     } else if (key === "menu") {
       fMenu.value = "";
       state.filters.menu = "";

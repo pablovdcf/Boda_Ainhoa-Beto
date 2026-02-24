@@ -20,7 +20,6 @@ interface FormState {
   acompanantes_nombres: string[];
   menu: string;
   alergias: string;
-  bus: boolean;
   cancion: string;
   notas_titular: string;
 }
@@ -59,7 +58,6 @@ const DEFAULT_FORM: FormState = {
   acompanantes_nombres: [],
   menu: "",
   alergias: "",
-  bus: false,
   cancion: "",
   notas_titular: ""
 };
@@ -79,7 +77,6 @@ function copyDefaultForm(): FormState {
     acompanantes_nombres: [],
     menu: DEFAULT_FORM.menu,
     alergias: DEFAULT_FORM.alergias,
-    bus: DEFAULT_FORM.bus,
     cancion: DEFAULT_FORM.cancion,
     notas_titular: DEFAULT_FORM.notas_titular
   };
@@ -341,7 +338,6 @@ export function initInviteWizard(): void {
       state.form.acompanantes_nombres = [];
       state.form.menu = "";
       state.form.alergias = "";
-      state.form.bus = false;
     }
     renderChoiceStates();
     renderAcompanantesMeta();
@@ -598,7 +594,6 @@ export function initInviteWizard(): void {
         acompanantes_nombres: [...state.form.acompanantes_nombres],
         menu: state.form.menu,
         alergias: state.form.alergias,
-        bus: false,
         cancion: state.form.cancion,
         notas_titular: state.form.notas_titular
       },
@@ -628,7 +623,6 @@ export function initInviteWizard(): void {
       );
       state.form.menu = toStringValue(rawForm.menu);
       state.form.alergias = toStringValue(rawForm.alergias);
-      state.form.bus = false;
       state.form.cancion = toStringValue(rawForm.cancion);
       state.form.notas_titular = toStringValue(rawForm.notas_titular);
     }
@@ -736,7 +730,6 @@ export function initInviteWizard(): void {
       lookupForm.menu = toStringValue(result.data.menu);
       lookupForm.alergias = toStringValue(result.data.alergias);
       lookupForm.notas_titular = toStringValue(result.data.notas_titular);
-      lookupForm.bus = false;
       const extraData = result.data as LookupData & Record<string, unknown>;
       lookupForm.cancion = toStringValue(extraData.cancion);
 
@@ -752,7 +745,6 @@ export function initInviteWizard(): void {
         state.form.acompanantes_nombres = [];
         state.form.menu = "";
         state.form.alergias = "";
-        state.form.bus = false;
       }
 
       syncDomFromState();

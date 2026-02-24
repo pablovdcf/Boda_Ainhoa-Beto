@@ -53,7 +53,12 @@ const themeHref = `/assets/themes/${normalizedTheme}.css`;
         });
       }
 
-      if ("serviceWorker" in navigator) {
+      const isLocalPreview =
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1" ||
+        window.location.hostname === "::1";
+
+      if ("serviceWorker" in navigator && !isLocalPreview) {
         window.addEventListener("load", () => {
           const hadController = Boolean(navigator.serviceWorker.controller);
           let refreshing = false;

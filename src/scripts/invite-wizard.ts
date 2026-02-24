@@ -1,6 +1,7 @@
 import {
   apiLookup,
   apiPing,
+  apiSaveEmail,
   apiRsvp,
   JsonpError,
   type AcompananteData,
@@ -9,15 +10,22 @@ import {
   type RsvpPayload
 } from "../lib/api";
 import { safeRead, safeRemove, safeWrite } from "../lib/storage";
-import { clampNumber, isValidToken, normalizeToken } from "../lib/validators";
+import { clampNumber, isValidEmail, isValidToken, normalizeToken } from "../lib/validators";
 
 type Asistencia = "" | "si" | "no";
 type StepKey = "asistencia" | "acompanantes" | "menu" | "cancion" | "resumen";
 
+interface CompanionForm {
+  nombre: string;
+  menu: string;
+  alergias: string;
+}
+
 interface FormState {
   asistencia: Asistencia;
   acompanantes: number;
-  acompanantes_nombres: string[];
+  acompanantes_nombres: CompanionForm[];
+  email: string;
   menu: string;
   alergias: string;
   cancion: string;
@@ -56,6 +64,7 @@ const DEFAULT_FORM: FormState = {
   asistencia: "",
   acompanantes: 0,
   acompanantes_nombres: [],
+  email: "",
   menu: "",
   alergias: "",
   cancion: "",
@@ -75,6 +84,7 @@ function copyDefaultForm(): FormState {
     asistencia: DEFAULT_FORM.asistencia,
     acompanantes: DEFAULT_FORM.acompanantes,
     acompanantes_nombres: [],
+    email: DEFAULT_FORM.email,
     menu: DEFAULT_FORM.menu,
     alergias: DEFAULT_FORM.alergias,
     cancion: DEFAULT_FORM.cancion,
@@ -122,31 +132,66 @@ function writeLegacyString(key: string, value: string): void {
   }
 }
 
-function extractAcompanantesFromLookup(acomp: LookupResult["acomp"]): string[] {
-  if (!Array.isArray(acomp)) return [];
-  return acomp
-    .map((item) => {
-      if (typeof item === "string") return item.trim();
-      if (item && typeof item === "object") {
-        const nombre = toStringValue(item.nombre);
-        const apellidos = toStringValue(item.apellidos);
-        return `${nombre} ${apellidos}`.trim();
-      }
-      return "";
-    })
-    .filter((value) => value.length > 0);
+function normalizeMenu(value: unknown): string {
+  const normalized = toStringValue(value).toLowerCase();
+  if (!normalized) return "estandar";
+  if (normalized in MENU_LABELS) return normalized;
+  return "otro";
 }
 
-function normalizeNames(rawNames: string[], max: number): string[] {
-  const names = rawNames.map((name) => name.trim());
-  if (names.length > max) return names.slice(0, max);
-  if (names.length < max) return names.concat(Array.from({ length: max - names.length }, () => ""));
-  return names;
+function toCompanion(value: unknown): CompanionForm {
+  if (typeof value === "string") {
+    return {
+      nombre: value.trim(),
+      menu: "estandar",
+      alergias: ""
+    };
+  }
+  if (value && typeof value === "object") {
+    const source = value as Record<string, unknown>;
+    const nombre = `${toStringValue(source.nombre)} ${toStringValue(source.apellidos)}`.trim() || toStringValue(source.nombre);
+    return {
+      nombre,
+      menu: normalizeMenu(source.menu),
+      alergias: toStringValue(source.alergias)
+    };
+  }
+  return {
+    nombre: "",
+    menu: "estandar",
+    alergias: ""
+  };
+}
+
+function extractAcompanantesFromLookup(acomp: LookupResult["acomp"]): CompanionForm[] {
+  if (!Array.isArray(acomp)) return [];
+  return acomp
+    .map((item) => toCompanion(item))
+    .filter((value) => value.nombre.length > 0);
+}
+
+function normalizeCompanions(rawCompanions: unknown[], max: number): CompanionForm[] {
+  const companions = rawCompanions.map((item) => toCompanion(item));
+  if (companions.length > max) return companions.slice(0, max);
+  if (companions.length < max) {
+    return companions.concat(
+      Array.from({ length: max - companions.length }, () => ({
+        nombre: "",
+        menu: "estandar",
+        alergias: ""
+      }))
+    );
+  }
+  return companions;
 }
 
 function safeFocus(element: HTMLElement | null): void {
   if (!element) return;
   window.requestAnimationFrame(() => element.focus());
+}
+
+function normalizeEmail(value: unknown): string {
+  return toStringValue(value).toLowerCase();
 }
 
 export function initInviteWizard(): void {
@@ -191,6 +236,7 @@ export function initInviteWizard(): void {
   const btnAcompanantesBack = document.getElementById("btnAcompanantesBack");
   const btnAcompanantesNext = document.getElementById("btnAcompanantesNext");
 
+  const emailInput = document.getElementById("emailInput") as HTMLInputElement | null;
   const menuInput = document.getElementById("menuInput") as HTMLSelectElement | null;
   const alergiasInput = document.getElementById("alergiasInput") as HTMLTextAreaElement | null;
   const errorMenu = document.getElementById("errorMenu");
@@ -204,6 +250,7 @@ export function initInviteWizard(): void {
   const btnCancionNext = document.getElementById("btnCancionNext");
 
   const summaryGuest = document.getElementById("summaryGuest");
+  const summaryEmail = document.getElementById("summaryEmail");
   const summaryAsistencia = document.getElementById("summaryAsistencia");
   const summaryAcompanantes = document.getElementById("summaryAcompanantes");
   const summaryMenu = document.getElementById("summaryMenu");
@@ -367,7 +414,7 @@ export function initInviteWizard(): void {
   function renderAcompanantesInputs(): void {
     const count = clampNumber(state.form.acompanantes, 0, state.maxAcompanantes);
     state.form.acompanantes = count;
-    state.form.acompanantes_nombres = normalizeNames(state.form.acompanantes_nombres, count);
+    state.form.acompanantes_nombres = normalizeCompanions(state.form.acompanantes_nombres, count);
 
     acompanantesInput.max = String(state.maxAcompanantes);
     acompanantesInput.value = String(count);
@@ -377,25 +424,66 @@ export function initInviteWizard(): void {
 
     for (let index = 0; index < count; index += 1) {
       const wrapper = document.createElement("div");
-      wrapper.className = "rounded-xl border border-slate-200 bg-white/70 p-3";
+      wrapper.className = "rounded-xl border border-slate-200 bg-white/70 p-4";
+
+      const heading = document.createElement("p");
+      heading.className = "text-xs uppercase tracking-[0.14em] text-slate-500";
+      heading.textContent = `Acompañante ${index + 1}`;
 
       const label = document.createElement("label");
       label.htmlFor = `acompananteNombre${index}`;
-      label.className = "text-sm font-medium text-slate-700";
-      label.textContent = `Nombre del acompañante ${index + 1}`;
+      label.className = "text-sm font-medium text-slate-700 mt-3 block";
+      label.textContent = "Nombre";
 
       const input = document.createElement("input");
       input.id = `acompananteNombre${index}`;
       input.type = "text";
       input.className = "mt-2 w-full rounded-xl border border-slate-300 px-3 py-2";
-      input.placeholder = `Acompañante ${index + 1}`;
-      input.value = state.form.acompanantes_nombres[index] || "";
+      input.placeholder = `Nombre del acompañante ${index + 1}`;
+      input.value = state.form.acompanantes_nombres[index]?.nombre || "";
       input.addEventListener("input", () => {
-        state.form.acompanantes_nombres[index] = input.value;
+        state.form.acompanantes_nombres[index].nombre = input.value;
         saveDraft();
       });
 
-      wrapper.append(label, input);
+      const menuLabel = document.createElement("label");
+      menuLabel.htmlFor = `acompananteMenu${index}`;
+      menuLabel.className = "text-sm font-medium text-slate-700 mt-4 block";
+      menuLabel.textContent = "Menú";
+
+      const menuSelect = document.createElement("select");
+      menuSelect.id = `acompananteMenu${index}`;
+      menuSelect.className = "mt-2 w-full rounded-xl border border-slate-300 px-3 py-2";
+      menuSelect.innerHTML = [
+        `<option value="estandar">${MENU_LABELS.estandar}</option>`,
+        `<option value="vegetariano">${MENU_LABELS.vegetariano}</option>`,
+        `<option value="celiaco">${MENU_LABELS.celiaco}</option>`,
+        `<option value="infantil">${MENU_LABELS.infantil}</option>`,
+        `<option value="otro">${MENU_LABELS.otro}</option>`
+      ].join("");
+      menuSelect.value = normalizeMenu(state.form.acompanantes_nombres[index]?.menu);
+      menuSelect.addEventListener("change", () => {
+        state.form.acompanantes_nombres[index].menu = normalizeMenu(menuSelect.value);
+        saveDraft();
+      });
+
+      const alergiasLabel = document.createElement("label");
+      alergiasLabel.htmlFor = `acompananteAlergias${index}`;
+      alergiasLabel.className = "text-sm font-medium text-slate-700 mt-4 block";
+      alergiasLabel.textContent = "Alergias (opcional)";
+
+      const alergias = document.createElement("textarea");
+      alergias.id = `acompananteAlergias${index}`;
+      alergias.rows = 2;
+      alergias.className = "mt-2 w-full rounded-xl border border-slate-300 px-3 py-2";
+      alergias.placeholder = "Intolerancias, alergias...";
+      alergias.value = state.form.acompanantes_nombres[index]?.alergias || "";
+      alergias.addEventListener("input", () => {
+        state.form.acompanantes_nombres[index].alergias = alergias.value;
+        saveDraft();
+      });
+
+      wrapper.append(heading, label, input, menuLabel, menuSelect, alergiasLabel, alergias);
       acompanantesNombres.appendChild(wrapper);
     }
   }
@@ -405,6 +493,11 @@ export function initInviteWizard(): void {
       const guestNameValue = state.data?.nombre || "Invitado";
       const tokenLine = state.token ? ` · Token ${state.token}` : "";
       summaryGuest.textContent = `${guestNameValue}${tokenLine}`;
+    }
+    if (summaryEmail) {
+      summaryEmail.textContent = state.form.email
+        ? `Email (opcional): ${state.form.email}`
+        : "Email: (no indicado)";
     }
 
     if (summaryAsistencia) {
@@ -429,10 +522,18 @@ export function initInviteWizard(): void {
 
       if (total > 0) {
         const list = document.createElement("ul");
-        list.className = "mt-2 list-disc pl-6";
-        state.form.acompanantes_nombres.slice(0, total).forEach((name) => {
+        list.className = "mt-2 space-y-2";
+        state.form.acompanantes_nombres.slice(0, total).forEach((guest) => {
           const item = document.createElement("li");
-          item.textContent = name.trim() || "Sin nombre";
+          item.className = "rounded-lg border border-slate-200 bg-white/70 px-3 py-2 text-sm";
+          const parts = [
+            guest.nombre.trim() || "Sin nombre",
+            `Menú: ${MENU_LABELS[normalizeMenu(guest.menu)] || "Estándar"}`
+          ];
+          if (guest.alergias.trim()) {
+            parts.push(`Alergias: ${guest.alergias.trim()}`);
+          }
+          item.textContent = parts.join(" · ");
           list.appendChild(item);
         });
         summaryAcompanantes.appendChild(list);
@@ -533,15 +634,18 @@ export function initInviteWizard(): void {
 
     const count = clampNumber(acompanantesInput.value, 0, state.maxAcompanantes);
     state.form.acompanantes = count;
-    state.form.acompanantes_nombres = normalizeNames(state.form.acompanantes_nombres, count);
+    state.form.acompanantes_nombres = normalizeCompanions(state.form.acompanantes_nombres, count);
 
     for (let index = 0; index < count; index += 1) {
-      const value = toStringValue(state.form.acompanantes_nombres[index]);
-      if (value.length < 2) {
+      const guest = state.form.acompanantes_nombres[index];
+      const nombre = toStringValue(guest.nombre);
+      if (nombre.length < 2) {
         setError(errorAcompanantes, `Revisa el nombre del acompañante ${index + 1}.`);
         return false;
       }
-      state.form.acompanantes_nombres[index] = value;
+      state.form.acompanantes_nombres[index].nombre = nombre;
+      state.form.acompanantes_nombres[index].menu = normalizeMenu(guest.menu);
+      state.form.acompanantes_nombres[index].alergias = toStringValue(guest.alergias);
     }
 
     setError(errorAcompanantes, "");
@@ -549,14 +653,14 @@ export function initInviteWizard(): void {
   }
 
   function validateMenu(): boolean {
+    const selectedMenu = menuInput ? toStringValue(menuInput.value) : "";
+    state.form.menu = selectedMenu;
+    state.form.alergias = alergiasInput ? alergiasInput.value.trim() : "";
+
     if (state.form.asistencia !== "si") {
       setError(errorMenu, "");
       return true;
     }
-
-    const selectedMenu = menuInput ? toStringValue(menuInput.value) : "";
-    state.form.menu = selectedMenu;
-    state.form.alergias = alergiasInput ? alergiasInput.value.trim() : "";
 
     if (!selectedMenu) {
       setError(errorMenu, "Selecciona el menú para continuar.");
@@ -568,8 +672,18 @@ export function initInviteWizard(): void {
   }
 
   function validateCancion(): boolean {
+    state.form.email = normalizeEmail(emailInput?.value);
     state.form.cancion = cancionInput ? cancionInput.value.trim() : "";
     state.form.notas_titular = notasInput ? notasInput.value.trim() : "";
+
+    if (state.form.email && !isValidEmail(state.form.email)) {
+      setError(
+        errorCancion,
+        "El email no es válido. Puedes continuar y confirmar; no se guardará el email."
+      );
+      return true;
+    }
+
     setError(errorCancion, "");
     return true;
   }
@@ -591,7 +705,12 @@ export function initInviteWizard(): void {
       form: {
         asistencia: state.form.asistencia,
         acompanantes: state.form.acompanantes,
-        acompanantes_nombres: [...state.form.acompanantes_nombres],
+        acompanantes_nombres: state.form.acompanantes_nombres.map((guest) => ({
+          nombre: toStringValue(guest.nombre),
+          menu: normalizeMenu(guest.menu),
+          alergias: toStringValue(guest.alergias)
+        })),
+        email: state.form.email,
         menu: state.form.menu,
         alergias: state.form.alergias,
         cancion: state.form.cancion,
@@ -615,12 +734,11 @@ export function initInviteWizard(): void {
     if (rawForm && typeof rawForm === "object") {
       state.form.asistencia = normalizeAsistencia(rawForm.asistencia);
       state.form.acompanantes = clampNumber(rawForm.acompanantes, 0, state.maxAcompanantes);
-      state.form.acompanantes_nombres = normalizeNames(
-        Array.isArray(rawForm.acompanantes_nombres)
-          ? rawForm.acompanantes_nombres.map((item) => toStringValue(item))
-          : [],
+      state.form.acompanantes_nombres = normalizeCompanions(
+        Array.isArray(rawForm.acompanantes_nombres) ? rawForm.acompanantes_nombres : [],
         state.form.acompanantes
       );
+      state.form.email = toStringValue(rawForm.email).toLowerCase();
       state.form.menu = toStringValue(rawForm.menu);
       state.form.alergias = toStringValue(rawForm.alergias);
       state.form.cancion = toStringValue(rawForm.cancion);
@@ -631,6 +749,7 @@ export function initInviteWizard(): void {
   }
 
   function syncDomFromState(): void {
+    if (emailInput) emailInput.value = state.form.email;
     if (menuInput) menuInput.value = state.form.menu;
     if (alergiasInput) alergiasInput.value = state.form.alergias;
     if (cancionInput) cancionInput.value = state.form.cancion;
@@ -730,12 +849,13 @@ export function initInviteWizard(): void {
       lookupForm.menu = toStringValue(result.data.menu);
       lookupForm.alergias = toStringValue(result.data.alergias);
       lookupForm.notas_titular = toStringValue(result.data.notas_titular);
+      lookupForm.email = toStringValue(result.data.email).toLowerCase();
       const extraData = result.data as LookupData & Record<string, unknown>;
       lookupForm.cancion = toStringValue(extraData.cancion);
 
-      const acompNames = extractAcompanantesFromLookup(result.acomp);
-      lookupForm.acompanantes = clampNumber(acompNames.length, 0, state.maxAcompanantes);
-      lookupForm.acompanantes_nombres = normalizeNames(acompNames, lookupForm.acompanantes);
+      const acompData = extractAcompanantesFromLookup(result.acomp);
+      lookupForm.acompanantes = clampNumber(acompData.length, 0, state.maxAcompanantes);
+      lookupForm.acompanantes_nombres = normalizeCompanions(acompData, lookupForm.acompanantes);
 
       state.form = lookupForm;
 
@@ -768,8 +888,10 @@ export function initInviteWizard(): void {
 
   function buildAcompanantesPayload(): AcompananteData[] {
     if (state.form.asistencia !== "si" || state.form.acompanantes <= 0) return [];
-    return state.form.acompanantes_nombres.slice(0, state.form.acompanantes).map((name) => ({
-      nombre: name.trim()
+    return state.form.acompanantes_nombres.slice(0, state.form.acompanantes).map((guest) => ({
+      nombre: toStringValue(guest.nombre),
+      menu: normalizeMenu(guest.menu),
+      alergias: toStringValue(guest.alergias)
     }));
   }
 
@@ -806,6 +928,30 @@ export function initInviteWizard(): void {
         bus: false,
         cancion: state.form.cancion
       };
+
+      const emailForSave = normalizeEmail(state.form.email);
+      if (emailForSave) {
+        if (isValidEmail(emailForSave)) {
+          try {
+            const saveEmailResult = await apiSaveEmail(state.token, emailForSave);
+            if (saveEmailResult.ok) {
+              showToast("Email guardado.", "success");
+            } else {
+              showToast(
+                "No se pudo guardar el email, pero tu confirmación seguirá adelante.",
+                "warn"
+              );
+            }
+          } catch {
+            showToast("No se pudo guardar el email, pero tu confirmación seguirá adelante.", "warn");
+          }
+        } else {
+          showToast(
+            "El email no es válido. Continuamos igualmente con tu confirmación.",
+            "warn"
+          );
+        }
+      }
 
       const result = await apiRsvp(payload);
       if (!result.ok) {
@@ -885,6 +1031,11 @@ export function initInviteWizard(): void {
 
   menuInput?.addEventListener("change", () => {
     state.form.menu = toStringValue(menuInput.value);
+    saveDraft();
+  });
+
+  emailInput?.addEventListener("input", () => {
+    state.form.email = toStringValue(emailInput.value).toLowerCase();
     saveDraft();
   });
 

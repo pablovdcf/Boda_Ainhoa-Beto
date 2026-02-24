@@ -188,6 +188,14 @@ export function apiRsvp(data: RsvpPayload) {
   });
 }
 
+export function apiSaveEmail(token: string, email: string) {
+  return jsonp<ApiResultBase>({
+    action: "save_email",
+    token,
+    email
+  });
+}
+
 export function apiAdminList() {
   return jsonp<AdminListResult>({
     action: "admin_list",

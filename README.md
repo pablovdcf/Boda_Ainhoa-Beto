@@ -218,3 +218,16 @@ Edita `src/content/site/landing.json`:
 - [ ] `/invite`, `/invite.html`, `/admin`, `/admin.html` siguen operativas.
 - [ ] En `npm run dev`, aparece en consola el health check de GAS (OK o warning).
 - [ ] Contratos JSONP (`lookup`, `rsvp`, `admin_list`, `ping`) sin cambios de acciones/campos.
+
+## Cambio puntual · Invite email opcional (`save_email`)
+- En `/invite` y `/invite.html` se solicita email opcional en el paso "Canción y mensaje".
+- Si hay email válido, se llama `action=save_email` antes de `action=rsvp`.
+- Si `save_email` falla, se muestra warning y el RSVP sigue sin bloquear.
+- Si el email está vacío, no se llama `save_email`.
+- `action=rsvp` mantiene su contrato legacy sin campo extra `email`.
+
+## Checklist manual · Invite email opcional
+- [ ] Lookup con email existente: se precarga en el input y es editable.
+- [ ] Email vacío: no se llama `save_email` y el RSVP confirma correctamente.
+- [ ] Email inválido: se avisa y el RSVP sigue adelante.
+- [ ] `save_email` con error: warning toast y luego confirmación RSVP normal.

@@ -130,3 +130,26 @@ Edita `src/content/site/landing.json`:
 - [ ] Submit envía `action=rsvp` con nombres de campo legacy exactos.
 - [ ] Error de JSONP/timeout muestra toast + mensaje de error y permite reintentar.
 - [ ] Refresh conserva borrador `draft_rsvp_<token>`.
+
+## Fase 4 · Admin overhaul (usabilidad)
+- Rutas activas: `/admin` y `/admin.html` (alias), mismas vistas y mismo bundle Astro.
+- Contrato GAS intacto:
+  - `apiAdminList()` (`action=admin_list` + `adminKey` en `src/lib/api.ts`)
+- UI gate por PIN en cliente intacto (`admin_pin` en localStorage).
+- Nuevo dashboard:
+  - búsqueda por nombre/token/notas/canción
+  - filtros por estado/grupo/bus/menú + chips de filtros activos
+  - KPIs: total, sí, no, pendientes, asistentes estimados, bus sí, acompañantes
+  - breakdown de menús y alergias compactas
+  - tabla con ordenación por `nombre`, `status`, `totalPersonas`, `menu`
+  - cache local `admin_cache_v1` (TTL 5 min) + recarga manual
+  - export CSV filtrado/ordenado con BOM y delimitador configurable (`;` por defecto)
+
+## Checklist manual · Fase 4
+- [ ] Carga inicial de admin y botón retry funcionan.
+- [ ] Búsqueda por nombre/token/notas/canción devuelve resultados correctos.
+- [ ] Filtros por estado/grupo/bus/menú y chips de filtros activos funcionan.
+- [ ] KPIs y breakdowns reflejan el conjunto filtrado.
+- [ ] Ordenación por columnas (nombre/estado/total/menu) funciona.
+- [ ] Export CSV abre bien en Excel (BOM + `;` por defecto).
+- [ ] `/admin` y `/admin.html` cargan sin 404 y comparten comportamiento.

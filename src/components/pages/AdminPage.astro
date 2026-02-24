@@ -1,4 +1,4 @@
-<main id="main-content" class="max-w-5xl mx-auto px-6 py-10">
+<main id="main-content" class="max-w-6xl mx-auto px-6 py-10">
   <header class="relative bg-hero text-white hero-florals rounded-2xl overflow-hidden mb-6">
     <div class="absolute inset-0 bg-black/20 md:bg-black/15"></div>
     <div class="relative max-w-3xl mx-auto px-6 py-10 text-center bg-paper">
@@ -8,11 +8,16 @@
   </header>
 
   <section id="pinGate" class="card p-5 mb-6">
-    <form id="pinForm" class="flex gap-2 max-w-sm">
+    <h2 class="font-serif text-2xl text-night">Acceso admin</h2>
+    <p class="mt-2 text-sm text-slate-600">
+      Este PIN solo oculta el panel en cliente. No sustituye seguridad real en backend.
+    </p>
+    <form id="pinForm" class="flex flex-wrap gap-2 mt-4 max-w-sm">
+      <label for="pinInput" class="sr-only">PIN de admin</label>
       <input
         id="pinInput"
         type="password"
-        class="flex-1 rounded border px-3 py-2"
+        class="flex-1 rounded-xl border border-slate-300 px-3 py-2"
         placeholder="PIN de admin"
       />
       <button class="btn">Entrar</button>
@@ -20,60 +25,183 @@
     <p id="pinError" class="text-red-600 text-sm mt-2 hidden">PIN incorrecto.</p>
   </section>
 
-  <section id="content" class="hidden">
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-      <div class="card p-3">
-        <div class="text-slate-500 text-sm">Total invitados</div>
-        <div id="k_total" class="text-xl font-semibold">—</div>
-      </div>
-      <div class="card p-3">
-        <div class="text-slate-500 text-sm">Asisten (sí)</div>
-        <div id="k_si" class="text-xl font-semibold">—</div>
-      </div>
-      <div class="card p-3">
-        <div class="text-slate-500 text-sm">No asisten</div>
-        <div id="k_no" class="text-xl font-semibold">—</div>
-      </div>
-      <div class="card p-3">
-        <div class="text-slate-500 text-sm">Acompañantes</div>
-        <div id="k_acomp" class="text-xl font-semibold">—</div>
-      </div>
-    </div>
+  <section id="adminApp" class="hidden">
+    <div class="grid gap-5 lg:grid-cols-[320px_minmax(0,1fr)] items-start">
+      <aside class="grid gap-4">
+        <section class="card p-5">
+          <h2 class="font-serif text-2xl text-night">Controles</h2>
+          <div class="grid gap-3 mt-4">
+            <label class="text-sm font-medium text-slate-700" for="f_search">Búsqueda</label>
+            <input
+              id="f_search"
+              type="text"
+              class="rounded-xl border border-slate-300 px-3 py-2"
+              placeholder="Nombre, token, notas o canción…"
+            />
 
-    <div class="flex flex-wrap gap-2 items-end mb-3">
-      <label class="text-sm"
-        >Estado
-        <select id="f_estado" class="rounded border px-2 py-1">
-          <option value="">Todos</option>
-          <option value="si">Sí</option>
-          <option value="no">No</option>
-          <option value="pendiente">Pendiente</option>
-        </select>
-      </label>
-      <label class="text-sm"
-        >Grupo
-        <input id="f_grupo" class="rounded border px-2 py-1" placeholder="familia, amigos..." />
-      </label>
-      <button id="btnExport" class="btn ml-auto">Export CSV</button>
-    </div>
+            <label class="text-sm font-medium text-slate-700" for="f_estado">Asistencia</label>
+            <select id="f_estado" class="rounded-xl border border-slate-300 px-3 py-2">
+              <option value="">Todas</option>
+              <option value="si">Sí</option>
+              <option value="no">No</option>
+              <option value="pendiente">Pendiente</option>
+            </select>
 
-    <div class="overflow-auto card">
-      <table class="min-w-full text-sm">
-        <thead class="bg-slate-100">
-          <tr>
-            <th class="text-left p-2">Nombre</th>
-            <th class="text-left p-2">Grupo</th>
-            <th class="text-left p-2">Estado</th>
-            <th class="text-right p-2">Acomp.</th>
-            <th class="text-left p-2">Menú</th>
-            <th class="text-left p-2">Alergias</th>
-            <th class="text-left p-2">Bus</th>
-            <th class="text-left p-2">Token</th>
-          </tr>
-        </thead>
-        <tbody id="tbody"></tbody>
-      </table>
+            <label class="text-sm font-medium text-slate-700" for="f_grupo">Grupo</label>
+            <input
+              id="f_grupo"
+              type="text"
+              class="rounded-xl border border-slate-300 px-3 py-2"
+              placeholder="familia, amigos..."
+            />
+
+            <label class="text-sm font-medium text-slate-700" for="f_bus">Bus</label>
+            <select id="f_bus" class="rounded-xl border border-slate-300 px-3 py-2">
+              <option value="">Todos</option>
+              <option value="si">Sí</option>
+              <option value="no">No</option>
+            </select>
+
+            <label class="text-sm font-medium text-slate-700" for="f_menu">Menú</label>
+            <select id="f_menu" class="rounded-xl border border-slate-300 px-3 py-2">
+              <option value="">Todos</option>
+              <option value="estandar">Estándar</option>
+              <option value="vegetariano">Vegetariano</option>
+              <option value="celiaco">Celíaco</option>
+              <option value="infantil">Infantil</option>
+              <option value="otro">Otro</option>
+            </select>
+
+            <label class="text-sm font-medium text-slate-700" for="csvDelimiter">
+              Delimitador CSV
+            </label>
+            <select id="csvDelimiter" class="rounded-xl border border-slate-300 px-3 py-2">
+              <option value=";" selected>;</option>
+              <option value=",">,</option>
+            </select>
+          </div>
+
+          <div class="mt-4 flex flex-wrap gap-2">
+            <button id="btnRefresh" type="button" class="btn">Recargar</button>
+            <button id="btnClearFilters" type="button" class="btn btn-outline">Limpiar</button>
+            <button id="btnExport" type="button" class="btn btn-outline ml-auto">Export CSV</button>
+          </div>
+        </section>
+
+        <section class="card p-5">
+          <h3 class="font-serif text-xl text-night">Filtros activos</h3>
+          <div id="activeFilters" class="mt-3 flex flex-wrap gap-2 text-sm"></div>
+        </section>
+
+        <section id="adminError" class="card p-5 hidden">
+          <h3 class="font-serif text-xl text-night">No se pudo cargar el listado</h3>
+          <p id="adminErrorText" class="mt-2 text-sm text-slate-600"></p>
+          <button id="btnRetry" type="button" class="btn mt-4">Reintentar</button>
+        </section>
+
+        <section id="adminSkeleton" class="card p-5 hidden">
+          <p class="text-slate-600">Cargando datos…</p>
+          <div class="grid gap-2 mt-3">
+            <div class="h-4 rounded-lg bg-slate-200 animate-pulse"></div>
+            <div class="h-4 rounded-lg bg-slate-200 animate-pulse"></div>
+            <div class="h-4 rounded-lg bg-slate-200 animate-pulse"></div>
+            <div class="h-4 rounded-lg bg-slate-200 animate-pulse"></div>
+          </div>
+        </section>
+      </aside>
+
+      <div class="grid gap-4 min-w-0">
+        <section class="grid grid-cols-2 xl:grid-cols-6 gap-3">
+          <article class="card p-4">
+            <p class="text-xs uppercase tracking-wide text-slate-500">Total invitados</p>
+            <p id="k_total" class="text-2xl font-semibold text-night mt-2">—</p>
+          </article>
+          <article class="card p-4">
+            <p class="text-xs uppercase tracking-wide text-slate-500">Sí</p>
+            <p id="k_si" class="text-2xl font-semibold text-emerald-700 mt-2">—</p>
+          </article>
+          <article class="card p-4">
+            <p class="text-xs uppercase tracking-wide text-slate-500">No</p>
+            <p id="k_no" class="text-2xl font-semibold text-rose-700 mt-2">—</p>
+          </article>
+          <article class="card p-4">
+            <p class="text-xs uppercase tracking-wide text-slate-500">Pendientes</p>
+            <p id="k_pend" class="text-2xl font-semibold text-amber-700 mt-2">—</p>
+          </article>
+          <article class="card p-4">
+            <p class="text-xs uppercase tracking-wide text-slate-500">Asistentes estimados</p>
+            <p id="k_asistentes" class="text-2xl font-semibold text-night mt-2">—</p>
+          </article>
+          <article class="card p-4">
+            <p class="text-xs uppercase tracking-wide text-slate-500">Bus sí</p>
+            <p id="k_bus" class="text-2xl font-semibold text-night mt-2">—</p>
+          </article>
+        </section>
+
+        <section class="card p-5">
+          <h3 class="font-serif text-2xl text-night">Breakdown rápido</h3>
+          <div class="mt-4 grid md:grid-cols-3 gap-4">
+            <article class="rounded-xl border border-slate-200 bg-white/65 p-3">
+              <p class="text-sm font-medium text-slate-700">Menús</p>
+              <ul id="breakdownMenu" class="mt-2 text-sm text-slate-600 space-y-1"></ul>
+            </article>
+            <article class="rounded-xl border border-slate-200 bg-white/65 p-3">
+              <p class="text-sm font-medium text-slate-700">Alergias</p>
+              <p id="k_alergias" class="mt-2 text-sm text-slate-600">—</p>
+              <ul id="breakdownAlergias" class="mt-2 text-sm text-slate-600 space-y-1"></ul>
+            </article>
+            <article class="rounded-xl border border-slate-200 bg-white/65 p-3">
+              <p class="text-sm font-medium text-slate-700">Acompañantes totales</p>
+              <p id="k_acomp" class="mt-2 text-2xl font-semibold text-night">—</p>
+              <p id="cacheHint" class="mt-2 text-xs text-slate-500"></p>
+            </article>
+          </div>
+        </section>
+
+        <section class="card p-0 overflow-hidden">
+          <div class="px-5 py-4 border-b border-slate-200 flex flex-wrap items-center gap-3">
+            <h3 class="font-serif text-2xl text-night">Invitados</h3>
+            <p id="resultCount" class="text-sm text-slate-500 ml-auto"></p>
+          </div>
+          <div class="overflow-auto max-h-[70vh]">
+            <table class="min-w-full text-sm admin-table">
+              <thead class="bg-slate-100 sticky top-0 z-10">
+                <tr>
+                  <th class="p-3 text-left">
+                    <button class="admin-sort" data-sort="nombre" type="button">Nombre</button>
+                  </th>
+                  <th class="p-3 text-left">Grupo</th>
+                  <th class="p-3 text-left">
+                    <button class="admin-sort" data-sort="status" type="button">Estado</button>
+                  </th>
+                  <th class="p-3 text-right">Acomp.</th>
+                  <th class="p-3 text-right">
+                    <button class="admin-sort" data-sort="totalPersonas" type="button">
+                      Total personas
+                    </button>
+                  </th>
+                  <th class="p-3 text-left">
+                    <button class="admin-sort" data-sort="menu" type="button">Menú</button>
+                  </th>
+                  <th class="p-3 text-left">Bus</th>
+                  <th class="p-3 text-left">Notas / Canción</th>
+                  <th class="p-3 text-left">Actualizado</th>
+                  <th class="p-3 text-left">Token</th>
+                </tr>
+              </thead>
+              <tbody id="tbody"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
     </div>
   </section>
+
+  <div id="adminNotice" class="notice-banner info" role="status" aria-live="polite"></div>
 </main>
 
+<script>
+  import { initAdminDashboard } from "../../scripts/admin-dashboard";
+
+  initAdminDashboard();
+</script>

@@ -15,8 +15,8 @@ interface Props {
 const { title, items } = Astro.props;
 ---
 
-<section class="section bg-white reveal">
-  <div class="max-w-4xl mx-auto px-6">
+<section class="section reveal">
+  <div class="landing-container landing-container-md">
     <h2 class="font-serif text-3xl mb-6">{title}</h2>
     <div id="faqList">
       {
@@ -30,4 +30,3 @@ const { title, items } = Astro.props;
     </div>
   </div>
 </section>
-

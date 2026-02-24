@@ -31,7 +31,7 @@ const data = landingEntry.data;
 <BaseLayout title="Boda · Ainhoa & Alberto" description={data.heroDescription}>
   <div id="noticeBanner" class="notice-banner" role="status" aria-live="polite"></div>
 
-  <main id="main-content" class="section-wrap">
+  <main id="main-content" class="section-wrap landing-editorial">
     <Hero
       eyebrow={data.heroEyebrow}
       title={data.heroTitle}
@@ -40,32 +40,59 @@ const data = landingEntry.data;
       ctaHref="/invite"
     />
 
-    <Agenda title={data.agendaTitle} items={agendaItems} />
-    <FloralDivider />
-    <Story story={data.story} />
-    <FloralDivider />
+    <div class="landing-band landing-band-plain">
+      <Agenda title={data.agendaTitle} items={agendaItems} />
+    </div>
+    <div class="landing-divider-slot">
+      <FloralDivider />
+    </div>
 
-    <Location
-      title={data.location.title}
-      subtitle={data.location.subtitle}
-      description={data.location.description}
-      mapUrl={data.venue.mapUrl}
-      mapLabel={data.locationButtonLabel}
-      address={`${data.venue.address}, ${data.venue.city}`}
-      photos={data.location.photos}
-    />
+    <div class="landing-band landing-band-paper">
+      <Story story={data.story} />
+    </div>
+    <div class="landing-divider-slot">
+      <FloralDivider />
+    </div>
 
-    <div class="floral-divider my-10"></div>
-    <InfoCards recommendations={infoItems} />
-    <div class="floral-divider my-10"></div>
-    <Gallery title={data.galleryTitle} images={data.gallery} />
-    <div class="floral-divider my-10"></div>
-    <Countdown
-      targetIso={data.weddingDateIso}
-      label={`${data.weddingDateLabel} — ${data.venueLine}`}
-    />
-    <FAQ title={data.faqTitle} items={faqItems} />
-    <div class="floral-divider my-10"></div>
+    <div class="landing-band landing-band-mist">
+      <Location
+        title={data.location.title}
+        subtitle={data.location.subtitle}
+        description={data.location.description}
+        mapUrl={data.venue.mapUrl}
+        mapLabel={data.locationButtonLabel}
+        address={`${data.venue.address}, ${data.venue.city}`}
+        photos={data.location.photos}
+      />
+    </div>
+
+    <div class="landing-divider-slot">
+      <div class="floral-divider"></div>
+    </div>
+    <div class="landing-band landing-band-plain">
+      <InfoCards recommendations={infoItems} />
+    </div>
+    <div class="landing-divider-slot">
+      <div class="floral-divider"></div>
+    </div>
+    <div class="landing-band landing-band-paper">
+      <Gallery title={data.galleryTitle} images={data.gallery} />
+    </div>
+    <div class="landing-divider-slot">
+      <div class="floral-divider"></div>
+    </div>
+    <div class="landing-band landing-band-plain">
+      <Countdown
+        targetIso={data.weddingDateIso}
+        label={`${data.weddingDateLabel} — ${data.venueLine}`}
+      />
+    </div>
+    <div class="landing-band landing-band-mist">
+      <FAQ title={data.faqTitle} items={faqItems} />
+    </div>
+    <div class="landing-divider-slot">
+      <div class="floral-divider"></div>
+    </div>
     <Footer
       title="¿Vienes a celebrarlo?"
       text="Confirma tu asistencia antes del XX de X."

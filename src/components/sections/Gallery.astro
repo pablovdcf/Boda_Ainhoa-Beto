@@ -14,8 +14,8 @@ interface Props {
 const { title, images } = Astro.props;
 ---
 
-<section id="galeria" class="section bg-white reveal">
-  <div class="max-w-6xl mx-auto px-6">
+<section id="galeria" class="section reveal">
+  <div class="landing-container landing-container-lg">
     <h2 class="font-serif text-3xl md:text-4xl mb-6 text-center">{title}</h2>
 
     <div id="galleryGrid" class="masonry">
@@ -107,4 +107,3 @@ const { title, images } = Astro.props;
     bindGrid();
   })();
 </script>
-

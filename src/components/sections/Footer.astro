@@ -12,10 +12,9 @@ const { title, text, ctaLabel, ctaHref } = Astro.props;
 ---
 
 <footer class="section bg-hero text-white reveal">
-  <div class="max-w-4xl mx-auto px-6 text-center">
+  <div class="landing-container landing-container-md text-center">
     <h3 id="finalCtaTitle" class="font-serif text-3xl md:text-4xl font-bold">{title}</h3>
     <p id="finalCtaText" class="mt-3 text-champagne/90">{text}</p>
     <Button id="finalCtaBtn" href={ctaHref} className="mt-6">{ctaLabel}</Button>
   </div>
 </footer>
-

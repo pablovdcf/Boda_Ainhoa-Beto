@@ -1,0 +1,41 @@
+---
+import Stepper from "./Stepper.astro";
+import TokenGate from "./TokenGate.astro";
+import StepAsistencia from "./StepAsistencia.astro";
+import StepAcompanantes from "./StepAcompanantes.astro";
+import StepMenu from "./StepMenu.astro";
+import StepBusCancion from "./StepBusCancion.astro";
+import StepResumen from "./StepResumen.astro";
+import Toast from "../ui/Toast.astro";
+---
+
+<section id="inviteWizardRoot" class="mx-auto max-w-3xl">
+  <Stepper />
+  <TokenGate />
+
+  <form id="wizardForm" class="hidden" novalidate>
+    <StepAsistencia />
+    <StepAcompanantes />
+    <StepMenu />
+    <StepBusCancion />
+    <StepResumen />
+  </form>
+
+  <section id="wizardSuccess" class="card p-6 mt-6 hidden">
+    <h2 class="font-serif text-2xl text-night">Respuesta registrada</h2>
+    <p class="mt-2 text-slate-700">
+      Hemos guardado tu confirmación correctamente. Si necesitas cambiarla, escríbenos.
+    </p>
+    <div class="mt-4">
+      <a href="/" class="btn">Volver a la portada</a>
+    </div>
+  </section>
+
+  <Toast id="inviteToast" />
+</section>
+
+<script>
+  import { initInviteWizard } from "../../scripts/invite-wizard";
+
+  initInviteWizard();
+</script>

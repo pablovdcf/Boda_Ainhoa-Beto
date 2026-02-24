@@ -1,0 +1,33 @@
+<section class="wizard-step card p-6 mt-6 hidden" data-step="asistencia">
+  <p class="uppercase tracking-[.24em] text-[11px] text-slate-500">Paso 1</p>
+  <h2 class="font-serif text-2xl text-night mt-2">¿Vienes a la boda?</h2>
+
+  <div class="mt-5 grid gap-3 sm:grid-cols-2">
+    <button
+      id="btnAsistenciaSi"
+      type="button"
+      class="choice-btn"
+      data-choice-group="asistencia"
+      data-choice-value="si"
+      aria-pressed="false"
+    >
+      Sí, allí estaré
+    </button>
+    <button
+      id="btnAsistenciaNo"
+      type="button"
+      class="choice-btn"
+      data-choice-group="asistencia"
+      data-choice-value="no"
+      aria-pressed="false"
+    >
+      No puedo asistir
+    </button>
+  </div>
+
+  <p id="errorAsistencia" class="hidden mt-3 text-sm text-rose-600" role="alert"></p>
+
+  <div class="mt-6 flex flex-wrap justify-end gap-2">
+    <button id="btnAsistenciaNext" type="button" class="btn">Siguiente</button>
+  </div>
+</section>

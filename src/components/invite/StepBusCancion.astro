@@ -1,0 +1,59 @@
+<section class="wizard-step card p-6 mt-6 hidden" data-step="bus">
+  <p class="uppercase tracking-[.24em] text-[11px] text-slate-500">Paso 4</p>
+  <h2 class="font-serif text-2xl text-night mt-2">Bus y canción</h2>
+
+  <div id="busBlock" class="mt-4">
+    <p class="text-sm font-medium text-slate-700">¿Necesitas plaza de bus?</p>
+    <div class="mt-2 grid gap-3 sm:grid-cols-2">
+      <button
+        id="btnBusSi"
+        type="button"
+        class="choice-btn"
+        data-choice-group="bus"
+        data-choice-value="si"
+        aria-pressed="false"
+      >
+        Sí, me apunto al bus
+      </button>
+      <button
+        id="btnBusNo"
+        type="button"
+        class="choice-btn"
+        data-choice-group="bus"
+        data-choice-value="no"
+        aria-pressed="false"
+      >
+        No, voy por mi cuenta
+      </button>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <label for="cancionInput" class="text-sm font-medium text-slate-700">Tu canción (opcional)</label>
+    <input
+      id="cancionInput"
+      type="text"
+      class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2"
+      placeholder="Título - Artista"
+    />
+  </div>
+
+  <div class="mt-4">
+    <label for="notasInput" class="text-sm font-medium text-slate-700">
+      Mensaje para los novios (opcional)
+    </label>
+    <textarea
+      id="notasInput"
+      rows="3"
+      class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2"
+      placeholder="Si quieres añadir algo más, escríbelo aquí."
+    ></textarea>
+  </div>
+
+  <p id="errorBus" class="hidden mt-3 text-sm text-rose-600" role="alert"></p>
+
+  <div class="mt-6 flex flex-wrap justify-between gap-2">
+    <button id="btnBusBack" type="button" class="btn btn-outline">Volver</button>
+    <button id="btnBusNext" type="button" class="btn">Siguiente</button>
+  </div>
+</section>

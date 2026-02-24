@@ -19,7 +19,8 @@ npm run preview
 
 ## Compatibilidad legacy mantenida
 - Assets legacy en `public/assets/*` (paths preservados: `/assets/...`).
-- Scripts RSVP/Admin legacy siguen cargando en `/invite` y `/admin`.
+- Admin legacy sigue cargando en `/admin` (`/assets/admin.js`).
+- RSVP migrado a wizard en Astro (`src/scripts/invite-wizard.ts`) con contrato GAS intacto.
 - API GAS sigue en JSONP (sin romper contrato):
   - `lookup(token)`
   - `rsvp(payload legacy)`
@@ -107,3 +108,25 @@ Edita `src/content/site/landing.json`:
 - [ ] FAQ renderizada con `<details class="card">` visual legacy.
 - [ ] `/invite`, `/invite.html`, `/admin`, `/admin.html` con look coherente (cards + btn + header hero).
 
+## Fase 3 · RSVP Wizard (UX pro)
+- Ruta activa: `/invite` y alias `/invite.html`.
+- Carga del wizard: módulo Astro generado en `/_astro/Wizard.astro_astro_type_script_*.js`.
+- Flujo:
+  1. Token gate (manual o `?token=` / `?t=`).
+  2. Lookup JSONP (`action=lookup`) con skeleton y manejo de error.
+  3. Pasos de asistencia, acompañantes, menú/alergias, bus/canción y resumen editable.
+  4. Submit JSONP (`action=rsvp`) con payload legacy y toasts.
+- Estado local:
+  - `lastToken`
+  - `draft_rsvp_<token>`
+- Contrato payload preservado: `token`, `asistencia`, `acompanantes`, `acompanantes_nombres`, `menu`, `alergias`, `notas_titular`, `bus`, `cancion`.
+
+## Checklist manual · Fase 3
+- [ ] `/invite` sin token muestra token gate.
+- [ ] `/invite?t=TOKEN_VALIDO` dispara lookup automático.
+- [ ] `plazas_max` limita acompañantes a `plazas_max - 1`.
+- [ ] Si acompañantes > 0, nombres obligatorios (>= 2 chars).
+- [ ] Resumen permite editar secciones y volver al paso correcto.
+- [ ] Submit envía `action=rsvp` con nombres de campo legacy exactos.
+- [ ] Error de JSONP/timeout muestra toast + mensaje de error y permite reintentar.
+- [ ] Refresh conserva borrador `draft_rsvp_<token>`.

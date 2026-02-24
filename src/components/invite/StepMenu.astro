@@ -1,0 +1,35 @@
+<section class="wizard-step card p-6 mt-6 hidden" data-step="menu">
+  <p class="uppercase tracking-[.24em] text-[11px] text-slate-500">Paso 3</p>
+  <h2 class="font-serif text-2xl text-night mt-2">Menú y alergias</h2>
+
+  <div class="mt-4 grid gap-4">
+    <div>
+      <label for="menuInput" class="text-sm font-medium text-slate-700">Menú</label>
+      <select id="menuInput" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2">
+        <option value="">Selecciona una opción</option>
+        <option value="estandar">Estándar</option>
+        <option value="vegetariano">Vegetariano</option>
+        <option value="celiaco">Celíaco</option>
+        <option value="infantil">Infantil</option>
+        <option value="otro">Otro</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="alergiasInput" class="text-sm font-medium text-slate-700">Alergias o intolerancias</label>
+      <textarea
+        id="alergiasInput"
+        rows="3"
+        class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2"
+        placeholder="Por ejemplo: alergia a frutos secos, intolerancia a la lactosa…"
+      ></textarea>
+    </div>
+  </div>
+
+  <p id="errorMenu" class="hidden mt-3 text-sm text-rose-600" role="alert"></p>
+
+  <div class="mt-6 flex flex-wrap justify-between gap-2">
+    <button id="btnMenuBack" type="button" class="btn btn-outline">Volver</button>
+    <button id="btnMenuNext" type="button" class="btn">Siguiente</button>
+  </div>
+</section>

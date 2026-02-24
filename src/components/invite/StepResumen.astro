@@ -1,0 +1,82 @@
+<section class="wizard-step card p-6 mt-6 hidden" data-step="resumen">
+  <p class="uppercase tracking-[.24em] text-[11px] text-slate-500">Paso 5</p>
+  <h2 class="font-serif text-2xl text-night mt-2">Resumen</h2>
+  <p class="mt-2 text-slate-600">Revisa tus datos antes de confirmar.</p>
+
+  <div class="mt-5 grid gap-3">
+    <article class="rounded-xl border border-slate-200 bg-white/70 p-4">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <h3 class="font-serif text-lg text-night">Invitación</h3>
+          <p id="summaryGuest" class="mt-1 text-slate-700"></p>
+        </div>
+      </div>
+    </article>
+
+    <article class="rounded-xl border border-slate-200 bg-white/70 p-4">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <h3 class="font-serif text-lg text-night">Asistencia</h3>
+          <p id="summaryAsistencia" class="mt-1 text-slate-700"></p>
+        </div>
+        <button type="button" data-edit-step="asistencia" class="btn btn-outline text-sm px-3 py-2">
+          Editar
+        </button>
+      </div>
+    </article>
+
+    <article
+      id="summaryAcompanantesSection"
+      class="rounded-xl border border-slate-200 bg-white/70 p-4 hidden"
+    >
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <h3 class="font-serif text-lg text-night">Acompañantes</h3>
+          <div id="summaryAcompanantes" class="mt-1 text-slate-700"></div>
+        </div>
+        <button
+          type="button"
+          data-edit-step="acompanantes"
+          class="btn btn-outline text-sm px-3 py-2"
+        >
+          Editar
+        </button>
+      </div>
+    </article>
+
+    <article id="summaryMenuSection" class="rounded-xl border border-slate-200 bg-white/70 p-4 hidden">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <h3 class="font-serif text-lg text-night">Menú y alergias</h3>
+          <p id="summaryMenu" class="mt-1 text-slate-700"></p>
+          <p id="summaryAlergias" class="mt-1 text-slate-600 text-sm"></p>
+        </div>
+        <button type="button" data-edit-step="menu" class="btn btn-outline text-sm px-3 py-2">
+          Editar
+        </button>
+      </div>
+    </article>
+
+    <article class="rounded-xl border border-slate-200 bg-white/70 p-4">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <h3 class="font-serif text-lg text-night">Bus y preferencias</h3>
+          <p id="summaryBus" class="mt-1 text-slate-700"></p>
+          <p id="summaryCancion" class="mt-1 text-slate-700"></p>
+          <p id="summaryNotas" class="mt-1 text-slate-600 text-sm"></p>
+        </div>
+        <button type="button" data-edit-step="bus" class="btn btn-outline text-sm px-3 py-2">
+          Editar
+        </button>
+      </div>
+    </article>
+  </div>
+
+  <p id="summaryStatusNote" class="mt-4 text-sm text-slate-500 hidden"></p>
+  <p id="submitError" class="hidden mt-3 text-sm text-rose-600" role="alert"></p>
+
+  <div class="mt-6 flex flex-wrap justify-between gap-2">
+    <button id="btnResumenBack" type="button" class="btn btn-outline">Volver</button>
+    <button id="btnSubmitWizard" type="button" class="btn">Confirmar</button>
+  </div>
+</section>

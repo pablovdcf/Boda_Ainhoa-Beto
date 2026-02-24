@@ -1,0 +1,55 @@
+<section id="tokenGateCard" class="card p-6 mt-6 hidden">
+  <h2 class="font-serif text-2xl text-ink">Tu código de invitación</h2>
+  <p class="mt-2 text-slate-600">
+    Es el código que te enviamos. Si has entrado desde un enlace personalizado, se detectará
+    automáticamente.
+  </p>
+  <form id="tokenForm" class="mt-4">
+    <div class="grid gap-3 md:grid-cols-[1fr_auto] items-stretch">
+      <label for="tokenInput" class="sr-only">Código de invitación</label>
+      <input
+        id="tokenInput"
+        name="token"
+        type="text"
+        autocomplete="off"
+        inputmode="latin"
+        class="w-full min-w-0 rounded-xl border border-slate-300 px-4 py-3 text-lg"
+        placeholder="Introduce tu código"
+      />
+      <button id="tokenSubmit" type="submit" class="btn w-full md:w-auto">Continuar</button>
+    </div>
+    <p id="tokenError" class="hidden mt-2 text-sm text-rose-600">
+      El código no es válido. Revisa que tenga entre 4 y 20 caracteres.
+    </p>
+  </form>
+</section>
+
+<section id="lookupSkeletonCard" class="card p-6 mt-6 hidden" aria-live="polite">
+  <p class="text-slate-600">Cargando tu invitación…</p>
+  <div class="grid gap-3 mt-4">
+    <div class="animate-pulse h-5 rounded-lg bg-slate-200"></div>
+    <div class="animate-pulse h-10 rounded-lg bg-slate-200"></div>
+    <div class="animate-pulse h-5 rounded-lg bg-slate-200"></div>
+    <div class="animate-pulse h-16 rounded-lg bg-slate-200"></div>
+  </div>
+</section>
+
+<section id="lookupErrorCard" class="card p-6 mt-6 hidden">
+  <h2 class="font-serif text-2xl text-ink">No pudimos cargar tu invitación</h2>
+  <p id="lookupErrorText" class="mt-2 text-slate-600">
+    Reintenta en unos segundos o introduce el token manualmente.
+  </p>
+  <div class="mt-4 flex flex-wrap gap-2">
+    <button id="btnRetryLookup" type="button" class="btn">Reintentar</button>
+    <button id="btnChangeToken" type="button" class="btn btn-outline">Cambiar token</button>
+  </div>
+</section>
+
+<section id="guestInfoCard" class="card p-6 mt-6 hidden">
+  <div class="flex flex-wrap items-center gap-3">
+    <h2 id="guestName" class="font-serif text-2xl text-night">Invitado</h2>
+    <span id="guestStatusBadge" class="hidden"></span>
+  </div>
+  <p id="guestInfoLine" class="mt-2 text-slate-600"></p>
+  <p id="guestInfoHint" class="mt-2 text-sm text-slate-500"></p>
+</section>

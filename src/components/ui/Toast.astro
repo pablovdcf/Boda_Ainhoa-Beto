@@ -1,0 +1,9 @@
+---
+interface Props {
+  id?: string;
+}
+
+const { id = "inviteToast" } = Astro.props;
+---
+
+<div id={id} class="notice-banner info" role="status" aria-live="polite"></div>

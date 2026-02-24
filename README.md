@@ -1,233 +1,204 @@
-# Boda Ainhoa & Alberto · Astro Static
+# Boda Ainhoa & Alberto · Landing + RSVP + Admin + PWA
+Aplicación web estática para invitación de boda con flujo de confirmación (RSVP), panel de administración y soporte PWA, conectada a Google Apps Script vía JSONP.
 
-Webapp de invitación en Astro (`output: static`) con compatibilidad legacy y contenido editable por colecciones.
+## Features
+- Landing pública en `index.html` con contenido dinámico (timeline, galería, FAQ, countdown) desde `assets/config.json`.
+- Página de confirmación en `invite.html` con token (`?token=` / `?t=`), lookup de invitado y envío RSVP.
+- Panel en `admin.html` con gate por PIN, KPIs básicos, filtros y export CSV.
+- API frontend en ES Modules (`assets/api.js`, `assets/app.js`, `assets/admin.js`).
+- Integración con Google Apps Script por JSONP (`lookup`, `rsvp`, `admin_list`, `ping`, `save_email`).
+- Soporte PWA con `assets/manifest.json` y `assets/service-worker.js`.
+- Service worker con estrategia robusta (navigation network-first + cache de assets estáticos).
 
-## Comandos
-```bash
-npm install
-npm run dev
-npm run build
-npm run preview
+## Estructura del proyecto
+> Nota: en este repo los archivos públicos están bajo `public/` y se sirven como raíz (`/`).  
+> Por eso `public/assets/app.js` se publica como `/assets/app.js`.
+
+```text
+.
+├─ index.html
+├─ invite.html
+├─ admin.html
+├─ public/
+│  ├─ assets/
+│  │  ├─ app.js
+│  │  ├─ admin.js
+│  │  ├─ api.js
+│  │  ├─ site.js
+│  │  ├─ service-worker.js
+│  │  ├─ manifest.json
+│  │  ├─ config.json
+│  │  ├─ galeria/
+│  │  └─ themes/
+│  ├─ service-worker.js
+│  ├─ manifest.json
+│  ├─ offline.html
+│  └─ icons/
+├─ apps-script/
+│  ├─ main.gs
+│  ├─ config.gs
+│  ├─ handlers/
+│  │  ├─ lookup.gs
+│  │  ├─ rsvp.gs
+│  │  └─ admin.gs
+│  ├─ domain/
+│  │  ├─ invitados.gs
+│  │  ├─ respuestas.gs
+│  │  └─ emails.gs
+│  └─ lib/utils.gs
+└─ package.json
 ```
 
-## Variables de entorno (`PUBLIC_*`)
-Estas variables se leen en build/runtime cliente. Al ser `PUBLIC_*`, quedan incluidas en el bundle.
+## Cómo funciona (flujo)
+1. Usuario entra en `index.html`.
+2. CTA lleva a `invite.html` con token en URL (`?token=...` o `?t=...`).
+3. `assets/app.js` llama `apiLookup(token)` en `assets/api.js` (JSONP, `action=lookup`).
+4. Se cargan datos del titular y acompañantes; usuario edita asistencia/detalles.
+5. Enviar RSVP dispara `apiRsvp(payload)` (`action=rsvp`).
+6. Si corresponde, puede guardarse email con `apiSaveEmail(token,email)` (`action=save_email`).
+7. En `admin.html`, tras PIN local, `assets/admin.js` llama `apiAdminList()` (`action=admin_list`) y renderiza tabla/KPIs/export.
 
-| Variable | Requerida | Default local | Uso |
-|---|---|---|---|
-| `PUBLIC_SCRIPT_URL` | Sí (recomendada) | URL actual de GAS | Endpoint base JSONP de GAS. En producción debe terminar en `/exec`. |
-| `PUBLIC_SHARED_SECRET` | Sí | `BodaBetoyainhoa` | Se envía como `secret` en JSONP. |
-| `PUBLIC_ADMIN_KEY` | Sí | `1234abcdxyz` | Se usa en `action=admin_list`. |
-| `PUBLIC_ADMIN_PIN` | Sí | `011222` | Gate UI del panel admin (no seguridad real). |
-| `PUBLIC_JSONP_TIMEOUT_MS` | No | `12000` | Timeout JSONP en milisegundos. |
+## Configuración
+La configuración de frontend está en `public/assets/api.js` (servido como `/assets/api.js`) dentro de `CONFIG`.
 
-## Vercel (Production + Preview)
-1. En Vercel Project > Settings > Environment Variables, define todas las `PUBLIC_*` para **Production** y **Preview**.
-2. Usa `PUBLIC_SCRIPT_URL` apuntando a GAS `/exec` para invitados.
-3. `/dev` en GAS es útil para pruebas internas, pero no para tráfico público.
-4. Nota importante: `PUBLIC_*` no oculta secretos; solo evita hardcodes en repositorio.
+```js
+export const CONFIG = {
+  SCRIPT_URL: "<REDACTED_SCRIPT_URL>/exec",
+  SHARED_SECRET: "<REDACTED_SHARED_SECRET>",
+  ADMIN_PIN: "<REDACTED_ADMIN_PIN>",
+  ADMIN_KEY: "<REDACTED_ADMIN_KEY>"
+};
+```
 
-## Rutas activas
-- `/`
-- `/invite`
-- `/admin`
-- `/invite.html` (alias de `/invite`)
-- `/admin.html` (alias de `/admin`)
+Campos:
+- `SCRIPT_URL`: URL del Web App de GAS (`/exec` recomendado en producción).
+- `SHARED_SECRET`: secreto compartido exigido por GAS en cada llamada.
+- `ADMIN_PIN`: PIN del gate visual de `admin.html` (validación en cliente).
+- `ADMIN_KEY`: clave enviada en `action=admin_list`.
 
-## Compatibilidad legacy mantenida
-- Assets legacy en `public/assets/*` (paths preservados: `/assets/...`).
-- RSVP migrado a wizard en Astro (`src/scripts/invite-wizard.ts`) con contrato GAS intacto.
-- Admin migrado a dashboard Astro (`src/scripts/admin-dashboard.ts`) con contrato GAS intacto.
-- API GAS sigue en JSONP (sin romper contrato):
-  - `lookup(token)`
-  - `rsvp(payload legacy)`
-  - `admin_list(adminKey)`
-  - `ping`
+## Integración con Google Apps Script
+El backend está en `apps-script/` y expone `doGet/doPost` con dispatcher por `action` (`apps-script/main.gs`).
 
-## Especificación visual legacy (source of truth: `index.html`)
-### 1) Google Fonts
-- `Playfair Display`
-- `Inter`
-- `Great Vibes`
+### Patrón de llamada (JSONP)
+```js
+const cb = "cb_" + Math.random().toString(36).slice(2);
+const q = new URLSearchParams({
+  ...params,
+  callback: cb,
+  secret: CONFIG.SHARED_SECRET
+});
+script.src = `${CONFIG.SCRIPT_URL}?${q.toString()}`;
+```
 
-### 2) Tailwind `extend` exacto
-- `fontFamily.serif = ["Playfair Display", "serif"]`
-- `fontFamily.sans = ["Inter", "ui-sans-serif", "system-ui"]`
-- `colors.night = "#0B3B4F"`
-- `colors.champagne = "#F5E6D3"`
-- `colors.blush = "#F8D9E0"`
-- `colors.ink = "#0f172a"`
-- `colors.gold = "#C4A26A"`
-- `boxShadow.soft = "0 10px 30px rgba(10, 30, 60, .10)"`
-- `backgroundImage.hero = "linear-gradient(135deg, #0B3B4F 0%, #164e63 60%, #2563eb 120%)"`
-- `backgroundImage.paper = "radial-gradient(1200px 600px at 50% -200px, rgba(255,255,255,.15), transparent 65%)"`
+### Acciones soportadas
+- `ping`
+  - Request: `action=ping`
+  - Response esperada: `{ ok: true, ping: "pong" }`
+- `lookup`
+  - Request: `action=lookup&token=...`
+  - Response esperada:
+    - OK: `{ ok: true, data: {...titular}, acomp: [...] }`
+    - Error: `{ ok: false, error: "missing_token|not_found|..." }`
+- `rsvp`
+  - Request: `action=rsvp` + payload RSVP
+  - Response esperada:
+    - OK: `{ ok: true, savedCompanions: <n> }` (o `{ ok: true, dedup: true }`)
+    - Error: `{ ok: false, error: "..." }`
+- `admin_list`
+  - Request: `action=admin_list&adminKey=...`
+  - Response esperada: `{ ok: true, data: [...] }` o `{ ok: false, error: "unauthorized" }`
+- `save_email`
+  - Request: `action=save_email&token=...&email=...`
+  - Response esperada: `{ ok: true }` o error.
 
-### 3) CSS utilitario clave restaurado
-- `.card` (blur + border + shadow + hover)
-- `.btn`, `.btn-outline`
-- `.btn-hero`, `.btn-hero-outline`
-- `.divider`, `.floral-divider`, `.section-divider`
-- `.countdown` y `.num.fade`
-- Timeline `.tl*` (estructura, bullet, hover, layout)
-- Galería `.masonry` + lightbox `#lb #lbImg`
-- `.notice-banner`
+### Payload RSVP (estructura)
+```js
+{
+  action: "rsvp",
+  token: "<TOKEN>",
+  asistencia: "si" | "no",
+  acompanantes: "0..N",
+  acompanantes_nombres: JSON.stringify([
+    { nombre, apellidos, menu, alergias, notas }
+  ]),
+  menu: "<menu titular>",
+  alergias: "<alergias titular>",
+  notas_titular: "<texto>",
+  bus: "true|false",
+  cancion: "<texto>"
+}
+```
 
-## Estructura clave
-- `src/layouts/BaseLayout.astro`
-- `src/pages/index.astro`
-- `src/pages/invite.astro`
-- `src/pages/admin.astro`
-- `src/pages/invite.html.astro`
-- `src/pages/admin.html.astro`
-- `src/components/ui/*`
-- `src/components/sections/*`
-- `src/lib/api.ts`, `src/lib/storage.ts`, `src/lib/validators.ts`, `src/lib/format.ts`
-- `src/content/*`
-- `public/assets/themes/pro.css` (tema por defecto)
+## PWA
+- Manifest legacy: `assets/manifest.json` (fichero real: `public/assets/manifest.json`).
+- Service worker legacy: `assets/service-worker.js` (fichero real: `public/assets/service-worker.js`), que delega a `/service-worker.js`.
+- Service worker principal: `public/service-worker.js`.
 
-## Cómo editar contenido (Fase 2B)
-### Agenda
-Edita `src/content/agenda/*.md`:
-- frontmatter: `order`, `label?`, `time`, `title`, `location?`, `icon?`, `kind?`
-- cuerpo: descripción del bloque
+Comportamiento actual del SW principal:
+- `navigate` (HTML): **network-first** con fallback a `/offline.html`.
+- Assets estáticos (`/assets/`, `/icons/`, `/_astro/`, extensiones estáticas): **cache-first**.
+- Precarga inicial: `offline.html`, `manifest.json`, iconos.
+- Limpieza de caches antiguas por versión + `skipWaiting` + `clients.claim`.
 
-### FAQ
-Edita `src/content/faq/*.md`:
-- frontmatter: `order`, `question`
-- cuerpo: respuesta
+## Desarrollo local
+Este proyecto se despliega como estático. Para probarlo localmente de forma fiable:
 
-### Recomendaciones / info cards
-Edita `src/content/recomendaciones/*.md`:
-- frontmatter: `title`, `order`, `category`
-- cuerpo: texto del bloque
+```bash
+npm install
+npm run build
+npx serve dist -l 5173
+```
 
-### Datos globales landing
-Edita `src/content/site/landing.json`:
-- hero, venue, story, location, gallery, countdown, CTA final
+Alternativa con Python:
 
-## PWA / Service Worker
-1. SW principal en `/service-worker.js`.
-2. Cache versionado y limpieza de caches viejas en `activate`.
-3. Navegación con `network-first` para evitar HTML obsoleto tras deploy.
-4. Assets estáticos con `cache-first`.
-5. Fallback offline en `/offline.html`.
-6. `skipWaiting()` + `clients.claim()`.
-7. Compatibilidad legacy con `/assets/service-worker.js` (puente a SW raíz).
+```bash
+npm run build
+cd dist
+python -m http.server 5173
+```
 
-## Checklist manual · Fase 2B (restore legacy theme)
-- [ ] Hero con `bg-hero`, `hero-florals`, overlay `bg-black/20`, tipografía serif y CTA `btn-hero`.
-- [ ] Body/base con `bg-slate-50 text-ink`, fuentes legacy y `theme-color #0b3b4f`.
-- [ ] Timeline en `#detalles` usando `.tl`, `.tl-item`, `.tl-bullet`, iconos sprite.
-- [ ] Sección historia con medallón corazón + `.card` para imagen.
-- [ ] Ubicación con `.location-section`, `.location-photos` y botón principal `.btn`.
-- [ ] Bloque de info extra en 3 `.card p-6`.
-- [ ] Galería `#galleryGrid.masonry` + lightbox `#lb` y `#lbImg`.
-- [ ] Cuenta atrás con `.countdown` y separadores `•` + animación `.num.fade`.
-- [ ] FAQ renderizada con `<details class="card">` visual legacy.
-- [ ] `/invite`, `/invite.html`, `/admin`, `/admin.html` con look coherente (cards + btn + header hero).
+## Deploy (estático)
+### GitHub Pages
+- Publicar el contenido de `dist/` (workflow CI o branch de publicación).
+- Verificar que rutas `/assets/*` y `/icons/*` quedan servidas en raíz.
 
-## Fase 3 · RSVP Wizard (UX pro)
-- Ruta activa: `/invite` y alias `/invite.html`.
-- Carga del wizard: módulo Astro generado en `/_astro/Wizard.astro_astro_type_script_*.js`.
-- Flujo:
-  1. Token gate (manual o `?token=` / `?t=`).
-  2. Lookup JSONP (`action=lookup`) con skeleton y manejo de error.
-  3. Pasos de asistencia, acompañantes, menú/alergias, canción/mensaje y resumen editable.
-  4. Submit JSONP (`action=rsvp`) con payload legacy y toasts.
-- Estado local:
-  - `lastToken`
-  - `draft_rsvp_<token>`
-- Contrato payload preservado: `token`, `asistencia`, `acompanantes`, `acompanantes_nombres`, `menu`, `alergias`, `notas_titular`, `bus`, `cancion`.
-  - En front actual: `bus` ya no se pide en UI y se envía siempre como `false` por compatibilidad backend.
+### Vercel
+- Build command: `npm run build`
+- Output directory: `dist`
+- Tipo: static site.
 
-## Checklist manual · Fase 3
-- [ ] `/invite` sin token muestra token gate.
-- [ ] `/invite?t=TOKEN_VALIDO` dispara lookup automático.
-- [ ] `plazas_max` limita acompañantes a `plazas_max - 1`.
-- [ ] Si acompañantes > 0, nombres obligatorios (>= 2 chars).
-- [ ] Resumen permite editar secciones y volver al paso correcto.
-- [ ] Submit envía `action=rsvp` con nombres de campo legacy exactos.
-- [ ] Error de JSONP/timeout muestra toast + mensaje de error y permite reintentar.
-- [ ] Refresh conserva borrador `draft_rsvp_<token>`.
+### Netlify
+- Build command: `npm run build`
+- Publish directory: `dist`
+- Tipo: static site.
 
-## Fase 4 · Admin overhaul (usabilidad)
-- Rutas activas: `/admin` y `/admin.html` (alias), mismas vistas y mismo bundle Astro.
-- Contrato GAS intacto:
-  - `apiAdminList()` (`action=admin_list` + `adminKey` en `src/lib/api.ts`)
-- UI gate por PIN en cliente intacto (`admin_pin` en localStorage).
-- Nuevo dashboard:
-  - búsqueda por nombre/token/notas/canción
-  - filtros por estado/grupo/menú + chips de filtros activos
-  - KPIs: total, sí, no, pendientes, asistentes estimados, acompañantes
-  - breakdown de menús y alergias compactas
-  - tabla con ordenación por `nombre`, `status`, `totalPersonas`, `menu`
-  - cache local `admin_cache_v1` (TTL 5 min) + recarga manual
-  - export CSV filtrado/ordenado con BOM y delimitador configurable (`;` por defecto)
+## Seguridad y notas importantes
+- `ADMIN_PIN`, `ADMIN_KEY` y `SHARED_SECRET` en frontend **no son secretos reales**: cualquier usuario puede inspeccionarlos.
+- El PIN de `admin.html` es una barrera de UX, no una autenticación robusta.
+- JSONP implica ejecución de script remoto; revisar siempre el origen (`SCRIPT_URL`) y rotar claves.
+- Si se usan valores reales en `public/assets/api.js` o `apps-script/config.gs`, tratarlos como comprometidos y rotarlos.
+- Recomendado a medio plazo:
+  - mover secretos a backend/proxy serverless,
+  - sustituir JSONP por `fetch` con CORS controlado,
+  - limitar tasa y auditar accesos admin.
 
-## Checklist manual · Fase 4
-- [ ] Carga inicial de admin y botón retry funcionan.
-- [ ] Búsqueda por nombre/token/notas/canción devuelve resultados correctos.
-- [ ] Filtros por estado/grupo/menú y chips de filtros activos funcionan.
-- [ ] KPIs y breakdowns reflejan el conjunto filtrado.
-- [ ] Ordenación por columnas (nombre/estado/total/menu) funciona.
-- [ ] Export CSV abre bien en Excel (BOM + `;` por defecto).
-- [ ] `/admin` y `/admin.html` cargan sin 404 y comparten comportamiento.
+## Checklist de despliegue
+- [ ] `SCRIPT_URL` apunta a GAS correcto y terminado en `/exec`.
+- [ ] `SHARED_SECRET`, `ADMIN_PIN`, `ADMIN_KEY` actualizados (no defaults).
+- [ ] `apps-script/config.gs` revisado con valores de producción (`CFG.*`) y secretos rotados.
+- [ ] `npm run build` sin errores.
+- [ ] `assets/manifest.json` y `assets/service-worker.js` accesibles en el deploy.
+- [ ] Cache SW verificada tras publicar (sin HTML obsoleto).
+- [ ] Flujo RSVP probado end-to-end (`lookup` + `rsvp`).
+- [ ] `save_email` probado con token válido.
+- [ ] `admin_list` responde con `ADMIN_KEY` correcta.
+- [ ] Export CSV del admin validado con datos reales.
 
-## Fase 8 · Landing Pro + bus fuera de UI
-- Landing en tema `pro` por defecto (editorial limpio): `BaseLayout` carga `/assets/themes/pro.css`.
-- Fallback automático a `classic` si falla la carga del tema configurado.
-- Secciones de `/` rediseñadas en estilo editorial minimal: hero limpio, agenda tipo itinerario, story en 2 columnas, location utilitaria, galería grid de ratios consistentes, FAQ discreta y CTA final simplificada.
-- Compatibilidad de contenido intacta: la landing sigue leyendo `src/content/*`.
-- RSVP `/invite` y alias `/invite.html`:
-  - Se eliminó la pregunta de bus y su resumen asociado.
-  - Se mantiene contrato GAS: el payload sigue incluyendo `bus`, fijado a `false`.
-- Admin `/admin` y alias `/admin.html`:
-  - Eliminados filtro/KPI/columna/export de bus.
-  - Si backend devuelve `bus`, el dashboard lo ignora sin romper.
+## Roadmap / mejoras futuras
+- Migrar autenticación y claves admin fuera del cliente.
+- Migrar de JSONP a API HTTP (`fetch`) con CORS/proxy.
+- Añadir tests de contrato para acciones GAS.
+- Añadir observabilidad (logs y alertas) en errores de RSVP.
 
-## Fase 5 · PWA / Service Worker robusto
-- Archivo activo: `public/service-worker.js` (root: `/service-worker.js`).
-- Navegación (`request.mode === "navigate"`): `network-first`, sin cachear HTML; fallback a `/offline.html` solo si no hay red.
-- Assets estáticos (`/assets/`, `/icons/`, `/_astro/`, extensiones estáticas): `cache-first` con cache versionado.
-- Activación:
-  - limpieza de caches antiguas al cambiar versión
-  - `clients.claim()` para tomar control de clientes abiertos
-  - `navigationPreload` habilitado cuando está disponible
-- Update SW:
-  - `skipWaiting()` en install + soporte por mensaje `SKIP_WAITING`
-  - registro en `BaseLayout` con `updateViaCache: "none"`, detección de update y reload controlado tras `controllerchange`
-
-## Checklist manual · Fase 5
-- [ ] Tras deploy, recargar `/` muestra la versión nueva sin limpiar caché manual.
-- [ ] Con red activa, navegar entre páginas no sirve HTML antiguo desde cache.
-- [ ] Sin red, una navegación carga `offline.html`.
-- [ ] Assets (`/_astro/*`, `/assets/*`, `/icons/*`) quedan cacheados y responden offline cuando aplica.
-- [ ] En DevTools Application > Cache Storage solo queda la cache de versión actual tras activar nuevo SW.
-
-## Fase 6 · Env vars + health check DEV
-- `src/lib/api.ts` ya no hardcodea `SCRIPT_URL`, `SHARED_SECRET`, `ADMIN_KEY`, `JSONP_TIMEOUT_MS`.
-- `PUBLIC_SCRIPT_URL` se normaliza para terminar en `/exec` en producción.
-- `ADMIN_PIN` salió de `api.ts` y ahora vive en `src/lib/admin-config.ts` (`PUBLIC_ADMIN_PIN`).
-- Health check de GAS solo en desarrollo:
-  - `/invite`: log en consola `[DEV][invite] GAS OK` o warning.
-  - `/admin`: log en consola `[DEV][admin] GAS OK` o warning.
-- En producción no se ejecuta el ping DEV.
-
-## Checklist manual · Fase 6
-- [ ] `npm run build` y `npm run preview` funcionan.
-- [ ] `/invite`, `/invite.html`, `/admin`, `/admin.html` siguen operativas.
-- [ ] En `npm run dev`, aparece en consola el health check de GAS (OK o warning).
-- [ ] Contratos JSONP (`lookup`, `rsvp`, `admin_list`, `ping`) sin cambios de acciones/campos.
-
-## Cambio puntual · Invite email opcional (`save_email`)
-- En `/invite` y `/invite.html` se solicita email opcional en el paso "Canción y mensaje".
-- Si hay email válido, se llama `action=save_email` antes de `action=rsvp`.
-- Si `save_email` falla, se muestra warning y el RSVP sigue sin bloquear.
-- Si el email está vacío, no se llama `save_email`.
-- `action=rsvp` mantiene su contrato legacy sin campo extra `email`.
-
-## Checklist manual · Invite email opcional
-- [ ] Lookup con email existente: se precarga en el input y es editable.
-- [ ] Email vacío: no se llama `save_email` y el RSVP confirma correctamente.
-- [ ] Email inválido: se avisa y el RSVP sigue adelante.
-- [ ] `save_email` con error: warning toast y luego confirmación RSVP normal.
+## Licencia
+Private / All rights reserved.

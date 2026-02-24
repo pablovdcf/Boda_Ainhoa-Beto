@@ -153,3 +153,22 @@ Edita `src/content/site/landing.json`:
 - [ ] Ordenación por columnas (nombre/estado/total/menu) funciona.
 - [ ] Export CSV abre bien en Excel (BOM + `;` por defecto).
 - [ ] `/admin` y `/admin.html` cargan sin 404 y comparten comportamiento.
+
+## Fase 5 · PWA / Service Worker robusto
+- Archivo activo: `public/service-worker.js` (root: `/service-worker.js`).
+- Navegación (`request.mode === "navigate"`): `network-first`, sin cachear HTML; fallback a `/offline.html` solo si no hay red.
+- Assets estáticos (`/assets/`, `/icons/`, `/_astro/`, extensiones estáticas): `cache-first` con cache versionado.
+- Activación:
+  - limpieza de caches antiguas al cambiar versión
+  - `clients.claim()` para tomar control de clientes abiertos
+  - `navigationPreload` habilitado cuando está disponible
+- Update SW:
+  - `skipWaiting()` en install + soporte por mensaje `SKIP_WAITING`
+  - registro en `BaseLayout` con `updateViaCache: "none"`, detección de update y reload controlado tras `controllerchange`
+
+## Checklist manual · Fase 5
+- [ ] Tras deploy, recargar `/` muestra la versión nueva sin limpiar caché manual.
+- [ ] Con red activa, navegar entre páginas no sirve HTML antiguo desde cache.
+- [ ] Sin red, una navegación carga `offline.html`.
+- [ ] Assets (`/_astro/*`, `/assets/*`, `/icons/*`) quedan cacheados y responden offline cuando aplica.
+- [ ] En DevTools Application > Cache Storage solo queda la cache de versión actual tras activar nuevo SW.

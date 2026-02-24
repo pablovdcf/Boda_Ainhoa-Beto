@@ -6,7 +6,7 @@ interface AgendaItem {
     label?: string;
     time: string;
     title: string;
-    icon?: string;
+    location?: string;
   };
 }
 
@@ -25,13 +25,16 @@ const { title, items } = Astro.props;
       <h2 class="font-serif text-3xl md:text-4xl mt-3 text-night">{title}</h2>
     </header>
 
-    <ol id="timeline" class="pro-agenda-grid mt-10">
+    <ol id="timeline" class="pro-itinerary mt-10">
       {
         items.map((item, index) => (
-          <li class={`pro-agenda-item reveal ${index % 3 === 1 ? "reveal-delay-1" : index % 3 === 2 ? "reveal-delay-2" : ""}`.trim()}>
-            <p class="pro-agenda-time">{item.data.time}</p>
-            <h3 class="font-serif text-xl text-night mt-2">{item.data.title}</h3>
-            <p class="mt-3 text-slate-600 leading-relaxed">{item.body.trim()}</p>
+          <li class={`pro-itinerary-item reveal ${index % 2 === 1 ? "reveal-delay-1" : ""}`.trim()}>
+            <p class="pro-itinerary-time">{item.data.time}</p>
+            <div class="pro-itinerary-copy">
+              <h3 class="font-serif text-xl text-night">{item.data.title}</h3>
+              {item.data.location && <p class="pro-itinerary-location">{item.data.location}</p>}
+              <p class="mt-2 text-slate-600 leading-relaxed">{item.body.trim()}</p>
+            </div>
           </li>
         ))
       }

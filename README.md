@@ -176,7 +176,7 @@ Edita `src/content/site/landing.json`:
 ## Fase 8 · Landing Pro + bus fuera de UI
 - Landing en tema `pro` por defecto (editorial limpio): `BaseLayout` carga `/assets/themes/pro.css`.
 - Fallback automático a `classic` si falla la carga del tema configurado.
-- Secciones de `/` rediseñadas con ritmo más sobrio: hero limpio, agenda en cards, story editorial, location utilitaria, grid de galería consistente, FAQ discreta y CTA final simplificada.
+- Secciones de `/` rediseñadas en estilo editorial minimal: hero limpio, agenda tipo itinerario, story en 2 columnas, location utilitaria, galería grid de ratios consistentes, FAQ discreta y CTA final simplificada.
 - Compatibilidad de contenido intacta: la landing sigue leyendo `src/content/*`.
 - RSVP `/invite` y alias `/invite.html`:
   - Se eliminó la pregunta de bus y su resumen asociado.

@@ -1,0 +1,29 @@
+---
+interface RecommendationItem {
+  id: string;
+  body: string;
+  data: {
+    title: string;
+  };
+}
+
+interface Props {
+  recommendations: RecommendationItem[];
+}
+
+const { recommendations } = Astro.props;
+---
+
+<section class="section reveal">
+  <div id="infoGrid" class="max-w-5xl mx-auto px-6 grid md:grid-cols-3 gap-6">
+    {
+      recommendations.map((item) => (
+        <div class="card p-6">
+          <h3 class="font-serif text-xl mb-2">{item.data.title}</h3>
+          <p class="text-slate-700">{item.body.trim()}</p>
+        </div>
+      ))
+    }
+  </div>
+</section>
+

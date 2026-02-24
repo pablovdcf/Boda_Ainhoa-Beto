@@ -1,20 +1,32 @@
 {
   "coupleNames": "Ainhoa & Alberto",
-  "heroEyebrow": "10 de octubre de 2026",
-  "heroTitle": "Nos casamos y queremos celebrarlo contigo",
-  "heroDescription": "Gracias por formar parte de nuestra historia. Aquí tienes toda la información del día, la agenda y la confirmación de asistencia.",
+  "heroEyebrow": "¡Nos casamos!",
+  "heroTitle": "Ainhoa & Alberto",
+  "heroDescription": "10 de octubre 2026 · Pazo Torre de Xunqueiras · Galicia",
   "heroCtaLabel": "Confirmar asistencia",
-  "heroSecondaryLabel": "Ver ubicación",
   "weddingDateIso": "2026-10-10T10:00:00+02:00",
   "weddingDateLabel": "10 de octubre de 2026",
+  "venueLine": "Pazo Torre de Xunqueiras",
   "venue": {
     "name": "Pazo Torre de Xunqueiras",
     "address": "Lugar Outeiro, 15967 Ribeira, A Coruña",
     "city": "Galicia",
     "mapUrl": "https://maps.app.goo.gl/fSiTjNTvCNdtNjdA6"
   },
+  "story": {
+    "title": "Our Match",
+    "lead": "Todo empezó con un match. Una casualidad moderna que se convirtió en destino. Dos perfiles, un gesto hacia la derecha y una historia que hoy celebramos con vosotros.",
+    "closing": "Seguimos deslizándonos, pero siempre hacia el mismo lado.",
+    "image": {
+      "src": "/assets/historia.jpg",
+      "alt": "Ainhoa y Beto · Nuestro match",
+      "width": 1600,
+      "height": 1000
+    }
+  },
   "location": {
     "title": "Ubicación",
+    "subtitle": "Pazo Torre de Xunqueiras, A Coruña, Galicia.",
     "description": "El pazo está rodeado de jardines y dispone de aparcamiento para invitados.",
     "photos": [
       {
@@ -109,11 +121,47 @@
       "alt": "Momento 12",
       "width": 1200,
       "height": 1500
+    },
+    {
+      "src": "/assets/galeria/13.jpg",
+      "alt": "Momento 13",
+      "width": 1200,
+      "height": 1500
+    },
+    {
+      "src": "/assets/galeria/14.jpg",
+      "alt": "Momento 14",
+      "width": 1200,
+      "height": 1500
+    },
+    {
+      "src": "/assets/galeria/15.jpg",
+      "alt": "Momento 15",
+      "width": 1200,
+      "height": 1500
+    },
+    {
+      "src": "/assets/galeria/16.jpg",
+      "alt": "Momento 16",
+      "width": 1200,
+      "height": 1500
+    },
+    {
+      "src": "/assets/galeria/17.jpg",
+      "alt": "Momento 17",
+      "width": 1200,
+      "height": 1500
+    },
+    {
+      "src": "/assets/galeria/18.jpg",
+      "alt": "Momento 18",
+      "width": 1200,
+      "height": 1500
     }
   ],
   "footerNote": "Si necesitas cualquier ajuste en tu invitación, contáctanos y te ayudamos.",
   "faqTitle": "Preguntas frecuentes",
-  "agendaTitle": "Agenda del día",
-  "galleryTitle": "Momentos"
+  "agendaTitle": "Programación",
+  "galleryTitle": "Momentos",
+  "locationButtonLabel": "Cómo llegar"
 }
-

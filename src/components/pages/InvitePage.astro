@@ -1,83 +1,64 @@
-<main id="main-content" class="section-wrap py-10">
-  <header class="surface-card overflow-hidden bg-hero text-white">
-    <div class="px-6 py-12 text-center">
-      <p class="text-xs uppercase tracking-[0.28em] text-sand/90">Confirmación</p>
-      <h1 id="heroNames" class="mt-2 text-4xl font-semibold md:text-5xl">
-        Ainhoa & Alberto
-      </h1>
-      <p id="heroSub" class="mt-3 text-sand/90">
-        10 de octubre 2026 · Pazo Torre de Xunqueiras
-      </p>
+<main id="main-content" class="max-w-xl mx-auto px-6 py-10">
+  <header class="relative bg-hero text-white hero-florals rounded-2xl overflow-hidden">
+    <div class="absolute inset-0 bg-black/20 md:bg-black/15"></div>
+    <div class="relative max-w-3xl mx-auto px-6 pt-14 pb-12 bg-paper text-center">
+      <p class="uppercase tracking-[.3em] text-champagne/90 text-xs">Confirmación</p>
+      <h1 id="heroNames" class="font-serif text-4xl md:text-5xl font-bold mt-2">Ainhoa & Alberto</h1>
+      <p id="heroSub" class="mt-2 text-champagne/90">10 de octubre 2026 · Pazo Torre de Xunqueiras</p>
     </div>
   </header>
 
-  <section id="tokenGate" class="surface-card mt-8 hidden p-6">
-    <h2 class="text-2xl font-semibold">Tu código de invitación</h2>
-    <p class="muted mt-2">
-      Si has entrado sin enlace directo, introduce aquí tu token.
+  <section id="tokenGate" class="card p-6 mt-8 hidden">
+    <h2 class="font-serif text-2xl mb-2 text-ink">Tu código de invitación</h2>
+    <p class="mb-3 text-slate-600">
+      Es el código que te hemos enviado. Si tienes enlace directo, no hace falta.
     </p>
-    <form id="tokenForm" class="mt-4 grid gap-3 md:grid-cols-[1fr_auto]">
-      <input
-        id="tokenInput"
-        type="text"
-        inputmode="latin"
-        autocomplete="off"
-        placeholder="Tu código"
-        class="w-full rounded-xl border border-slate-300 px-4 py-3 text-lg"
-      />
-      <button
-        type="submit"
-        class="rounded-xl bg-brand-700 px-5 py-3 text-lg font-medium text-white hover:bg-brand-800"
-      >
-        Continuar
-      </button>
+    <form id="tokenForm" class="mt-4">
+      <div class="grid gap-3 md:grid-cols-[1fr_auto] items-stretch">
+        <input
+          id="tokenInput"
+          type="text"
+          inputmode="latin"
+          autocomplete="off"
+          placeholder="Tu código"
+          class="w-full min-w-0 rounded-xl border px-4 py-3 text-lg"
+        />
+        <button type="submit" class="btn w-full md:w-auto md:ml-3">Continuar</button>
+      </div>
+      <p id="tokenError" class="hidden mt-2 text-sm text-rose-600">Código inválido.</p>
     </form>
-    <p id="tokenError" class="mt-2 hidden text-sm text-rose-700">
-      Código inválido. Revísalo e inténtalo de nuevo.
-    </p>
   </section>
 
-  <p id="greet" class="mt-6 text-slate-700">Cargando invitación…</p>
+  <p id="greet" class="mt-2 text-slate-600">Cargando invitación…</p>
 
-  <section id="alreadyBox" class="surface-card mt-6 hidden p-4">
+  <div id="alreadyBox" class="card p-4 mt-6 hidden">
     <p class="text-slate-700">
       Ya has confirmado:
-      <span id="alreadyStatus" class="font-semibold"></span>.
+      <span id="alreadyStatus" class="font-medium"></span>.
     </p>
-    <div class="mt-3 flex flex-wrap gap-2">
-      <button
-        id="btnEdit"
-        type="button"
-        class="rounded-full bg-brand-700 px-4 py-2 text-sm font-semibold text-white"
-      >
-        Modificar mi respuesta
-      </button>
-      <button
-        id="btnKeep"
-        type="button"
-        class="rounded-full border border-brand-300 bg-white px-4 py-2 text-sm font-semibold text-brand-800"
-      >
-        Seguir igual
-      </button>
+    <div class="mt-3 flex gap-2">
+      <button id="btnEdit" type="button" class="btn">Modificar mi respuesta</button>
+      <button id="btnKeep" type="button" class="btn btn-outline">Seguir igual</button>
     </div>
-    <p class="mt-2 text-xs text-slate-500">
-      Si necesitas añadir más acompañantes de los permitidos, contacta con los novios.
+    <p class="text-xs text-slate-500 mt-2">
+      Si necesitas <strong>añadir más acompañantes</strong> de los permitidos en tu invitación,
+      contacta directamente con los novios.
     </p>
-  </section>
-
-  <div id="formSkeleton" class="mt-6 grid gap-4">
-    <div class="h-6 animate-pulse rounded-xl bg-slate-200"></div>
-    <div class="h-10 animate-pulse rounded-xl bg-slate-200"></div>
-    <div class="h-6 animate-pulse rounded-xl bg-slate-200"></div>
-    <div class="h-24 animate-pulse rounded-xl bg-slate-200"></div>
-    <div class="h-6 animate-pulse rounded-xl bg-slate-200"></div>
-    <div class="h-32 animate-pulse rounded-xl bg-slate-200"></div>
   </div>
 
-  <form id="rsvpForm" class="mt-6 hidden grid gap-4">
-    <div class="surface-card p-4">
+  <div id="formSkeleton" class="grid gap-4 mt-6">
+    <div class="animate-pulse rounded-xl h-6 bg-slate-200"></div>
+    <div class="animate-pulse rounded-xl h-10 bg-slate-200"></div>
+    <div class="animate-pulse rounded-xl h-6 bg-slate-200"></div>
+    <div class="animate-pulse rounded-xl h-24 bg-slate-200"></div>
+    <div class="animate-pulse rounded-xl h-6 bg-slate-200"></div>
+    <div class="animate-pulse rounded-xl h-32 bg-slate-200"></div>
+  </div>
+
+  <form id="rsvpForm" class="hidden mt-6 grid gap-4">
+    <div>
       <label class="block text-sm font-medium">Asistencia</label>
-      <div class="mt-2 flex gap-6">
+      <div class="mt-1 flex gap-6">
         <label class="inline-flex items-center gap-2"
           ><input type="radio" name="asistencia" value="si" required /> Sí</label
         >
@@ -87,12 +68,12 @@
       </div>
     </div>
 
-    <section id="titularCard" class="surface-card p-4">
-      <div class="mb-3">
-        <label class="block text-sm text-slate-700">
+    <div id="titularCard" class="card p-4">
+      <div class="mb-2">
+        <label class="block text-sm text-slate-600">
           Menú de <span id="titularMenuLabel">Invitado</span>
         </label>
-        <select id="menu" class="mt-1 w-full rounded-xl border border-slate-300 p-2">
+        <select id="menu" class="mt-1 w-full rounded-xl border p-2">
           <option value="">— Selecciona —</option>
           <option value="estandar">Estándar</option>
           <option value="vegetariano">Vegetariano</option>
@@ -101,97 +82,81 @@
           <option value="otro">Otro</option>
         </select>
       </div>
-      <div class="mb-3">
-        <label class="block text-sm text-slate-700">Alergias/intolerancias</label>
+
+      <div class="mb-2">
+        <label class="block text-sm text-slate-600">Alergias/intolerancias</label>
         <input
           id="alergias"
           type="text"
           placeholder="Marisco, gluten…"
-          class="mt-1 w-full rounded-xl border border-slate-300 p-2"
+          class="mt-1 w-full rounded-xl border p-2"
         />
       </div>
+
       <div>
-        <label class="block text-sm text-slate-700">Notas — opcional</label>
+        <label class="block text-sm text-slate-600">Notas — opcional</label>
         <textarea
           id="notasTitular"
           rows="2"
-          class="mt-1 w-full rounded-xl border border-slate-300 p-2"
+          class="mt-1 w-full rounded-xl border p-2"
           placeholder="Algo que debamos saber"
         ></textarea>
       </div>
-    </section>
+    </div>
 
-    <section class="surface-card p-4">
+    <div>
       <label class="block text-sm font-medium">Acompañantes</label>
-      <input
-        id="acompanantes"
-        type="number"
-        min="0"
-        value="0"
-        class="mt-1 w-full rounded-xl border border-slate-300 p-2"
-      />
-      <p id="acompanantesHelp" class="mt-1 hidden text-xs text-slate-500">
-        Has alcanzado el máximo permitido por tu invitación.
+      <input id="acompanantes" type="number" min="0" value="0" class="mt-1 w-full rounded-xl border p-2" />
+      <p id="acompanantesHelp" class="text-xs text-slate-500 mt-1 hidden">
+        Has alcanzado el máximo permitido por tu invitación. Para añadir más acompañantes,
+        contacta con los novios.
       </p>
-      <div id="acompanantesNombres" class="mt-2 grid gap-2"></div>
-      <p id="maxInfo" class="mt-1 text-xs text-slate-500"></p>
-    </section>
+      <div id="acompanantesNombres" class="grid gap-2 mt-2"></div>
+      <p id="maxInfo" class="text-xs text-slate-500 mt-1"></p>
+    </div>
 
-    <label class="hidden items-center gap-2" aria-hidden="true"
+    <label class="inline-flex items-center gap-2 hidden"
       ><input id="bus" type="checkbox" /> Me apunto al bus</label
     >
 
-    <section class="surface-card p-4">
-      <label class="block text-sm font-medium">Pide una canción</label>
+    <div>
+      <label class="block text-sm font-medium">Pide una canción ❤️</label>
       <input
         id="cancion"
         type="text"
         placeholder="Título – Artista"
-        class="mt-1 w-full rounded-xl border border-slate-300 p-2"
+        class="mt-1 w-full rounded-xl border p-2"
       />
-    </section>
+    </div>
 
-    <button
-      id="submitBtn"
-      class="rounded-xl bg-brand-700 px-5 py-3 font-semibold text-white hover:bg-brand-800"
-    >
-      Enviar confirmación
-    </button>
-
+    <button id="submitBtn" class="btn mt-2">Enviar confirmación</button>
     <p id="msg" class="text-sm" aria-live="polite"></p>
   </form>
 </main>
 
 <div id="emailModal" class="fixed inset-0 z-50 hidden">
   <div class="absolute inset-0 bg-slate-900/60"></div>
-  <div class="relative mx-auto mt-24 max-w-md px-4">
-    <div class="surface-card rounded-2xl bg-white p-5">
-      <h3 class="text-xl font-semibold">¿Te enviamos la confirmación?</h3>
-      <p class="muted mt-2 text-sm">
-        Si nos dejas tu correo podremos enviarte la confirmación y el evento del calendario.
+  <div class="relative mx-auto max-w-md mt-28">
+    <div class="card p-5 bg-white rounded-2xl">
+      <h3 class="font-serif text-xl text-ink">¿Te enviamos la confirmación?</h3>
+      <p class="mt-2 text-slate-600 text-sm">
+        No tenemos un correo asociado a tu invitación. Si nos lo dejas, podremos enviarte tu
+        confirmación.
       </p>
-      <label class="mt-4 block text-sm font-medium">Tu email (opcional)</label>
+
+      <label class="block text-sm font-medium mt-4">Tu email (opcional)</label>
       <input
         id="emailInput"
         type="email"
         placeholder="nombre@correo.com"
-        class="mt-1 w-full rounded-xl border border-slate-300 p-2"
+        class="mt-1 w-full rounded-xl border p-2"
       />
-      <div class="mt-5 flex gap-2">
-        <button
-          id="emailSaveBtn"
-          class="flex-1 rounded-xl bg-brand-700 px-5 py-2.5 text-white hover:bg-brand-800"
-        >
-          Guardar email y continuar
-        </button>
-        <button
-          id="emailSkipBtn"
-          class="flex-1 rounded-xl border border-slate-300 px-5 py-2.5 hover:bg-slate-50"
-        >
-          Ahora no
-        </button>
+
+      <div class="flex gap-2 mt-5">
+        <button id="emailSaveBtn" class="btn flex-1">Guardar email y continuar</button>
+        <button id="emailSkipBtn" class="btn btn-outline flex-1">Ahora no</button>
       </div>
-      <p id="emailError" class="mt-2 hidden text-sm text-red-700">
+      <p id="emailError" class="text-sm text-red-600 mt-2 hidden">
         Introduce un email válido o pulsa “Ahora no”.
       </p>
     </div>

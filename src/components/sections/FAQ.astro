@@ -1,6 +1,4 @@
 ---
-import Card from "../ui/Card.astro";
-
 interface FAQItem {
   id: string;
   body: string;
@@ -17,62 +15,19 @@ interface Props {
 const { title, items } = Astro.props;
 ---
 
-<section id="faq" class="mt-14">
-  <h2 class="section-title">{title}</h2>
-  <div class="mt-6 grid gap-3">
-    {
-      items.map((item, index) => {
-        const panelId = `faq-panel-${index}`;
-        const buttonId = `faq-button-${index}`;
-        return (
-          <Card className="overflow-hidden">
-            <button
-              id={buttonId}
-              type="button"
-              class="faq-trigger flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
-              aria-expanded="false"
-              aria-controls={panelId}
-              data-faq-trigger
-            >
-              <span class="text-lg font-semibold text-ink">{item.data.question}</span>
-              <span class="text-2xl leading-none text-brand-700" aria-hidden="true">+</span>
-            </button>
-            <div
-              id={panelId}
-              role="region"
-              aria-labelledby={buttonId}
-              class="faq-panel hidden px-5 pb-4 pt-0 text-slate-700"
-              data-faq-panel
-            >
-              <p>{item.body.trim()}</p>
-            </div>
-          </Card>
-        );
-      })
-    }
+<section class="section bg-white reveal">
+  <div class="max-w-4xl mx-auto px-6">
+    <h2 class="font-serif text-3xl mb-6">{title}</h2>
+    <div id="faqList">
+      {
+        items.map((item, idx) => (
+          <details class={`card p-4 ${idx < items.length - 1 ? "mb-3" : ""}`}>
+            <summary class="cursor-pointer font-medium">{item.data.question}</summary>
+            <div class="mt-2 text-slate-700">{item.body.trim()}</div>
+          </details>
+        ))
+      }
+    </div>
   </div>
 </section>
-
-<script is:inline>
-  const triggers = Array.from(document.querySelectorAll("[data-faq-trigger]"));
-  triggers.forEach((trigger) => {
-    trigger.addEventListener("click", () => {
-      const expanded = trigger.getAttribute("aria-expanded") === "true";
-      const panelId = trigger.getAttribute("aria-controls");
-      const panel = panelId ? document.getElementById(panelId) : null;
-      if (!panel) return;
-      trigger.setAttribute("aria-expanded", expanded ? "false" : "true");
-      panel.classList.toggle("hidden", expanded);
-      const marker = trigger.querySelector("span:last-child");
-      if (marker) marker.textContent = expanded ? "+" : "−";
-    });
-
-    trigger.addEventListener("keydown", (event) => {
-      if (event.key === " " || event.key === "Enter") {
-        event.preventDefault();
-        trigger.click();
-      }
-    });
-  });
-</script>
 

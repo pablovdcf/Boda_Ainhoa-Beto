@@ -1,50 +1,49 @@
-<main id="main-content" class="section-wrap py-10">
-  <header class="mb-6">
-    <h1 class="text-4xl font-semibold">Panel Admin</h1>
-    <p class="muted mt-2">
-      Vista legacy encapsulada en Astro para mantener compatibilidad durante la migración.
-    </p>
+<main id="main-content" class="max-w-5xl mx-auto px-6 py-10">
+  <header class="relative bg-hero text-white hero-florals rounded-2xl overflow-hidden mb-6">
+    <div class="absolute inset-0 bg-black/20 md:bg-black/15"></div>
+    <div class="relative max-w-3xl mx-auto px-6 py-10 text-center bg-paper">
+      <p class="uppercase tracking-[.3em] text-champagne/90 text-xs">Panel</p>
+      <h1 class="font-serif text-4xl md:text-5xl font-bold mt-2">Admin</h1>
+    </div>
   </header>
 
-  <section id="pinGate" class="surface-card mb-6 p-5">
-    <form id="pinForm" class="flex max-w-sm gap-2">
+  <section id="pinGate" class="card p-5 mb-6">
+    <form id="pinForm" class="flex gap-2 max-w-sm">
       <input
         id="pinInput"
         type="password"
-        class="flex-1 rounded-xl border border-slate-300 px-3 py-2"
+        class="flex-1 rounded border px-3 py-2"
         placeholder="PIN de admin"
       />
-      <button class="rounded-xl bg-brand-700 px-4 py-2 font-semibold text-white hover:bg-brand-800">
-        Entrar
-      </button>
+      <button class="btn">Entrar</button>
     </form>
-    <p id="pinError" class="mt-2 hidden text-sm text-red-700">PIN incorrecto.</p>
+    <p id="pinError" class="text-red-600 text-sm mt-2 hidden">PIN incorrecto.</p>
   </section>
 
   <section id="content" class="hidden">
-    <div class="mb-4 grid grid-cols-2 gap-3 md:grid-cols-4">
-      <div class="surface-card p-3">
-        <div class="text-sm text-slate-500">Total invitados</div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+      <div class="card p-3">
+        <div class="text-slate-500 text-sm">Total invitados</div>
         <div id="k_total" class="text-xl font-semibold">—</div>
       </div>
-      <div class="surface-card p-3">
-        <div class="text-sm text-slate-500">Asisten (sí)</div>
+      <div class="card p-3">
+        <div class="text-slate-500 text-sm">Asisten (sí)</div>
         <div id="k_si" class="text-xl font-semibold">—</div>
       </div>
-      <div class="surface-card p-3">
-        <div class="text-sm text-slate-500">No asisten</div>
+      <div class="card p-3">
+        <div class="text-slate-500 text-sm">No asisten</div>
         <div id="k_no" class="text-xl font-semibold">—</div>
       </div>
-      <div class="surface-card p-3">
-        <div class="text-sm text-slate-500">Acompañantes</div>
+      <div class="card p-3">
+        <div class="text-slate-500 text-sm">Acompañantes</div>
         <div id="k_acomp" class="text-xl font-semibold">—</div>
       </div>
     </div>
 
-    <div class="mb-3 flex flex-wrap items-end gap-2">
+    <div class="flex flex-wrap gap-2 items-end mb-3">
       <label class="text-sm"
         >Estado
-        <select id="f_estado" class="rounded border border-slate-300 px-2 py-1">
+        <select id="f_estado" class="rounded border px-2 py-1">
           <option value="">Todos</option>
           <option value="si">Sí</option>
           <option value="no">No</option>
@@ -53,32 +52,23 @@
       </label>
       <label class="text-sm"
         >Grupo
-        <input
-          id="f_grupo"
-          class="rounded border border-slate-300 px-2 py-1"
-          placeholder="familia, amigos..."
-        />
+        <input id="f_grupo" class="rounded border px-2 py-1" placeholder="familia, amigos..." />
       </label>
-      <button
-        id="btnExport"
-        class="ml-auto rounded-xl bg-slate-900 px-3 py-2 text-sm font-semibold text-white"
-      >
-        Export CSV
-      </button>
+      <button id="btnExport" class="btn ml-auto">Export CSV</button>
     </div>
 
-    <div class="surface-card overflow-auto">
+    <div class="overflow-auto card">
       <table class="min-w-full text-sm">
         <thead class="bg-slate-100">
           <tr>
-            <th class="p-2 text-left">Nombre</th>
-            <th class="p-2 text-left">Grupo</th>
-            <th class="p-2 text-left">Estado</th>
-            <th class="p-2 text-right">Acomp.</th>
-            <th class="p-2 text-left">Menú</th>
-            <th class="p-2 text-left">Alergias</th>
-            <th class="p-2 text-left">Bus</th>
-            <th class="p-2 text-left">Token</th>
+            <th class="text-left p-2">Nombre</th>
+            <th class="text-left p-2">Grupo</th>
+            <th class="text-left p-2">Estado</th>
+            <th class="text-right p-2">Acomp.</th>
+            <th class="text-left p-2">Menú</th>
+            <th class="text-left p-2">Alergias</th>
+            <th class="text-left p-2">Bus</th>
+            <th class="text-left p-2">Token</th>
           </tr>
         </thead>
         <tbody id="tbody"></tbody>

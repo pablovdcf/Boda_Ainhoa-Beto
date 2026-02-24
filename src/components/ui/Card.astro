@@ -9,7 +9,7 @@ const hasHeader = Astro.slots.has("header");
 const hasContent = Astro.slots.has("content");
 ---
 
-<article class={`surface-card ${className}`.trim()}>
+<article class={`card ${className}`.trim()}>
   {hasHeader && (
     <header class={`border-b border-slate-100 ${padded ? "px-5 py-4" : ""}`}>
       <slot name="header" />
@@ -25,4 +25,3 @@ const hasContent = Astro.slots.has("content");
     </div>
   )}
 </article>
-

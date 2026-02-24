@@ -1,60 +1,37 @@
 ---
 import Button from "../ui/Button.astro";
-import Badge from "../ui/Badge.astro";
 
 interface Props {
   eyebrow: string;
   title: string;
-  description: string;
-  coupleNames: string;
-  dateLabel: string;
-  venueName: string;
+  subtitle: string;
   ctaLabel: string;
-  ctaHref?: string;
-  secondaryLabel: string;
+  ctaHref: string;
 }
 
-const {
-  eyebrow,
-  title,
-  description,
-  coupleNames,
-  dateLabel,
-  venueName,
-  ctaLabel,
-  ctaHref = "/invite",
-  secondaryLabel
-} = Astro.props;
+const { eyebrow, title, subtitle, ctaLabel, ctaHref } = Astro.props;
 ---
 
-<section class="surface-card relative overflow-hidden bg-hero px-6 py-12 text-white sm:px-10 sm:py-14">
-  <div class="pointer-events-none absolute inset-0 subtle-grid opacity-20"></div>
-  <div class="relative grid gap-8 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
-    <div>
-      <Badge tone="muted" className="border-white/35 bg-white/15 text-white">
-        {eyebrow}
-      </Badge>
-      <h1 class="mt-5 max-w-2xl text-hero font-semibold text-white">{title}</h1>
-      <p class="mt-4 max-w-2xl text-lead text-sand">{description}</p>
-      <div class="mt-8 flex flex-wrap gap-3">
-        <Button href={ctaHref} size="lg">{ctaLabel}</Button>
-        <Button href="#location" variant="ghost" size="lg">{secondaryLabel}</Button>
-      </div>
-    </div>
+<header class="relative bg-hero text-white hero-florals">
+  <div class="absolute inset-0 bg-black/20 md:bg-black/15"></div>
 
-    <aside class="rounded-3xl border border-white/30 bg-white/12 p-6 backdrop-blur-sm">
-      <p class="font-script text-3xl leading-none text-blush">{coupleNames}</p>
-      <dl class="mt-4 space-y-3 text-sm text-white/95">
-        <div>
-          <dt class="text-xs uppercase tracking-[0.2em] text-white/70">Fecha</dt>
-          <dd class="mt-1 text-base font-semibold">{dateLabel}</dd>
-        </div>
-        <div>
-          <dt class="text-xs uppercase tracking-[0.2em] text-white/70">Lugar</dt>
-          <dd class="mt-1 text-base font-semibold">{venueName}</dd>
-        </div>
-      </dl>
-    </aside>
+  <div class="relative max-w-3xl mx-auto px-6 pt-16 pb-20 md:pt-24 md:pb-28 text-center">
+    <p class="uppercase tracking-[.3em] text-white/80 text-sm">{eyebrow}</p>
+
+    <h1
+      id="heroNames"
+      class="font-serif text-5xl md:text-6xl font-bold mt-3 drop-shadow-[0_2px_8px_rgba(0,0,0,.25)]"
+    >
+      {title}
+    </h1>
+
+    <p id="heroSub" class="mt-4 text-white/85 text-lg">{subtitle}</p>
+
+    <div class="mt-8 flex flex-wrap gap-3 justify-center">
+      <Button href={ctaHref} variant="hero">{ctaLabel}</Button>
+    </div>
   </div>
-</section>
+
+  <div class="divider opacity-40"></div>
+</header>
 

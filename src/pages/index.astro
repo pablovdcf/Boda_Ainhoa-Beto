@@ -2,10 +2,13 @@
 import { getCollection, getEntry } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Hero from "../components/sections/Hero.astro";
-import Countdown from "../components/sections/Countdown.astro";
 import Agenda from "../components/sections/Agenda.astro";
+import Story from "../components/sections/Story.astro";
+import FloralDivider from "../components/sections/FloralDivider.astro";
 import Location from "../components/sections/Location.astro";
+import InfoCards from "../components/sections/InfoCards.astro";
 import Gallery from "../components/sections/Gallery.astro";
+import Countdown from "../components/sections/Countdown.astro";
 import FAQ from "../components/sections/FAQ.astro";
 import Footer from "../components/sections/Footer.astro";
 
@@ -17,57 +20,98 @@ if (!landingEntry) {
 const agendaItems = (await getCollection("agenda")).sort(
   (a, b) => a.data.order - b.data.order
 );
-const faqItems = (await getCollection("faq")).sort(
-  (a, b) => a.data.order - b.data.order
-);
+const faqItems = (await getCollection("faq")).sort((a, b) => a.data.order - b.data.order);
 const recommendationItems = (await getCollection("recomendaciones")).sort(
   (a, b) => a.data.order - b.data.order
 );
-
-const locationRecommendations = recommendationItems.filter(
-  (item) => item.data.category === "logistica" || item.data.category === "menu"
-);
-
+const infoItems = recommendationItems.slice(0, 3);
 const data = landingEntry.data;
 ---
 
 <BaseLayout title="Boda · Ainhoa & Alberto" description={data.heroDescription}>
-  <main id="main-content" class="section-wrap py-10 sm:py-14">
+  <div id="noticeBanner" class="notice-banner" role="status" aria-live="polite"></div>
+
+  <main id="main-content" class="section-wrap">
     <Hero
       eyebrow={data.heroEyebrow}
       title={data.heroTitle}
-      description={data.heroDescription}
-      coupleNames={data.coupleNames}
-      dateLabel={data.weddingDateLabel}
-      venueName={data.venue.name}
+      subtitle={data.heroDescription}
       ctaLabel={data.heroCtaLabel}
-      secondaryLabel={data.heroSecondaryLabel}
       ctaHref="/invite"
     />
 
-    <Countdown
-      targetIso={data.weddingDateIso}
-      label={`${data.weddingDateLabel} — ${data.venue.name}`}
-    />
-
     <Agenda title={data.agendaTitle} items={agendaItems} />
+    <FloralDivider />
+    <Story story={data.story} />
+    <FloralDivider />
 
     <Location
       title={data.location.title}
+      subtitle={data.location.subtitle}
       description={data.location.description}
-      venueName={data.venue.name}
-      venueAddress={data.venue.address}
-      venueCity={data.venue.city}
       mapUrl={data.venue.mapUrl}
+      mapLabel={data.locationButtonLabel}
+      address={`${data.venue.address}, ${data.venue.city}`}
       photos={data.location.photos}
-      recommendations={locationRecommendations}
     />
 
+    <div class="floral-divider my-10"></div>
+    <InfoCards recommendations={infoItems} />
+    <div class="floral-divider my-10"></div>
     <Gallery title={data.galleryTitle} images={data.gallery} />
-
+    <div class="floral-divider my-10"></div>
+    <Countdown
+      targetIso={data.weddingDateIso}
+      label={`${data.weddingDateLabel} — ${data.venueLine}`}
+    />
     <FAQ title={data.faqTitle} items={faqItems} />
-
-    <Footer note={data.footerNote} />
+    <div class="floral-divider my-10"></div>
+    <Footer
+      title="¿Vienes a celebrarlo?"
+      text="Confirma tu asistencia antes del XX de X."
+      ctaLabel="Confirmar asistencia"
+      ctaHref="/invite"
+    />
   </main>
-</BaseLayout>
 
+  <script is:inline>
+    (function () {
+      const els = document.querySelectorAll(".reveal");
+      if (!els.length) return;
+      if (!("IntersectionObserver" in window)) {
+        els.forEach((el) => el.classList.add("visible"));
+        return;
+      }
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.15 }
+      );
+      els.forEach((el) => observer.observe(el));
+    })();
+
+    (function () {
+      const banner = document.getElementById("noticeBanner");
+      if (!banner) return;
+      const params = new URLSearchParams(location.search);
+      const text = params.get("notice");
+      if (!text) return;
+      const kind = params.get("noticeKind") || "info";
+      banner.textContent = text;
+      banner.classList.remove("show", "success", "info", "warn");
+      banner.classList.add(kind === "success" ? "success" : kind === "warn" ? "warn" : "info");
+      requestAnimationFrame(() => banner.classList.add("show"));
+      setTimeout(() => banner.classList.remove("show"), 6000);
+      params.delete("notice");
+      params.delete("noticeKind");
+      const query = params.toString();
+      history.replaceState({}, "", location.pathname + (query ? `?${query}` : ""));
+    })();
+  </script>
+</BaseLayout>

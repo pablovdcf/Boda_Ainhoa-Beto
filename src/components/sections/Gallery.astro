@@ -14,125 +14,97 @@ interface Props {
 const { title, images } = Astro.props;
 ---
 
-<section id="gallery" class="mt-14">
-  <h2 class="section-title">{title}</h2>
-  <div class="mt-6 columns-2 gap-3 sm:columns-3 lg:columns-4">
-    {
-      images.map((image, index) => (
-        <button
-          type="button"
-          class="gallery-item mb-3 block w-full overflow-hidden rounded-2xl border border-white/70 bg-white shadow-soft transition hover:-translate-y-0.5 hover:shadow-card"
-          data-lightbox-index={index}
-          data-lightbox-src={image.src}
-          data-lightbox-alt={image.alt}
-          aria-label={`Abrir imagen ${index + 1} de la galería`}
-        >
-          <img
-            src={image.src}
-            alt={image.alt}
-            width={image.width}
-            height={image.height}
-            class="h-auto w-full object-cover"
-            loading="lazy"
-            decoding="async"
-          />
-        </button>
-      ))
-    }
+<section id="galeria" class="section bg-white reveal">
+  <div class="max-w-6xl mx-auto px-6">
+    <h2 class="font-serif text-3xl md:text-4xl mb-6 text-center">{title}</h2>
+
+    <div id="galleryGrid" class="masonry">
+      {
+        images.map((image) => (
+          <a href={image.src}>
+            <img
+              src={image.src}
+              loading="lazy"
+              decoding="async"
+              alt={image.alt}
+              width={image.width}
+              height={image.height}
+            />
+          </a>
+        ))
+      }
+    </div>
   </div>
 
-  <div
-    class="lightbox fixed inset-0 z-[70] hidden items-center justify-center bg-slate-950/92 p-4"
-    role="dialog"
-    aria-modal="true"
-    aria-label="Visor de galería"
-    data-lightbox-modal
-  >
-    <button
-      type="button"
-      class="absolute right-4 top-4 rounded-full border border-white/30 bg-white/10 px-3 py-1 text-white"
-      data-lightbox-close
-      aria-label="Cerrar galería"
-    >
-      Cerrar
-    </button>
-    <button
-      type="button"
-      class="absolute left-4 top-1/2 hidden -translate-y-1/2 rounded-full border border-white/30 bg-white/10 px-3 py-2 text-white sm:block"
-      data-lightbox-prev
-      aria-label="Imagen anterior"
-    >
-      ‹
-    </button>
-    <img
-      src=""
-      alt=""
-      class="max-h-[88vh] w-auto max-w-[94vw] rounded-2xl object-contain"
-      data-lightbox-image
-    />
-    <button
-      type="button"
-      class="absolute right-4 top-1/2 hidden -translate-y-1/2 rounded-full border border-white/30 bg-white/10 px-3 py-2 text-white sm:block"
-      data-lightbox-next
-      aria-label="Imagen siguiente"
-    >
-      ›
-    </button>
+  <div id="lb" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-50 p-4">
+    <button id="lbPrev" class="absolute left-4 top-1/2 -translate-y-1/2 text-white text-3xl">‹</button>
+    <img id="lbImg" class="max-h-[88vh] max-w-[92vw] rounded-xl shadow-2xl" alt="" />
+    <button id="lbNext" class="absolute right-4 top-1/2 -translate-y-1/2 text-white text-3xl">›</button>
+    <button id="lbClose" class="absolute top-4 right-4 text-white text-2xl">✕</button>
   </div>
 </section>
 
 <script is:inline>
-  const items = Array.from(document.querySelectorAll(".gallery-item"));
-  const modal = document.querySelector("[data-lightbox-modal]");
-  const modalImage = document.querySelector("[data-lightbox-image]");
-  const closeButton = document.querySelector("[data-lightbox-close]");
-  const nextButton = document.querySelector("[data-lightbox-next]");
-  const prevButton = document.querySelector("[data-lightbox-prev]");
+  (function () {
+    const lb = document.getElementById("lb");
+    const img = document.getElementById("lbImg");
+    const prev = document.getElementById("lbPrev");
+    const next = document.getElementById("lbNext");
+    const close = document.getElementById("lbClose");
+    if (!lb || !img) return;
+    let items = [];
+    let i = 0;
 
-  if (items.length && modal && modalImage && closeButton && nextButton && prevButton) {
-    let activeIndex = 0;
-
-    const openAt = (index) => {
-      activeIndex = index;
-      const item = items[activeIndex];
-      const src = item.getAttribute("data-lightbox-src") || "";
-      const alt = item.getAttribute("data-lightbox-alt") || "";
-      modalImage.setAttribute("src", src);
-      modalImage.setAttribute("alt", alt);
-      modal.classList.remove("hidden");
-      modal.classList.add("flex");
+    function open(n) {
+      if (!items.length) return;
+      i = (n + items.length) % items.length;
+      img.src = items[i].getAttribute("href");
+      lb.classList.remove("hidden");
+      lb.classList.add("flex");
       document.body.style.overflow = "hidden";
-    };
+    }
 
-    const close = () => {
-      modal.classList.remove("flex");
-      modal.classList.add("hidden");
+    function nav(d) {
+      if (!items.length) return;
+      i = (i + d + items.length) % items.length;
+      img.src = items[i].getAttribute("href");
+    }
+
+    function hide() {
+      lb.classList.add("hidden");
+      lb.classList.remove("flex");
       document.body.style.overflow = "";
-    };
+    }
 
-    const move = (step) => {
-      activeIndex = (activeIndex + step + items.length) % items.length;
-      openAt(activeIndex);
-    };
+    function bindGrid() {
+      const grid = document.querySelector(".masonry");
+      if (!grid) return;
+      items = [...grid.querySelectorAll("a")];
+      items.forEach((a, idx) => {
+        if (a.dataset.lbBound === "1") return;
+        a.dataset.lbBound = "1";
+        a.addEventListener("click", (e) => {
+          e.preventDefault();
+          open(idx);
+        });
+      });
+    }
 
-    items.forEach((item, index) => {
-      item.addEventListener("click", () => openAt(index));
+    if (prev) prev.onclick = () => nav(-1);
+    if (next) next.onclick = () => nav(1);
+    if (close) close.onclick = hide;
+    lb.addEventListener("click", (e) => {
+      if (e.target === lb) hide();
     });
 
-    closeButton.addEventListener("click", close);
-    nextButton.addEventListener("click", () => move(1));
-    prevButton.addEventListener("click", () => move(-1));
-
-    modal.addEventListener("click", (event) => {
-      if (event.target === modal) close();
+    window.addEventListener("keydown", (e) => {
+      if (lb.classList.contains("hidden")) return;
+      if (e.key === "Escape") hide();
+      if (e.key === "ArrowRight") nav(1);
+      if (e.key === "ArrowLeft") nav(-1);
     });
 
-    window.addEventListener("keydown", (event) => {
-      if (modal.classList.contains("hidden")) return;
-      if (event.key === "Escape") close();
-      if (event.key === "ArrowRight") move(1);
-      if (event.key === "ArrowLeft") move(-1);
-    });
-  }
+    bindGrid();
+  })();
 </script>
 

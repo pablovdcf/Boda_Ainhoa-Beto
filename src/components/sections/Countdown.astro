@@ -7,63 +7,95 @@ interface Props {
 const { targetIso, label } = Astro.props;
 ---
 
-<section
-  class="surface-card mt-10 p-6 text-center sm:p-8"
-  data-countdown-root
-  data-countdown-target={targetIso}
->
-  <p class="text-xs font-semibold uppercase tracking-[0.28em] text-brand-700">
-    Cuenta atrás
-  </p>
-  <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-    <div class="rounded-2xl bg-brand-50 px-3 py-4">
-      <p class="text-3xl font-semibold text-brand-800" data-unit="days">--</p>
-      <p class="mt-1 text-xs uppercase tracking-wide text-slate-500">Días</p>
+<section class="section reveal" data-countdown-target={targetIso}>
+  <div class="max-w-4xl mx-auto px-6 text-center">
+    <h2 class="font-serif text-3xl md:text-4xl mb-6">
+      <span class="bg-clip-text text-transparent bg-gradient-to-r from-gold via-amber-500 to-pink-500">
+        Cuenta atrás
+      </span>
+    </h2>
+
+    <div id="cd" class="countdown">
+      <div class="unit">
+        <div class="num" id="d">--</div>
+        <div class="label">Días</div>
+      </div>
+      <span class="sep">•</span>
+      <div class="unit">
+        <div class="num" id="h">--</div>
+        <div class="label">Horas</div>
+      </div>
+      <span class="sep">•</span>
+      <div class="unit">
+        <div class="num" id="m">--</div>
+        <div class="label">Min</div>
+      </div>
+      <span class="sep">•</span>
+      <div class="unit">
+        <div class="num" id="s">--</div>
+        <div class="label">Seg</div>
+      </div>
     </div>
-    <div class="rounded-2xl bg-brand-50 px-3 py-4">
-      <p class="text-3xl font-semibold text-brand-800" data-unit="hours">--</p>
-      <p class="mt-1 text-xs uppercase tracking-wide text-slate-500">Horas</p>
-    </div>
-    <div class="rounded-2xl bg-brand-50 px-3 py-4">
-      <p class="text-3xl font-semibold text-brand-800" data-unit="minutes">--</p>
-      <p class="mt-1 text-xs uppercase tracking-wide text-slate-500">Min</p>
-    </div>
-    <div class="rounded-2xl bg-brand-50 px-3 py-4">
-      <p class="text-3xl font-semibold text-brand-800" data-unit="seconds">--</p>
-      <p class="mt-1 text-xs uppercase tracking-wide text-slate-500">Seg</p>
-    </div>
+
+    <p id="countdownMeta" class="mt-5 text-slate-600">{label}</p>
   </div>
-  <p class="mt-4 text-sm text-slate-600">{label}</p>
 </section>
 
 <script is:inline>
-  const countdownRoots = document.querySelectorAll("[data-countdown-root]");
-  countdownRoots.forEach((root) => {
-    const targetRaw = root.getAttribute("data-countdown-target");
-    if (!targetRaw) return;
-    const target = new Date(targetRaw).getTime();
-    if (Number.isNaN(target)) return;
-
-    const elDays = root.querySelector('[data-unit="days"]');
-    const elHours = root.querySelector('[data-unit="hours"]');
-    const elMinutes = root.querySelector('[data-unit="minutes"]');
-    const elSeconds = root.querySelector('[data-unit="seconds"]');
-    if (!elDays || !elHours || !elMinutes || !elSeconds) return;
-
-    const write = () => {
-      const diff = Math.max(0, target - Date.now());
-      const days = Math.floor(diff / 86400000);
-      const hours = Math.floor((diff % 86400000) / 3600000);
-      const minutes = Math.floor((diff % 3600000) / 60000);
-      const seconds = Math.floor((diff % 60000) / 1000);
-      elDays.textContent = String(days);
-      elHours.textContent = String(hours).padStart(2, "0");
-      elMinutes.textContent = String(minutes).padStart(2, "0");
-      elSeconds.textContent = String(seconds).padStart(2, "0");
+  const countdown = document.querySelector("[data-countdown-target]");
+  if (countdown) {
+    const targetRaw = countdown.getAttribute("data-countdown-target");
+    const targetMs = new Date(targetRaw || "").getTime();
+    const el = {
+      d: document.getElementById("d"),
+      h: document.getElementById("h"),
+      m: document.getElementById("m"),
+      s: document.getElementById("s")
     };
 
-    write();
-    setInterval(write, 1000);
-  });
+    if (!Number.isNaN(targetMs) && el.d && el.h && el.m && el.s) {
+      const prev = { d: null, h: null, m: null, s: null };
+
+      function setNum(id, value) {
+        const node = el[id];
+        const next = String(value).padStart(id === "d" ? 1 : 2, "0");
+        if (!node || node.textContent === next) return;
+        node.classList.add("fade");
+        setTimeout(() => {
+          node.textContent = next;
+        }, 140);
+        setTimeout(() => {
+          node.classList.remove("fade");
+        }, 320);
+      }
+
+      function tick() {
+        const diff = Math.max(0, targetMs - Date.now());
+        const d = Math.floor(diff / 86400000);
+        const h = Math.floor((diff % 86400000) / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        if (prev.d !== d) {
+          setNum("d", d);
+          prev.d = d;
+        }
+        if (prev.h !== h) {
+          setNum("h", h);
+          prev.h = h;
+        }
+        if (prev.m !== m) {
+          setNum("m", m);
+          prev.m = m;
+        }
+        if (prev.s !== s) {
+          setNum("s", s);
+          prev.s = s;
+        }
+      }
+
+      tick();
+      setInterval(tick, 1000);
+    }
+  }
 </script>
 

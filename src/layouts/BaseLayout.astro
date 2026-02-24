@@ -22,7 +22,7 @@ const {
     />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#194f99" />
+    <meta name="theme-color" content="#0b3b4f" />
     <link rel="icon" href="/icons/icon-192.png" />
     <link rel="manifest" href="/manifest.json" />
     <link rel="dns-prefetch" href="//fonts.googleapis.com" />
@@ -30,13 +30,13 @@ const {
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=Parisienne&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@400;500;600&family=Great+Vibes&display=swap"
       rel="stylesheet"
     />
     <link id="themeStylesheet" rel="stylesheet" href="/assets/themes/classic.css" />
     <slot name="head" />
   </head>
-  <body>
+  <body class="bg-slate-50 text-ink">
     <a href="#main-content" class="skip-link">Saltar al contenido</a>
     <slot />
     <script is:inline>

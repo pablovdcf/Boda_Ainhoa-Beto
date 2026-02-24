@@ -2,7 +2,13 @@
 interface Props {
   href?: string;
   type?: "button" | "submit" | "reset";
-  variant?: "primary" | "secondary" | "ghost";
+  variant?:
+    | "primary"
+    | "outline"
+    | "hero"
+    | "hero-outline"
+    | "secondary"
+    | "ghost";
   size?: "sm" | "md" | "lg";
   className?: string;
   disabled?: boolean;
@@ -25,23 +31,26 @@ const {
   ...rest
 } = Astro.props;
 
-const baseClass =
-  "inline-flex items-center justify-center gap-2 rounded-full font-semibold transition duration-200 focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 focus-visible:ring-offset-cream disabled:cursor-not-allowed disabled:opacity-50";
 const sizeClasses: Record<string, string> = {
-  sm: "px-3.5 py-2 text-sm",
-  md: "px-5 py-2.5 text-sm",
-  lg: "px-6 py-3 text-base"
+  sm: "text-sm",
+  md: "text-base",
+  lg: "text-lg"
 };
+const normalizedVariant =
+  variant === "secondary"
+    ? "outline"
+    : variant === "ghost"
+      ? "hero-outline"
+      : variant;
 const variants: Record<string, string> = {
-  primary:
-    "bg-brand-700 text-white shadow-soft hover:-translate-y-0.5 hover:bg-brand-800 active:translate-y-0",
-  secondary:
-    "border border-brand-200 bg-white text-brand-800 shadow-soft hover:border-brand-300 hover:bg-brand-50",
-  ghost:
-    "border border-white/35 bg-white/10 text-white hover:border-white/60 hover:bg-white/20"
+  primary: "btn",
+  outline: "btn btn-outline",
+  hero: "btn-hero",
+  "hero-outline": "btn-hero-outline"
 };
+const disabledClass = disabled ? "opacity-60 pointer-events-none" : "";
 const classes =
-  `${baseClass} ${sizeClasses[size] ?? sizeClasses.md} ${variants[variant] ?? variants.primary} ${className}`.trim();
+  `${variants[normalizedVariant] ?? variants.primary} ${sizeClasses[size] ?? sizeClasses.md} ${disabledClass} ${className}`.trim();
 const anchorRel = target === "_blank" ? rel || "noreferrer noopener" : rel;
 ---
 

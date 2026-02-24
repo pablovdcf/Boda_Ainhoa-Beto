@@ -1181,28 +1181,63 @@ html[data-theme="pro"] .hero-cinematic-vignette {
   }
 }
 
-.pro-story {
+.pro-story-vertical {
   display: grid;
-  gap: 1.2rem;
+  gap: 0;
 }
 
-.pro-story-media {
+.story-tinder-card {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 560px;
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  background: #fff;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+}
+
+.story-tinder-media {
+  position: relative;
   aspect-ratio: 4 / 5;
+  background: #f8fafc;
 }
 
-.pro-story-copy {
-  align-self: center;
+.story-tinder-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center top;
 }
 
-@media (min-width: 900px) {
-  .pro-story {
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-    gap: 2rem;
-  }
+.story-tinder-overlay {
+  padding: 0.9rem 1rem 1rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(255, 255, 255, 0.96);
+}
 
-  .pro-story-media {
-    aspect-ratio: 4 / 4.5;
-  }
+.story-tinder-name {
+  font-family: "Playfair Display", serif;
+  font-size: 1.35rem;
+  color: #112f40;
+  line-height: 1.2;
+}
+
+.story-tinder-meta {
+  margin-top: 0.3rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.story-epilogue {
+  font-family: "Playfair Display", serif;
+  font-style: italic;
+  font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+  color: #334155;
+  line-height: 1.6;
 }
 
 .pro-location-shell {

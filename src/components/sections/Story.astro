@@ -13,32 +13,45 @@ interface StoryData {
 
 interface Props {
   story: StoryData;
+  coupleNames?: string;
+  metaLine?: string;
 }
 
-const { story } = Astro.props;
+const {
+  story,
+  coupleNames = "Ainhoa & Alberto",
+  metaLine = "San Sebastián · Verified"
+} = Astro.props;
 ---
 
 <section id="historia" class="section">
-  <div class="landing-container landing-container-lg">
-    <article class="pro-story card p-4 md:p-6">
-      <div class="pro-story-media reveal">
-        <img
-          src={story.image.src}
-          alt={story.image.alt}
-          width={story.image.width}
-          height={story.image.height}
-          class="rounded-2xl w-full h-full object-cover"
-          loading="lazy"
-          decoding="async"
-        />
-      </div>
+  <div class="landing-container">
+    <article class="pro-story-vertical mx-auto max-w-2xl px-6">
+      <p class="text-xs uppercase tracking-[0.24em] text-slate-500 reveal">Nuestra historia</p>
+      <h2 class="font-serif text-4xl md:text-5xl mt-3 text-night reveal reveal-delay-1">
+        {story.title}
+      </h2>
+      <p class="text-slate-700 mt-5 leading-relaxed reveal reveal-delay-1">{story.lead}</p>
 
-      <div class="pro-story-copy reveal reveal-delay-1">
-        <p class="text-xs uppercase tracking-[0.24em] text-slate-500">Nuestra historia</p>
-        <h2 class="font-serif text-3xl md:text-4xl mt-3 text-night">{story.title}</h2>
-        <p class="text-slate-700 mt-5 leading-relaxed">{story.lead}</p>
-        <p class="text-slate-600 mt-4 leading-relaxed">{story.closing}</p>
-      </div>
+      <figure class="story-tinder-card mt-8 reveal reveal-delay-2">
+        <div class="story-tinder-media">
+          <img
+            src={story.image.src}
+            alt={story.image.alt}
+            width={story.image.width}
+            height={story.image.height}
+            class="story-tinder-image"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        <figcaption class="story-tinder-overlay">
+          <p class="story-tinder-name">{coupleNames}</p>
+          <p class="story-tinder-meta">{metaLine}</p>
+        </figcaption>
+      </figure>
+
+      <p class="story-epilogue mt-6 reveal reveal-delay-2">{story.closing}</p>
     </article>
   </div>
 </section>

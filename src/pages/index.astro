@@ -50,7 +50,11 @@ const heroImageAlt = data.location.photos[0]?.alt || data.story.image.alt || dat
       <Agenda title={data.agendaTitle} items={agendaItems} />
     </div>
     <div class="landing-band landing-band-paper">
-      <Story story={data.story} />
+      <Story
+        story={data.story}
+        coupleNames={data.coupleNames || data.heroTitle}
+        metaLine="San Sebastián · Verified"
+      />
     </div>
 
     <div class="landing-band landing-band-mist">

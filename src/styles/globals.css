@@ -36,6 +36,18 @@ body {
   overflow-x: hidden;
 }
 
+body {
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+img,
+video,
+canvas,
+iframe {
+  max-width: 100%;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .reveal,
   .reveal-delay-1,
@@ -271,27 +283,44 @@ body {
 }
 
 .countdown {
-  display: inline-flex;
-  align-items: flex-end;
-  gap: 14px;
-  padding: 14px 18px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(0.55rem, 2vw, 1rem);
+  align-items: end;
+  width: min(100%, 44rem);
+  margin-inline: auto;
+  padding: 0.95rem 1rem;
   background: rgba(255, 255, 255, 0.55);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(15, 23, 42, 0.06);
   box-shadow: 0 10px 30px rgba(10, 30, 60, 0.08);
   border-radius: 16px;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .countdown .unit {
-  min-width: 72px;
+  min-width: 0;
+  text-align: center;
+  position: relative;
+}
+
+.countdown .unit:not(:last-child)::after {
+  content: "•";
+  position: absolute;
+  right: calc(clamp(0.55rem, 2vw, 1rem) * -0.62);
+  top: 50%;
+  transform: translateY(-58%);
+  color: #c8cfd9;
+  font-size: clamp(0.95rem, 2vw, 1.2rem);
+  line-height: 1;
+  pointer-events: none;
 }
 
 .countdown .num {
   font-family: "Playfair Display", serif;
   font-weight: 700;
-  font-size: 40px;
+  font-size: clamp(1.9rem, 5.3vw, 2.5rem);
   line-height: 1;
   letter-spacing: 0.5px;
   color: var(--color-primary, #0b3b4f);
@@ -300,18 +329,11 @@ body {
 
 .countdown .label {
   margin-top: 6px;
-  font-size: 12px;
-  letter-spacing: 0.1em;
+  font-size: clamp(0.62rem, 2vw, 0.74rem);
+  letter-spacing: clamp(0.08em, 0.8vw, 0.14em);
   text-transform: uppercase;
   color: #64748b;
-}
-
-.countdown .sep {
-  color: #c8cfd9;
-  font-size: 22px;
-  line-height: 1;
-  transform: translateY(-6px);
-  user-select: none;
+  white-space: nowrap;
 }
 
 .num.fade {
@@ -319,24 +341,27 @@ body {
   transform: translateY(2px);
 }
 
-@media (max-width: 480px) {
+@media (max-width: 900px) {
   .countdown {
-    gap: 10px;
-    padding: 10px 12px;
-    border-radius: 14px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.85rem 0.7rem;
+    padding: 0.85rem 0.8rem;
   }
 
-  .countdown .unit {
-    min-width: 58px;
+  .countdown .unit:last-child {
+    display: none;
   }
 
-  .countdown .num {
-    font-size: 30px;
+  .countdown .unit::after {
+    display: none;
   }
+}
 
-  .countdown .sep {
-    font-size: 18px;
-    transform: translateY(-4px);
+@media (max-width: 768px) {
+  [data-countdown-target],
+  [data-countdown-target] .landing-container,
+  [data-countdown-target] .countdown {
+    overflow: visible;
   }
 }
 

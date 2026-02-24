@@ -12,22 +12,19 @@ const { targetIso, label } = Astro.props;
     <p class="text-xs uppercase tracking-[0.24em] text-slate-500 reveal">Cuenta atrás</p>
     <h2 class="font-serif text-3xl md:text-4xl mt-3 mb-6 text-night reveal">Nos vemos pronto</h2>
 
-    <div id="cd" class="countdown reveal reveal-delay-1 pro-countdown">
+    <div id="cd" class="countdown reveal reveal-delay-1 pro-countdown" role="timer" aria-live="polite">
       <div class="unit">
         <div class="num" id="d">--</div>
         <div class="label">Días</div>
       </div>
-      <span class="sep">•</span>
       <div class="unit">
         <div class="num" id="h">--</div>
         <div class="label">Horas</div>
       </div>
-      <span class="sep">•</span>
       <div class="unit">
         <div class="num" id="m">--</div>
         <div class="label">Min</div>
       </div>
-      <span class="sep">•</span>
       <div class="unit">
         <div class="num" id="s">--</div>
         <div class="label">Seg</div>

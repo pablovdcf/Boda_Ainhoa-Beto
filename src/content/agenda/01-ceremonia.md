@@ -1,7 +1,7 @@
 ---
-order: 2
+order: 1
 label: "Ceremonia"
-time: "16:30"
+time: "13:00"
 title: "Ceremonia"
 location: "Capilla de San Pedro, Palmeira"
 icon: "i-chapel"

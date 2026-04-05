@@ -1,9 +1,9 @@
 ---
-order: 3
+order: 2
 label: "Brindis"
-time: "17:45"
-title: "Brindis y cóctel"
-location: "Terraza principal"
+time: "14:30"
+title: "Cóctel y aperitivos"
+location: "Pazo Torre das Xunqueiras"
 icon: "i-toast"
 kind: "toast"
 ---

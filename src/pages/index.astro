@@ -26,8 +26,9 @@ const recommendationItems = (await getCollection("recomendaciones")).sort(
 const infoItems = recommendationItems.slice(0, 3);
 const data = landingEntry.data;
 const heroImageSrc =
-  data.location.photos[0]?.src || data.story.image.src || data.gallery[0]?.src || "/assets/hero.jpg";
-const heroImageAlt = data.location.photos[0]?.alt || data.story.image.alt || data.heroTitle;
+  data.gallery[13]?.src || data.location.photos[0]?.src || data.story.image.src || "/assets/hero.jpg";
+const heroImageAlt =
+  data.gallery[13]?.alt || data.location.photos[0]?.alt || data.story.image.alt || data.heroTitle;
 ---
 
 <BaseLayout title="Boda · Ainhoa & Alberto" description={data.heroDescription}>

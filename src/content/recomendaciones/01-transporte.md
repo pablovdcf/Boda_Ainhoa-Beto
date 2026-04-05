@@ -1,8 +1,8 @@
 ---
 order: 1
-title: "Transporte"
+title: "Parking"
 category: "logistica"
 ---
 
-Habrá opción de autobús y también parking para quien prefiera venir en coche.
+Hay zona de aparcamiento en el Pazo para quien prefiera venir en coche.
 

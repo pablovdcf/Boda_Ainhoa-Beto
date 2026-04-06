@@ -1,5 +1,6 @@
 ---
 import "../styles/globals.css";
+import Analytics from "@vercel/analytics/astro";
 
 interface Props {
   title?: string;
@@ -44,6 +45,7 @@ const themeHref = `/assets/themes/${normalizedTheme}.css`;
   <body class="bg-slate-50 text-ink">
     <a href="#main-content" class="skip-link">Saltar al contenido</a>
     <slot />
+    <Analytics />
     <script is:inline>
       const themeStylesheet = document.getElementById("themeStylesheet");
       if (themeStylesheet) {

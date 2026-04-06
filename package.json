@@ -12,8 +12,9 @@
     "check": "astro check"
   },
   "dependencies": {
-    "astro": "^5.2.0",
     "@astrojs/tailwind": "^6.0.0",
+    "@vercel/analytics": "^2.0.1",
+    "astro": "^5.2.0",
     "zod": "^3.24.1"
   },
   "devDependencies": {

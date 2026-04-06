@@ -57,18 +57,35 @@ function buildAdminList() {
       acompanantes: 0,
       menu: '',
       alergias: '',
-      bus: ''
+      bus: '',
+      notas_titular: '',
+      cancion: '',
+      updated_at: ''
     };
   });
 
   vRsp.slice(1).forEach(function (row) {
     var token = String(row[iRsp.token]);
     if (!token || !map[token]) return;
-    map[token].status = row[iRsp.asistencia] || map[token].status;
-    map[token].acompanantes = row[iRsp.acompanantes] || map[token].acompanantes;
-    map[token].menu = row[iRsp.menu] || map[token].menu;
-    map[token].alergias = row[iRsp.alergias] || map[token].alergias;
-    map[token].bus = row[iRsp.bus];
+    map[token].status =
+      (iRsp.asistencia != null ? row[iRsp.asistencia] : '') || map[token].status;
+    map[token].acompanantes =
+      (iRsp.acompanantes != null ? row[iRsp.acompanantes] : '') || map[token].acompanantes;
+    map[token].menu = (iRsp.menu != null ? row[iRsp.menu] : '') || map[token].menu;
+    map[token].alergias =
+      (iRsp.alergias != null ? row[iRsp.alergias] : '') || map[token].alergias;
+    map[token].bus =
+      (iRsp.bus != null ? row[iRsp.bus] : (row.length > 8 ? row[8] : '')) || map[token].bus;
+    map[token].notas_titular =
+      (iRsp.notas_titular != null ? row[iRsp.notas_titular] : '') ||
+      (row.length > 7 ? row[7] : '') ||
+      (iRsp.notas != null ? row[iRsp.notas] : '') ||
+      map[token].notas_titular;
+    map[token].cancion =
+      (iRsp.cancion != null ? row[iRsp.cancion] : (row.length > 9 ? row[9] : '')) ||
+      map[token].cancion;
+    map[token].updated_at =
+      (iRsp.timestamp != null ? row[iRsp.timestamp] : row[0]) || map[token].updated_at;
   });
 
   return Object.keys(map).map(function (k) { return map[k]; });

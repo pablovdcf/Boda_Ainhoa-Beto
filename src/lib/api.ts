@@ -82,6 +82,10 @@ export interface AdminListRow {
   menu?: string;
   alergias?: string;
   bus?: string | boolean;
+  notas_titular?: string;
+  cancion?: string;
+  updated_at?: string;
+  timestamp?: string;
 }
 
 export interface AdminListResult extends ApiResultBase {

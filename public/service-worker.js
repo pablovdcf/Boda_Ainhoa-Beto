@@ -1,4 +1,4 @@
-const SW_VERSION = "2026-02-24-v2";
+const SW_VERSION = "2026-05-07-v3";
 const ASSET_CACHE = `boda-assets-${SW_VERSION}`;
 const OFFLINE_URL = "/offline.html";
 

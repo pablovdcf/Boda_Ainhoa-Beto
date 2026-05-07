@@ -79,6 +79,13 @@ const MENU_LABELS: Record<string, string> = {
   otro: "Otro"
 };
 
+const LIMITS = {
+  MENSAJE: 300,
+  CANCION: 120,
+  ALERGIAS: 200,
+  ACOMPANANTE_NOMBRE: 50
+} as const;
+
 function copyDefaultForm(): FormState {
   return {
     asistencia: DEFAULT_FORM.asistencia,
@@ -139,21 +146,28 @@ function normalizeMenu(value: unknown): string {
   return "otro";
 }
 
+function limitText(value: unknown, maxLength: number): string {
+  return toStringValue(value).slice(0, maxLength);
+}
+
 function toCompanion(value: unknown): CompanionForm {
   if (typeof value === "string") {
     return {
-      nombre: value.trim(),
+      nombre: value.trim().slice(0, LIMITS.ACOMPANANTE_NOMBRE),
       menu: "estandar",
       alergias: ""
     };
   }
   if (value && typeof value === "object") {
     const source = value as Record<string, unknown>;
-    const nombre = `${toStringValue(source.nombre)} ${toStringValue(source.apellidos)}`.trim() || toStringValue(source.nombre);
+    const nombre = (
+      `${toStringValue(source.nombre)} ${toStringValue(source.apellidos)}`.trim() ||
+      toStringValue(source.nombre)
+    ).slice(0, LIMITS.ACOMPANANTE_NOMBRE);
     return {
       nombre,
       menu: normalizeMenu(source.menu),
-      alergias: toStringValue(source.alergias)
+      alergias: limitText(source.alergias, LIMITS.ALERGIAS)
     };
   }
   return {
@@ -245,6 +259,7 @@ export function initInviteWizard(): void {
 
   const cancionInput = document.getElementById("cancionInput") as HTMLInputElement | null;
   const notasInput = document.getElementById("notasInput") as HTMLTextAreaElement | null;
+  const notasCounter = document.getElementById("notasCounter");
   const errorCancion = document.getElementById("errorCancion");
   const btnCancionBack = document.getElementById("btnCancionBack");
   const btnCancionNext = document.getElementById("btnCancionNext");
@@ -378,6 +393,14 @@ export function initInviteWizard(): void {
     setError(submitError, "");
   }
 
+  function updateNotasCounter(): void {
+    if (!notasInput || !notasCounter) return;
+    if (notasInput.value.length > LIMITS.MENSAJE) {
+      notasInput.value = notasInput.value.slice(0, LIMITS.MENSAJE);
+    }
+    notasCounter.textContent = `${notasInput.value.length} / ${LIMITS.MENSAJE}`;
+  }
+
   function setAsistencia(value: Asistencia): void {
     state.form.asistencia = value;
     if (value === "no") {
@@ -438,11 +461,15 @@ export function initInviteWizard(): void {
       const input = document.createElement("input");
       input.id = `acompananteNombre${index}`;
       input.type = "text";
+      input.maxLength = LIMITS.ACOMPANANTE_NOMBRE;
       input.className = "mt-2 w-full rounded-xl border border-slate-300 px-3 py-2";
       input.placeholder = `Nombre del acompañante ${index + 1}`;
       input.value = state.form.acompanantes_nombres[index]?.nombre || "";
       input.addEventListener("input", () => {
-        state.form.acompanantes_nombres[index].nombre = input.value;
+        state.form.acompanantes_nombres[index].nombre = input.value.slice(
+          0,
+          LIMITS.ACOMPANANTE_NOMBRE
+        );
         saveDraft();
       });
 
@@ -475,11 +502,12 @@ export function initInviteWizard(): void {
       const alergias = document.createElement("textarea");
       alergias.id = `acompananteAlergias${index}`;
       alergias.rows = 2;
+      alergias.maxLength = LIMITS.ALERGIAS;
       alergias.className = "mt-2 w-full rounded-xl border border-slate-300 px-3 py-2";
       alergias.placeholder = "Intolerancias, alergias...";
       alergias.value = state.form.acompanantes_nombres[index]?.alergias || "";
       alergias.addEventListener("input", () => {
-        state.form.acompanantes_nombres[index].alergias = alergias.value;
+        state.form.acompanantes_nombres[index].alergias = alergias.value.slice(0, LIMITS.ALERGIAS);
         saveDraft();
       });
 
@@ -525,7 +553,8 @@ export function initInviteWizard(): void {
         list.className = "mt-2 space-y-2";
         state.form.acompanantes_nombres.slice(0, total).forEach((guest) => {
           const item = document.createElement("li");
-          item.className = "rounded-lg border border-slate-200 bg-white/70 px-3 py-2 text-sm";
+          item.className =
+            "rounded-lg border border-slate-200 bg-white/70 px-3 py-2 text-sm break-words [overflow-wrap:anywhere]";
           const parts = [
             guest.nombre.trim() || "Sin nombre",
             `Menú: ${MENU_LABELS[normalizeMenu(guest.menu)] || "Estándar"}`
@@ -645,7 +674,7 @@ export function initInviteWizard(): void {
       }
       state.form.acompanantes_nombres[index].nombre = nombre;
       state.form.acompanantes_nombres[index].menu = normalizeMenu(guest.menu);
-      state.form.acompanantes_nombres[index].alergias = toStringValue(guest.alergias);
+      state.form.acompanantes_nombres[index].alergias = limitText(guest.alergias, LIMITS.ALERGIAS);
     }
 
     setError(errorAcompanantes, "");
@@ -655,7 +684,7 @@ export function initInviteWizard(): void {
   function validateMenu(): boolean {
     const selectedMenu = menuInput ? toStringValue(menuInput.value) : "";
     state.form.menu = selectedMenu;
-    state.form.alergias = alergiasInput ? alergiasInput.value.trim() : "";
+    state.form.alergias = limitText(alergiasInput?.value, LIMITS.ALERGIAS);
 
     if (state.form.asistencia !== "si") {
       setError(errorMenu, "");
@@ -673,13 +702,28 @@ export function initInviteWizard(): void {
 
   function validateCancion(): boolean {
     state.form.email = normalizeEmail(emailInput?.value);
-    state.form.cancion = cancionInput ? cancionInput.value.trim() : "";
-    state.form.notas_titular = notasInput ? notasInput.value.trim() : "";
+    const rawCancion = cancionInput ? cancionInput.value : "";
+    const rawNotas = notasInput ? notasInput.value : "";
+    const wasLong = rawCancion.length > LIMITS.CANCION || rawNotas.length > LIMITS.MENSAJE;
+
+    state.form.cancion = limitText(rawCancion, LIMITS.CANCION);
+    state.form.notas_titular = limitText(rawNotas, LIMITS.MENSAJE);
+    if (cancionInput && cancionInput.value !== state.form.cancion) cancionInput.value = state.form.cancion;
+    if (notasInput && notasInput.value !== state.form.notas_titular) notasInput.value = state.form.notas_titular;
+    updateNotasCounter();
 
     if (state.form.email && !isValidEmail(state.form.email)) {
       setError(
         errorCancion,
         "El email no es válido. Puedes continuar y confirmar; no se guardará el email."
+      );
+      return true;
+    }
+
+    if (wasLong) {
+      setError(
+        errorCancion,
+        "Algunos textos superaban el límite y se han recortado automáticamente."
       );
       return true;
     }
@@ -706,15 +750,15 @@ export function initInviteWizard(): void {
         asistencia: state.form.asistencia,
         acompanantes: state.form.acompanantes,
         acompanantes_nombres: state.form.acompanantes_nombres.map((guest) => ({
-          nombre: toStringValue(guest.nombre),
+          nombre: limitText(guest.nombre, LIMITS.ACOMPANANTE_NOMBRE),
           menu: normalizeMenu(guest.menu),
-          alergias: toStringValue(guest.alergias)
+          alergias: limitText(guest.alergias, LIMITS.ALERGIAS)
         })),
         email: state.form.email,
         menu: state.form.menu,
-        alergias: state.form.alergias,
-        cancion: state.form.cancion,
-        notas_titular: state.form.notas_titular
+        alergias: limitText(state.form.alergias, LIMITS.ALERGIAS),
+        cancion: limitText(state.form.cancion, LIMITS.CANCION),
+        notas_titular: limitText(state.form.notas_titular, LIMITS.MENSAJE)
       },
       updatedAt: new Date().toISOString()
     };
@@ -740,9 +784,9 @@ export function initInviteWizard(): void {
       );
       state.form.email = toStringValue(rawForm.email).toLowerCase();
       state.form.menu = toStringValue(rawForm.menu);
-      state.form.alergias = toStringValue(rawForm.alergias);
-      state.form.cancion = toStringValue(rawForm.cancion);
-      state.form.notas_titular = toStringValue(rawForm.notas_titular);
+      state.form.alergias = limitText(rawForm.alergias, LIMITS.ALERGIAS);
+      state.form.cancion = limitText(rawForm.cancion, LIMITS.CANCION);
+      state.form.notas_titular = limitText(rawForm.notas_titular, LIMITS.MENSAJE);
     }
 
     return normalizeStep(draft.currentStep);
@@ -754,6 +798,7 @@ export function initInviteWizard(): void {
     if (alergiasInput) alergiasInput.value = state.form.alergias;
     if (cancionInput) cancionInput.value = state.form.cancion;
     if (notasInput) notasInput.value = state.form.notas_titular;
+    updateNotasCounter();
     renderChoiceStates();
     renderAcompanantesMeta();
     renderAcompanantesInputs();
@@ -847,11 +892,11 @@ export function initInviteWizard(): void {
       const lookupForm = copyDefaultForm();
       lookupForm.asistencia = normalizeAsistencia(result.data.status);
       lookupForm.menu = toStringValue(result.data.menu);
-      lookupForm.alergias = toStringValue(result.data.alergias);
-      lookupForm.notas_titular = toStringValue(result.data.notas_titular);
+      lookupForm.alergias = limitText(result.data.alergias, LIMITS.ALERGIAS);
+      lookupForm.notas_titular = limitText(result.data.notas_titular, LIMITS.MENSAJE);
       lookupForm.email = toStringValue(result.data.email).toLowerCase();
       const extraData = result.data as LookupData & Record<string, unknown>;
-      lookupForm.cancion = toStringValue(extraData.cancion);
+      lookupForm.cancion = limitText(extraData.cancion, LIMITS.CANCION);
 
       const acompData = extractAcompanantesFromLookup(result.acomp);
       lookupForm.acompanantes = clampNumber(acompData.length, 0, state.maxAcompanantes);
@@ -889,9 +934,9 @@ export function initInviteWizard(): void {
   function buildAcompanantesPayload(): AcompananteData[] {
     if (state.form.asistencia !== "si" || state.form.acompanantes <= 0) return [];
     return state.form.acompanantes_nombres.slice(0, state.form.acompanantes).map((guest) => ({
-      nombre: toStringValue(guest.nombre),
+      nombre: limitText(guest.nombre, LIMITS.ACOMPANANTE_NOMBRE),
       menu: normalizeMenu(guest.menu),
-      alergias: toStringValue(guest.alergias)
+      alergias: limitText(guest.alergias, LIMITS.ALERGIAS)
     }));
   }
 
@@ -923,10 +968,10 @@ export function initInviteWizard(): void {
         acompanantes_nombres:
           state.form.asistencia === "si" ? buildAcompanantesPayload() : ([] as AcompananteData[]),
         menu: state.form.asistencia === "si" ? state.form.menu : "",
-        alergias: state.form.asistencia === "si" ? state.form.alergias : "",
-        notas_titular: state.form.notas_titular,
+        alergias: state.form.asistencia === "si" ? limitText(state.form.alergias, LIMITS.ALERGIAS) : "",
+        notas_titular: limitText(state.form.notas_titular, LIMITS.MENSAJE),
         bus: false,
-        cancion: state.form.cancion
+        cancion: limitText(state.form.cancion, LIMITS.CANCION)
       };
 
       const emailForSave = normalizeEmail(state.form.email);
@@ -1040,7 +1085,8 @@ export function initInviteWizard(): void {
   });
 
   alergiasInput?.addEventListener("input", () => {
-    state.form.alergias = alergiasInput.value;
+    state.form.alergias = limitText(alergiasInput.value, LIMITS.ALERGIAS);
+    if (alergiasInput.value !== state.form.alergias) alergiasInput.value = state.form.alergias;
     saveDraft();
   });
 
@@ -1054,12 +1100,15 @@ export function initInviteWizard(): void {
   });
 
   cancionInput?.addEventListener("input", () => {
-    state.form.cancion = cancionInput.value;
+    state.form.cancion = limitText(cancionInput.value, LIMITS.CANCION);
+    if (cancionInput.value !== state.form.cancion) cancionInput.value = state.form.cancion;
     saveDraft();
   });
 
   notasInput?.addEventListener("input", () => {
-    state.form.notas_titular = notasInput.value;
+    state.form.notas_titular = limitText(notasInput.value, LIMITS.MENSAJE);
+    if (notasInput.value !== state.form.notas_titular) notasInput.value = state.form.notas_titular;
+    updateNotasCounter();
     saveDraft();
   });
 
@@ -1089,6 +1138,7 @@ export function initInviteWizard(): void {
 
   renderStepper();
   renderChoiceStates();
+  updateNotasCounter();
   void runDevHealthCheck();
 
   const query = new URLSearchParams(window.location.search);

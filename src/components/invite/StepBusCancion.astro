@@ -22,9 +22,11 @@
     <input
       id="cancionInput"
       type="text"
+      maxlength="120"
       class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2"
       placeholder="Título - Artista"
     />
+    <p class="mt-1 text-xs text-slate-500">Máximo 120 caracteres.</p>
   </div>
 
   <div class="mt-4">
@@ -34,9 +36,11 @@
     <textarea
       id="notasInput"
       rows="3"
+      maxlength="300"
       class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2"
       placeholder="Si quieres añadir algo más, escríbelo aquí."
     ></textarea>
+    <p id="notasCounter" class="mt-1 text-xs text-slate-500">0 / 300</p>
   </div>
 
   <p id="errorCancion" class="hidden mt-3 text-sm text-rose-600" role="alert"></p>

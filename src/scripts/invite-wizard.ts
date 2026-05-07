@@ -100,11 +100,15 @@ function copyDefaultForm(): FormState {
 }
 
 function toStringValue(value: unknown): string {
-  return typeof value === "string" ? value.trim() : "";
+  return typeof value === "string" ? value : "";
+}
+
+function toTrimmedValue(value: unknown): string {
+  return toStringValue(value).trim();
 }
 
 function normalizeAsistencia(value: unknown): Asistencia {
-  const normalized = toStringValue(value).toLowerCase();
+  const normalized = toTrimmedValue(value).toLowerCase();
   if (normalized === "si" || normalized === "sí") return "si";
   if (normalized === "no") return "no";
   return "";
@@ -140,7 +144,7 @@ function writeLegacyString(key: string, value: string): void {
 }
 
 function normalizeMenu(value: unknown): string {
-  const normalized = toStringValue(value).toLowerCase();
+  const normalized = toTrimmedValue(value).toLowerCase();
   if (!normalized) return "estandar";
   if (normalized in MENU_LABELS) return normalized;
   return "otro";
@@ -205,7 +209,7 @@ function safeFocus(element: HTMLElement | null): void {
 }
 
 function normalizeEmail(value: unknown): string {
-  return toStringValue(value).toLowerCase();
+  return toTrimmedValue(value).toLowerCase();
 }
 
 export function initInviteWizard(): void {
@@ -667,7 +671,7 @@ export function initInviteWizard(): void {
 
     for (let index = 0; index < count; index += 1) {
       const guest = state.form.acompanantes_nombres[index];
-      const nombre = toStringValue(guest.nombre);
+      const nombre = toTrimmedValue(guest.nombre);
       if (nombre.length < 2) {
         setError(errorAcompanantes, `Revisa el nombre del acompañante ${index + 1}.`);
         return false;
@@ -682,7 +686,7 @@ export function initInviteWizard(): void {
   }
 
   function validateMenu(): boolean {
-    const selectedMenu = menuInput ? toStringValue(menuInput.value) : "";
+    const selectedMenu = menuInput ? toTrimmedValue(menuInput.value) : "";
     state.form.menu = selectedMenu;
     state.form.alergias = limitText(alergiasInput?.value, LIMITS.ALERGIAS);
 
@@ -770,7 +774,7 @@ export function initInviteWizard(): void {
     const draft = safeRead<Partial<DraftData> | null>(draftKey(token), null);
     if (!draft || typeof draft !== "object") return fallbackStep;
 
-    if (toStringValue(draft.token).toLowerCase() !== token.toLowerCase()) {
+    if (toTrimmedValue(draft.token).toLowerCase() !== token.toLowerCase()) {
       return fallbackStep;
     }
 
@@ -782,8 +786,8 @@ export function initInviteWizard(): void {
         Array.isArray(rawForm.acompanantes_nombres) ? rawForm.acompanantes_nombres : [],
         state.form.acompanantes
       );
-      state.form.email = toStringValue(rawForm.email).toLowerCase();
-      state.form.menu = toStringValue(rawForm.menu);
+      state.form.email = normalizeEmail(rawForm.email);
+      state.form.menu = toTrimmedValue(rawForm.menu);
       state.form.alergias = limitText(rawForm.alergias, LIMITS.ALERGIAS);
       state.form.cancion = limitText(rawForm.cancion, LIMITS.CANCION);
       state.form.notas_titular = limitText(rawForm.notas_titular, LIMITS.MENSAJE);
@@ -891,10 +895,10 @@ export function initInviteWizard(): void {
 
       const lookupForm = copyDefaultForm();
       lookupForm.asistencia = normalizeAsistencia(result.data.status);
-      lookupForm.menu = toStringValue(result.data.menu);
+      lookupForm.menu = toTrimmedValue(result.data.menu);
       lookupForm.alergias = limitText(result.data.alergias, LIMITS.ALERGIAS);
       lookupForm.notas_titular = limitText(result.data.notas_titular, LIMITS.MENSAJE);
-      lookupForm.email = toStringValue(result.data.email).toLowerCase();
+      lookupForm.email = normalizeEmail(result.data.email);
       const extraData = result.data as LookupData & Record<string, unknown>;
       lookupForm.cancion = limitText(extraData.cancion, LIMITS.CANCION);
 
@@ -1075,12 +1079,12 @@ export function initInviteWizard(): void {
   });
 
   menuInput?.addEventListener("change", () => {
-    state.form.menu = toStringValue(menuInput.value);
+    state.form.menu = toTrimmedValue(menuInput.value);
     saveDraft();
   });
 
   emailInput?.addEventListener("input", () => {
-    state.form.email = toStringValue(emailInput.value).toLowerCase();
+    state.form.email = normalizeEmail(emailInput.value);
     saveDraft();
   });
 
